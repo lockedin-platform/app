@@ -12,7 +12,7 @@
         :root{--nj-primary:#4361ee;--nj-secondary:#3a0ca3;--nj-accent:#7209b7;--nj-success:#06d6a0;--nj-warning:#ffd166;--nj-danger:#ef476f;--nj-dark:#1a1a2e;--nj-gradient:linear-gradient(135deg,var(--nj-primary),var(--nj-accent))}
         *{box-sizing:border-box}
         body{font-family:'Inter',sans-serif;background:#f0f2f5;min-height:100vh;color:#333}
-        .navbar-nj{background:var(--nj-gradient);box-shadow:0 4px 24px rgba(67,97,238,.25);transition:background .3s ease,box-shadow .3s ease}
+        .navbar-nj{background:rgba(15,23,42,.72);backdrop-filter:blur(16px) saturate(1.8);-webkit-backdrop-filter:blur(16px) saturate(1.8);box-shadow:0 1px 0 rgba(255,255,255,.06),0 8px 32px rgba(0,0,0,.18);transition:background .3s ease,box-shadow .3s ease}
         body[data-page="home"] .navbar-nj.nj-nav-transparent{background:linear-gradient(180deg,rgba(10,14,39,.82),rgba(26,5,51,.32))!important;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:none!important}
         .navbar-nj .navbar-brand{font-weight:800;font-size:1.5rem;letter-spacing:-.5px}
         .nj-brand-gradient{color:#fff;background:linear-gradient(90deg,#ffffff 0%,#dff7ff 24%,#b8fff1 52%,#ffffff 76%,#dbe8ff 100%);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 10px rgba(255,255,255,.22));animation:njBrandShift 4s ease infinite}
@@ -35,7 +35,7 @@
         .nj-announce-bar .nj-announce-close:hover{color:#fff}
         @media(max-width:991.98px){
             .nj-announce-bar{display:none!important}
-            .navbar-nj .navbar-collapse{background:var(--nj-gradient);border-radius:0 0 1rem 1rem;margin:0 -.5rem;padding:0 .75rem}
+            .navbar-nj .navbar-collapse{background:rgba(15,23,42,.92);backdrop-filter:blur(16px);border-radius:0 0 1rem 1rem;margin:0 -.5rem;padding:0 .75rem}
             .navbar-nj .collapsing{transition:height .35s ease}
             .navbar-nj .navbar-collapse .nav-link{padding:.75rem 1rem!important;width:100%}
             .navbar-nj .navbar-collapse .dropdown-menu{background:rgba(255,255,255,.12);border:none;border-radius:.75rem}
@@ -93,6 +93,7 @@
         .badge-role-MENTOR{background:var(--nj-accent);color:#fff} .badge-role-INVESTISSEUR{background:var(--nj-secondary);color:#fff}
     </style>
     {% block stylesheets %}{% endblock %}
+    {{ importmap('app') }}
 </head>
 <body {% block body_attributes %}{% endblock %}>
     {% for label, messages in app.flashes %}

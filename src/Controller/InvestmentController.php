@@ -10,6 +10,7 @@ use App\Repository\InvestmentContractRepository;
 use App\Repository\InvestmentOfferRepository;
 use App\Repository\InvestmentOpportunityRepository;
 use App\Repository\InvestorProfileRepository;
+use App\Repository\ProjetRepository;
 use App\Service\EmailService;
 use App\Service\NotificationService;
 use App\Service\Investment\StripePaymentService;
@@ -1227,9 +1228,9 @@ class InvestmentController extends AbstractController
 
     #[Route('/create-opportunity', name: 'app_invest_create_opportunity', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ENTREPRENEUR')]
-    public function createOpportunity(Request $request, EntityManagerInterface $em, ValidatorInterface $validator): Response
+    public function createOpportunity(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProjetRepository $projetRepo): Response
     {
-        $projets = $em->getRepository(Projet::class)->findByUser($this->getUser());
+        $projets = $projetRepo->findByUser($this->getUser());
 
         if ($request->isMethod('POST')) {
             $token = $request->request->get('_token');

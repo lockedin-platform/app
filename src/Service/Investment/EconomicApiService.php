@@ -32,6 +32,7 @@ class EconomicApiService
     {
     }
 
+    /** @return array<string, mixed> */
     public function fetchAllEconomicData(string $countryCode): array
     {
         $data = [
@@ -87,6 +88,7 @@ class EconomicApiService
         return $data;
     }
 
+    /** @return array<string, float> */
     public function fetchExchangeRates(): array
     {
         $response = $this->httpClient->request('GET', self::EXCHANGE_RATE_URL, [
@@ -100,6 +102,7 @@ class EconomicApiService
         return $json['rates'] ?? [];
     }
 
+    /** @return array<string, float|string|null> */
     private function fetchWorldBankIndicator(string $url): array
     {
         $response = $this->httpClient->request('GET', $url, [
@@ -116,7 +119,7 @@ class EconomicApiService
         }
 
         foreach ($json[1] as $entry) {
-            if (isset($entry['value']) && $entry['value'] !== null) {
+            if (isset($entry['value'])) {
                 return [
                     'value' => (float) $entry['value'],
                     'date' => $entry['date'] ?? null,
@@ -132,6 +135,7 @@ class EconomicApiService
         return self::COUNTRY_NAMES[strtoupper($code)] ?? $code;
     }
 
+    /** @return array<string, string> */
     public function getSupportedCountries(): array
     {
         return self::COUNTRY_NAMES;

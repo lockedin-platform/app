@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Doctrine\DBAL\Exception as DbalException;
 use App\Entity\InvestmentOffer;
 use App\Entity\InvestmentOpportunity;
 use App\Entity\User;
@@ -30,65 +31,88 @@ class HomeController extends AbstractController
         MentorshipSessionRepository $sessionRepo,
         PostRepository $postRepo,
     ): Response {
-        // ── Platform stats ──
-        $totalUsers = $userRepo->count([]);
-        $totalInvestors = $userRepo->countByRole(User::ROLE_INVESTISSEUR);
-        $totalEntrepreneurs = $userRepo->countByRole(User::ROLE_ENTREPRENEUR);
-        $totalMentors = $userRepo->countByRole(User::ROLE_MENTOR);
+        $platformStats = [
+            'totalUsers' => 0,
+            'totalInvestors' => 0,
+            'totalEntrepreneurs' => 0,
+            'totalMentors' => 0,
+            'activeProjects' => 0,
+            'totalProjects' => 0,
+            'openOpportunities' => 0,
+            'fundedDeals' => 0,
+            'totalCours' => 0,
+            'totalMentorsAvail' => 0,
+            'totalSessions' => 0,
+            'totalPosts' => 0,
+            'latestProjectName' => '',
+            'latestProjectSector' => '',
+        ];
+        $activityFeed = [];
 
-        $activeProjects = $projetRepo->createQueryBuilder('p')
-            ->select('COUNT(p.id)')
-            ->where('p.statut = :s')
-            ->setParameter('s', 'ACTIF')
-            ->getQuery()->getSingleScalarResult();
+        try {
+            // ── Platform stats ──
+            $totalUsers = $userRepo->count([]);
+            $totalInvestors = $userRepo->countByRole(User::ROLE_INVESTISSEUR);
+            $totalEntrepreneurs = $userRepo->countByRole(User::ROLE_ENTREPRENEUR);
+            $totalMentors = $userRepo->countByRole(User::ROLE_MENTOR);
 
-        $totalProjects = $projetRepo->count([]);
+            $activeProjects = $projetRepo->createQueryBuilder('p')
+                ->select('COUNT(p.id)')
+                ->where('p.statut = :s')
+                ->setParameter('s', 'ACTIF')
+                ->getQuery()->getSingleScalarResult();
 
-        $openOpportunities = $oppRepo->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.status = :s')
-            ->setParameter('s', InvestmentOpportunity::STATUS_OPEN)
-            ->getQuery()->getSingleScalarResult();
+            $totalProjects = $projetRepo->count([]);
 
-        $fundedDeals = $offerRepo->createQueryBuilder('o')
-            ->select('COUNT(o.id)')
-            ->where('o.paid = :p')
-            ->setParameter('p', true)
-            ->getQuery()->getSingleScalarResult();
+            $openOpportunities = $oppRepo->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.status = :s')
+                ->setParameter('s', InvestmentOpportunity::STATUS_OPEN)
+                ->getQuery()->getSingleScalarResult();
 
-        $totalCours = $coursRepo->count([]);
-        $totalMentorsAvailable = $mentorAvailRepo->createQueryBuilder('a')
-            ->select('COUNT(DISTINCT a.mentor)')
-            ->getQuery()->getSingleScalarResult();
-        $totalSessions = $sessionRepo->count([]);
-        $totalPosts = $postRepo->count([]);
+            $fundedDeals = $offerRepo->createQueryBuilder('o')
+                ->select('COUNT(o.id)')
+                ->where('o.paid = :p')
+                ->setParameter('p', true)
+                ->getQuery()->getSingleScalarResult();
 
-        // Most recent project
-        $latestProject = $projetRepo->createQueryBuilder('p')
-            ->orderBy('p.id', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()->getOneOrNullResult();
+            $totalCours = $coursRepo->count([]);
+            $totalMentorsAvailable = $mentorAvailRepo->createQueryBuilder('a')
+                ->select('COUNT(DISTINCT a.mentor)')
+                ->getQuery()->getSingleScalarResult();
+            $totalSessions = $sessionRepo->count([]);
+            $totalPosts = $postRepo->count([]);
 
-        // ── Activity feed (10 most recent events) ──
-        $activityFeed = $this->buildActivityFeed($projetRepo, $offerRepo, $oppRepo, $sessionRepo, $userRepo, $postRepo);
+            $latestProject = $projetRepo->createQueryBuilder('p')
+                ->orderBy('p.id', 'DESC')
+                ->setMaxResults(1)
+                ->getQuery()->getOneOrNullResult();
+
+            $platformStats = [
+                'totalUsers' => (int) $totalUsers,
+                'totalInvestors' => (int) $totalInvestors,
+                'totalEntrepreneurs' => (int) $totalEntrepreneurs,
+                'totalMentors' => (int) $totalMentors,
+                'activeProjects' => (int) $activeProjects,
+                'totalProjects' => (int) $totalProjects,
+                'openOpportunities' => (int) $openOpportunities,
+                'fundedDeals' => (int) $fundedDeals,
+                'totalCours' => (int) $totalCours,
+                'totalMentorsAvail' => (int) $totalMentorsAvailable,
+                'totalSessions' => (int) $totalSessions,
+                'totalPosts' => (int) $totalPosts,
+                'latestProjectName' => $latestProject?->getTitre() ?? '',
+                'latestProjectSector' => $latestProject?->getSecteur() ?? '',
+            ];
+
+            // ── Activity feed (10 most recent events) ──
+            $activityFeed = $this->buildActivityFeed($projetRepo, $offerRepo, $oppRepo, $sessionRepo, $userRepo, $postRepo);
+        } catch (DbalException | \PDOException) {
+            // Keep the public homepage available when the local database is offline.
+        }
 
         return $this->render('front/home/index.html.twig', [
-            'platformStats' => [
-                'totalUsers'          => (int) $totalUsers,
-                'totalInvestors'      => (int) $totalInvestors,
-                'totalEntrepreneurs'  => (int) $totalEntrepreneurs,
-                'totalMentors'        => (int) $totalMentors,
-                'activeProjects'      => (int) $activeProjects,
-                'totalProjects'       => (int) $totalProjects,
-                'openOpportunities'   => (int) $openOpportunities,
-                'fundedDeals'         => (int) $fundedDeals,
-                'totalCours'          => (int) $totalCours,
-                'totalMentorsAvail'   => (int) $totalMentorsAvailable,
-                'totalSessions'       => (int) $totalSessions,
-                'totalPosts'          => (int) $totalPosts,
-                'latestProjectName'   => $latestProject?->getTitre() ?? '',
-                'latestProjectSector' => $latestProject?->getSecteur() ?? '',
-            ],
+            'platformStats' => $platformStats,
             'activityFeed' => $activityFeed,
         ]);
     }
@@ -185,7 +209,7 @@ class HomeController extends AbstractController
         return $events;
     }
 
-    private function toTimestamp($date): int
+    private function toTimestamp(mixed $date): int
     {
         if ($date instanceof \DateTimeInterface) {
             return $date->getTimestamp();
@@ -193,7 +217,7 @@ class HomeController extends AbstractController
         return 0;
     }
 
-    private function relativeTime($date, \DateTimeImmutable $now): string
+    private function relativeTime(mixed $date, \DateTimeImmutable $now): string
     {
         if (!$date instanceof \DateTimeInterface) {
             return '';

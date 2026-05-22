@@ -21,6 +21,7 @@ final class CommunityTicketService
     {
     }
 
+    /** @return array<string, string> */
     public function buildTicket(Event $event, User $user): array
     {
         $eventTitle = $this->sanitizeText((string) $event->getTitle());
@@ -127,6 +128,7 @@ final class CommunityTicketService
         return trim($data);
     }
 
+    /** @return array<string, mixed> */
     public function validatePayloadForEvent(string $payload, Event $event): array
     {
         $parsed = $this->parsePayload($payload);
@@ -150,6 +152,7 @@ final class CommunityTicketService
         ];
     }
 
+    /** @return array<string, string> */
     private function parsePayload(string $payload): array
     {
         $payload = trim($payload);

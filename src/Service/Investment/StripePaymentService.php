@@ -23,6 +23,7 @@ class StripePaymentService
             && str_starts_with($this->stripeSecretKey, 'sk_');
     }
 
+    /** @return array<string, bool|string> */
     public function payAcceptedOffer(InvestmentOffer $offer): array
     {
         if (!$this->isConfigured()) {
@@ -63,7 +64,7 @@ class StripePaymentService
         } catch (ApiErrorException $e) {
             return [
                 'success' => false,
-                'error' => $e->getError()?->message ?? $e->getMessage(),
+                'error' => $e->getError()->message ?? $e->getMessage(),
             ];
         } catch (\Throwable $e) {
             return [

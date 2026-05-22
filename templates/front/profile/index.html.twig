@@ -137,6 +137,42 @@
             </div>
         </div>
 
+        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>Assistant IA de profil</h5>
+                {% if not aiEnabled %}
+                    <span class="badge bg-secondary">IA désactivée</span>
+                {% endif %}
+            </div>
+            <p class="text-muted small">Améliorez votre bio, obtenez des recommandations personnalisées et posez une question à l'assistant IA.</p>
+            <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+                <button id="generateBioBtn" class="btn btn-outline-primary w-100" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-pencil-square me-1"></i>Réécrire ma bio
+                </button>
+                <button id="recommendationsBtn" class="btn btn-outline-success w-100" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-stars me-1"></i>Recommandations IA
+                </button>
+                <button id="matchingBtn" class="btn btn-outline-info w-100" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-people-fill me-1"></i>Connexions suggérées
+                </button>
+            </div>
+            <div id="matchingResult" class="d-none mb-3">
+                <h6 class="fw-semibold"><i class="bi bi-people me-1"></i>Utilisateurs compatibles</h6>
+                <div id="matchingList" class="list-group"></div>
+            </div>
+            <div id="aiResult" class="border rounded-3 p-3 bg-light" style="min-height:120px;">
+                <p class="mb-0 text-muted">Résultats IA affichés ici.</p>
+            </div>
+            <div class="mt-4">
+                <label class="form-label fw-semibold">Posez une question à l’assistant</label>
+                <div class="input-group">
+                    <textarea id="aiChatMessage" class="form-control" rows="2" placeholder="Que puis-je améliorer sur mon profil ?" {{ not aiEnabled ? 'disabled' : '' }}></textarea>
+                    <button id="aiChatSend" class="btn btn-nj" type="button" {{ not aiEnabled ? 'disabled' : '' }}><i class="bi bi-send-fill me-1"></i>Envoyer</button>
+                </div>
+                <div id="aiChatResponse" class="mt-3 text-muted small">Réponse de l'IA ici.</div>
+            </div>
+        </div>
+
         {# Recent Login History #}
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -186,4 +222,122 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+(function() {
+    const baseUrl = window.location.origin;
+    const resultBox = document.getElementById('aiResult');
+    const responseBox = document.getElementById('aiChatResponse');
+    const messageInput = document.getElementById('aiChatMessage');
+
+    function setLoading(button, text) {
+        button.disabled = true;
+        button.dataset.original = button.innerHTML;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>' + text;
+    }
+
+    function resetButton(button) {
+        if (button.dataset.original) {
+            button.innerHTML = button.dataset.original;
+            button.disabled = false;
+        }
+    }
+
+    async function callAi(endpoint, payload) {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+        return response.json();
+    }
+
+    const generateBioBtn = document.getElementById('generateBioBtn');
+    const recommendationsBtn = document.getElementById('recommendationsBtn');
+    const chatSendBtn = document.getElementById('aiChatSend');
+
+    if (generateBioBtn) {
+        generateBioBtn.addEventListener('click', async function() {
+            setLoading(generateBioBtn, 'Génération...');
+            const data = await callAi('{{ path('app_profile_ai_generate_bio') }}', {});
+            if (data.bio) {
+                resultBox.innerHTML = '<strong>Bio IA :</strong><p class="mb-0">' + data.bio.replace(/\n/g, '<br>') + '</p>';
+            } else {
+                resultBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de la génération.') + '</span>';
+            }
+            resetButton(generateBioBtn);
+        });
+    }
+
+
+    if (recommendationsBtn) {
+        recommendationsBtn.addEventListener('click', async function() {
+            setLoading(recommendationsBtn, 'Chargement...');
+            const data = await callAi('{{ path('app_profile_ai_recommendations') }}', {});
+            if (data.recommendations) {
+                resultBox.innerHTML = '<strong>Recommandations :</strong><p class="mb-0">' + data.recommendations.replace(/\n/g, '<br>') + '</p>';
+            } else {
+                resultBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de la génération.') + '</span>';
+            }
+            resetButton(recommendationsBtn);
+        });
+    }
+
+    if (chatSendBtn) {
+        chatSendBtn.addEventListener('click', async function() {
+            const message = messageInput.value.trim();
+            if (!message) {
+                responseBox.textContent = 'Entrez votre question pour l\'assistant.';
+                return;
+            }
+            setLoading(chatSendBtn, 'Envoi...');
+            const data = await callAi('{{ path('app_profile_ai_chat') }}', {message});
+            if (data.answer) {
+                responseBox.innerHTML = '<strong>IA :</strong> ' + data.answer.replace(/\n/g, '<br>');
+            } else {
+                responseBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de l\'envoi.') + '</span>';
+            }
+            resetButton(chatSendBtn);
+        });
+    }
+
+    const matchingBtn = document.getElementById('matchingBtn');
+    const matchingResult = document.getElementById('matchingResult');
+    const matchingList = document.getElementById('matchingList');
+
+    if (matchingBtn) {
+        matchingBtn.addEventListener('click', async function() {
+            setLoading(matchingBtn, 'Analyse IA...');
+            const data = await callAi('{{ path('app_profile_ai_matching') }}', {});
+            if (data.matches && data.matches.length > 0) {
+                matchingResult.classList.remove('d-none');
+                matchingList.innerHTML = data.matches.map(m => `
+                    <div class="list-group-item d-flex align-items-center gap-3">
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;font-size:0.9rem;">
+                            ${m.picture ? '<img src="/uploads/profiles/' + m.picture + '" class="rounded-circle" style="width:40px;height:40px;object-fit:cover">' : m.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">${m.name} <span class="badge bg-secondary ms-1">${m.role}</span></div>
+                            ${m.company ? '<small class="text-muted">' + m.company + '</small><br>' : ''}
+                            <small class="text-success"><i class="bi bi-lightning-fill"></i> ${m.reason}</small>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-info">${m.score}%</span>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                matchingResult.classList.remove('d-none');
+                matchingList.innerHTML = '<p class="text-muted text-center small mb-0">Aucune suggestion disponible pour le moment.</p>';
+            }
+            resetButton(matchingBtn);
+        });
+    }
+})();
+</script>
 {% endblock %}

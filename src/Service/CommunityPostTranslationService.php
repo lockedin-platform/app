@@ -14,6 +14,7 @@ final class CommunityPostTranslationService
     {
     }
 
+    /** @return array<string, mixed> */
     public function translate(string $text, string $target): array
     {
         $text = trim($text);
@@ -64,6 +65,7 @@ final class CommunityPostTranslationService
         ];
     }
 
+    /** @return array<string, mixed> */
     private function fetchTranslationPayload(string $text, string $source, string $target): array
     {
         $options = [
@@ -88,6 +90,10 @@ final class CommunityPostTranslationService
         }
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @return array<string, mixed>
+     */
     private function decodeResponse(string $method, string $url, array $options): array
     {
         $response = $this->httpClient->request($method, $url, $options);

@@ -19,7 +19,9 @@ class Server
     /** @var array<int, resource[]> Maps user ID → list of client resources */
     private array $userClients = [];
 
+    /** @var resource|null */
     private $wsServer;
+    /** @var resource|null */
     private $pushServer;
 
     public function __construct(
@@ -94,7 +96,7 @@ class Server
         }
     }
 
-    private function handleNewWsClient($socket): void
+    private function handleNewWsClient(mixed $socket): void
     {
         $headers = '';
         $timeout = microtime(true) + 2;
@@ -166,7 +168,7 @@ class Server
         }
     }
 
-    private function handlePushConnection($socket): void
+    private function handlePushConnection(mixed $socket): void
     {
         $data = '';
         $timeout = microtime(true) + 2;

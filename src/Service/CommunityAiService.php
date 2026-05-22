@@ -41,7 +41,10 @@ final class CommunityAiService
         return $this->apiKey() !== null;
     }
 
-    /** @param Comment[] $comments */
+    /**
+     * @param Comment[] $comments
+     * @return array<string, mixed>
+     */
     public function summarizeThread(Thread $thread, array $comments): array
     {
         $allCommentsCount = count($comments);
@@ -81,7 +84,10 @@ final class CommunityAiService
         return $this->textResult($this->fallbackThreadSummary($thread, $comments), false, false);
     }
 
-    /** @param Comment[] $comments */
+    /**
+     * @param Comment[] $comments
+     * @return array<string, mixed>
+     */
     public function suggestThreadReplies(Thread $thread, array $comments): array
     {
         $allCommentsCount = count($comments);
@@ -118,6 +124,7 @@ final class CommunityAiService
         return $this->suggestionsResult(array_slice($suggestions, 0, 3), true, $configured);
     }
 
+    /** @return array<string, mixed> */
     public function generateEventText(Event $event, string $mode): array
     {
         $mode = in_array($mode, ['summary', 'promo', 'checklist'], true) ? $mode : 'summary';
@@ -424,7 +431,7 @@ final class CommunityAiService
                 CURLOPT_POSTFIELDS => $body,
                 CURLOPT_TIMEOUT => (int) $this->timeout(),
                 CURLOPT_SSL_VERIFYPEER => false,
-                CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_SSL_VERIFYHOST => 0,
             ]);
 
             $response = curl_exec($ch);

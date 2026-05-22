@@ -26,6 +26,7 @@ final class CommunityTextModerationService
     {
     }
 
+    /** @return array{text: string, changed: bool} */
     public function moderate(string $text): array
     {
         $text = trim($text);

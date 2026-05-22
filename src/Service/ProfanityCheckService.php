@@ -7,13 +7,26 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class ProfanityCheckService
 {
+    /** @phpstan-ignore property.onlyWritten */
+    private readonly LoggerInterface $logger;
+    /** @phpstan-ignore property.onlyWritten */
+    private readonly string $rapidApiKey;
+    /** @phpstan-ignore property.onlyWritten */
+    private readonly string $rapidApiHost;
+    /** @phpstan-ignore property.onlyWritten */
+    private readonly string $rapidApiUrl;
+
     public function __construct(
         private readonly HttpClientInterface $httpClient,
-        private readonly LoggerInterface $logger,
-        private readonly string $rapidApiKey,
-        private readonly string $rapidApiHost,
-        private readonly string $rapidApiUrl
+        LoggerInterface $logger,
+        string $rapidApiKey,
+        string $rapidApiHost,
+        string $rapidApiUrl
     ) {
+        $this->logger = $logger;
+        $this->rapidApiKey = $rapidApiKey;
+        $this->rapidApiHost = $rapidApiHost;
+        $this->rapidApiUrl = $rapidApiUrl;
     }
 
     public function containsProfanity(string $text): bool

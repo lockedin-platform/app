@@ -115,7 +115,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
                 $this->em->flush();
 
                 $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
-                $request->getSession()->getFlashBag()->add('danger',
+                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+                $session = $request->getSession();
+                $session->getFlashBag()->add('danger',
                     'Votre compte a été verrouillé après ' . self::MAX_LOGIN_ATTEMPTS . ' tentatives échouées. Réinitialisez votre mot de passe pour le débloquer.'
                 );
                 return new RedirectResponse($this->urlGenerator->generate('app_login'));
@@ -124,7 +126,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
             $this->em->flush();
             $remaining = self::MAX_LOGIN_ATTEMPTS - $user->getLoginAttempts();
             if ($remaining > 0 && $remaining < self::MAX_LOGIN_ATTEMPTS) {
-                $request->getSession()->getFlashBag()->add('warning',
+                /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+                $session = $request->getSession();
+                $session->getFlashBag()->add('warning',
                     "Mot de passe incorrect. Il vous reste {$remaining} tentative(s)."
                 );
             }

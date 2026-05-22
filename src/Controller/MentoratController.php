@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\MentorAvailability;
 use App\Entity\MentorshipRequest;
 use App\Entity\MentorshipSession;
+use App\Entity\User;
 use App\Repository\MentorAvailabilityRepository;
 use App\Repository\MentorshipRequestRepository;
 use App\Repository\MentorshipSessionRepository;
+use App\Repository\ProjetRepository;
 use App\Repository\UserRepository;
 use App\Service\MentoratMatchingService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -31,6 +33,7 @@ class MentoratController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private MentoratMatchingService $matchingService,
+        private ProjetRepository $projetRepository,
     ) {}
 
     // ──────────────────────────────────────────────
@@ -64,7 +67,7 @@ class MentoratController extends AbstractController
             ->addOrderBy('a.startTime', 'ASC')
             ->getQuery()->getResult();
 
-        $projets = $this->em->getRepository(\App\Entity\Projet::class)->findByUser($this->getUser());
+        $projets = $this->projetRepository->findByUser($this->getUser());
 
         return $this->render('front/mentorat/mentors.html.twig', [
             'availabilities' => $availabilities,
@@ -86,7 +89,9 @@ class MentoratController extends AbstractController
             }
 
             $req = new MentorshipRequest();
-            $req->setEntrepreneur($this->getUser());
+            /** @var User $currentUser */
+            $currentUser = $this->getUser();
+            $req->setEntrepreneur($currentUser);
             $req->setMentor($mentor);
             $req->setDate(new \DateTime($request->request->get('date')));
             $req->setTime($request->request->get('time'));
@@ -129,7 +134,7 @@ class MentoratController extends AbstractController
         $prefillDate = $request->query->get('date', '');
         $prefillTime = $request->query->get('time', '');
 
-        $projets = $this->em->getRepository(\App\Entity\Projet::class)->findByUser($this->getUser());
+        $projets = $this->projetRepository->findByUser($this->getUser());
         return $this->render('front/mentorat/request_form.html.twig', [
             'mentor' => $mentor,
             'projets' => $projets,
@@ -185,7 +190,7 @@ class MentoratController extends AbstractController
             return $this->redirectToRoute('app_mentorat_requests');
         }
 
-        $projets = $this->em->getRepository(\App\Entity\Projet::class)->findByUser($this->getUser());
+        $projets = $this->projetRepository->findByUser($this->getUser());
         return $this->render('front/mentorat/request_edit.html.twig', [
             'req' => $req,
             'projets' => $projets,
@@ -267,6 +272,7 @@ class MentoratController extends AbstractController
     public function newSession(Request $request, MentorshipRequestRepository $reqRepo): Response
     {
         $user = $this->getUser();
+        /** @var User $user */
         if ($user->getRole() !== 'MENTOR') {
             throw $this->createAccessDeniedException('Seul un mentor peut créer une session.');
         }
@@ -394,8 +400,10 @@ class MentoratController extends AbstractController
     #[Route('/sessions/export/pdf', name: 'app_mentorat_sessions_export_pdf')]
     public function exportSessionsPdf(MentorshipSessionRepository $repo): Response
     {
-        $sessions = $repo->findByUser($this->getUser());
-        $userRole = $this->getUser()->getRole();
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $sessions = $repo->findByUser($currentUser);
+        $userRole = $currentUser->getRole();
         $html = $this->renderView('front/mentorat/sessions_pdf.html.twig', ['sessions' => $sessions, 'userRole' => $userRole]);
 
         $options = new Options();
@@ -415,8 +423,10 @@ class MentoratController extends AbstractController
     #[Route('/sessions/export/excel', name: 'app_mentorat_sessions_export_excel')]
     public function exportSessionsExcel(MentorshipSessionRepository $repo): StreamedResponse
     {
-        $sessions = $repo->findByUser($this->getUser());
-        $userRole = $this->getUser()->getRole();
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $sessions = $repo->findByUser($currentUser);
+        $userRole = $currentUser->getRole();
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -487,7 +497,9 @@ class MentoratController extends AbstractController
         }
 
         $avail = new MentorAvailability();
-        $avail->setMentor($this->getUser());
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $avail->setMentor($currentUser);
         $avail->setDate(new \DateTime($request->request->get('date')));
         $avail->setStartTime(new \DateTime($request->request->get('start_time')));
         $avail->setEndTime(new \DateTime($request->request->get('end_time')));

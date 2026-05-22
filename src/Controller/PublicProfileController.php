@@ -159,6 +159,7 @@ class PublicProfileController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
+    /** @return array<string, int> */
     private function getUserStats(User $user): array
     {
         $conn = $this->em->getConnection();

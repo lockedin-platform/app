@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\CoursComment;
 use App\Entity\Progression;
+use App\Entity\User;
 use App\Repository\BadgeRepository;
 use App\Repository\CoursCommentRepository;
 use App\Repository\CoursRepository;
@@ -71,10 +72,12 @@ class ApprentissageController extends AbstractController
     {
         $existing = $repo->findOneBy(['user' => $this->getUser(), 'cours' => $cours]);
         if (!$existing) {
+            /** @var User $currentUser */
+            $currentUser = $this->getUser();
             $prog = new Progression();
-            $prog->setUser($this->getUser());
+            $prog->setUser($currentUser);
             $prog->setCours($cours);
-            $prog->setPourcentage(0);
+            $prog->setPourcentage((string) 0);
             $prog->setPointsXp(0);
             $prog->setNiveau(1);
             $prog->setEtat('EN_COURS');
@@ -104,7 +107,7 @@ class ApprentissageController extends AbstractController
                 $prog->setDateObtention(new \DateTime());
                 $prog->setPointsXp($cours->getPointsXp());
 
-                $user = $em->getRepository(\App\Entity\User::class)->find($this->getUser()->getId());
+                $user = $em->getRepository(\App\Entity\User::class)->find($this->getUser()->getUserIdentifier());
                 $user->setTotalXp($user->getTotalXp() + $cours->getPointsXp());
                 $em->persist($user);
             }
@@ -123,7 +126,9 @@ class ApprentissageController extends AbstractController
     ): void
     {
         // Recharger l'utilisateur depuis la base pour éviter le cache Doctrine
-        $user = $em->getRepository(\App\Entity\User::class)->find($this->getUser()->getId());
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $user = $em->getRepository(\App\Entity\User::class)->find($currentUser->getId());
 
         $progressions = $progRepo->findByUser($user);
 
@@ -187,7 +192,9 @@ class ApprentissageController extends AbstractController
 
         $comment = new CoursComment();
         $comment->setCours($cours);
-        $comment->setUser($this->getUser());
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+        $comment->setUser($currentUser);
         $comment->setContenu($contenu);
         $comment->setRating((string) $avisRatingService->rateAvis($contenu));
 
@@ -260,6 +267,7 @@ class ApprentissageController extends AbstractController
         $progressions = $repo->findByUser($this->getUser());
         $completed = array_filter($progressions, fn($p) => $p->getEtat() === 'COMPLETE');
 
+        /** @var User $user */
         $user = $this->getUser();
         $date = (new \DateTime())->format('d/m/Y');
 
@@ -331,7 +339,7 @@ class ApprentissageController extends AbstractController
     {
         return $this->render('front/apprentissage/badges.html.twig', [
             'badges'     => $repo->findActifs(),
-            'userBadges' => $this->getUser()->getBadges(),
+            'userBadges' => $this->getUser() instanceof User ? $this->getUser()->getBadges() : [],
         ]);
     }
 }

@@ -14,6 +14,7 @@ class ProjetRecommendationService
     ) {
     }
 
+    /** @return array<string, mixed> */
     public function getRecommendations(Projet $projet): array
     {
         if ($this->gemini->isConfigured()) {
@@ -23,6 +24,7 @@ class ProjetRecommendationService
         return $this->getLocalRecommendations($projet);
     }
 
+    /** @return Projet[] */
     public function getSimilarProjects(Projet $projet, int $limit = 5): array
     {
         $qb = $this->projetRepository->createQueryBuilder('p')
@@ -38,6 +40,7 @@ class ProjetRecommendationService
         return $qb->getQuery()->getResult();
     }
 
+    /** @return array<string, mixed> */
     private function getAiRecommendations(Projet $projet): array
     {
         $db = $projet->getDonneesBusiness();
@@ -97,6 +100,7 @@ Sois concret et adapté au contexte tunisien.";
         return $result ?? $this->getLocalRecommendations($projet);
     }
 
+    /** @return array<string, mixed> */
     private function getLocalRecommendations(Projet $projet): array
     {
         $db = $projet->getDonneesBusiness();

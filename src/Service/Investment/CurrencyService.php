@@ -24,6 +24,7 @@ class CurrencyService
         'EUR' => "\u{20AC}", 'USD' => '$', 'TND' => 'DT', 'GBP' => "\u{00A3}", 'MAD' => 'MAD',
     ];
 
+    /** @var array<string, float> */
     private array $rates;
     private int $lastFetch = 0;
 
@@ -32,6 +33,7 @@ class CurrencyService
         $this->rates = self::getDefaultRates();
     }
 
+    /** @return array<string, float> */
     public function fetchRates(): array
     {
         if (time() - $this->lastFetch < self::CACHE_DURATION && !empty($this->rates)) {
@@ -88,11 +90,13 @@ class CurrencyService
         return number_format($amount, 2, ',', ' ') . ' ' . $symbol;
     }
 
+    /** @return array<string, float> */
     public function getRates(): array
     {
         return $this->rates;
     }
 
+    /** @return array<string, float> */
     private static function getDefaultRates(): array
     {
         return [

@@ -52,6 +52,7 @@ class ProjetScoringService
         return $result;
     }
 
+    /** @return array<string, mixed> */
     public function evaluateWithAi(Projet $projet): array
     {
         $this->calculateScores($projet);

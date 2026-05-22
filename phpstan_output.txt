@@ -1,0 +1,1324 @@
+﻿php : Note: Using configuration file 
+C:\Users\ilyes\Downloads\najahni\najahni-symfony-web\phpstan.dist.neon.
+At line:1 char:1
++ php vendor/bin/phpstan analyse --level 6 src/ --no-progress 2>&1 | Ou ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Note: Using con...stan.dist.neon. 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\Admin\AdminCommunityController.php                          
+ ------ ----------------------------------------------------------------------- 
+  :133   Method                                                                 
+         App\Controller\Admin\AdminCommunityController::buildCommunityTotals()  
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :145   Method                                                                 
+         App\Controller\Admin\AdminCommunityController::buildGroupStats()       
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :156   Method                                                                 
+         App\Controller\Admin\AdminCommunityController::buildPostStats()        
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :166   Method                                                                 
+         App\Controller\Admin\AdminCommunityController::buildEventStats()       
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :179   Method App\Controller\Admin\AdminCommunityController::countWhere()     
+         has parameter $parameters with no value type specified in iterable     
+         type array.                                                            
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\Admin\AdminInvestmentController.php                         
+ ------ ----------------------------------------------------------------------- 
+  :240   Method                                                                 
+         App\Controller\Admin\AdminInvestmentController::getOpportunityFilters  
+         () return type has no value type specified in iterable type array.     
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :256   Method                                                                 
+         App\Controller\Admin\AdminInvestmentController::getOfferFilters()      
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------- ---------------------------------------------------------------------- 
+  Line    Controller\CommunityController.php                                    
+ ------- ---------------------------------------------------------------------- 
+  :1182   Method App\Controller\CommunityController::renderGroupPage() has      
+          parameter $context with no value type specified in iterable type      
+          array.                                                                
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1215   Method App\Controller\CommunityController::renderPostsPage() has      
+          parameter $context with no value type specified in iterable type      
+          array.                                                                
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1258   Method App\Controller\CommunityController::renderThreadPage() has     
+          parameter $context with no value type specified in iterable type      
+          array.                                                                
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1295   Method App\Controller\CommunityController::renderEventPage() has      
+          parameter $context with no value type specified in iterable type      
+          array.                                                                
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1325   Method App\Controller\CommunityController::normalizeTextAiResult()    
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1373   Method                                                                
+          App\Controller\CommunityController::normalizeSuggestionsAiResult()    
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1559   Offset 'emoji' on array{label: 'J\'aime', emoji: '­ƒæì'} on left side   
+          of ?? always exists and is not nullable.                              
+          ­ƒ¬¬  nullCoalesce.offset                                               
+  :1640   Method App\Controller\CommunityController::validateGroupInput()       
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1671   Method App\Controller\CommunityController::validateThreadInput()      
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1702   Method App\Controller\CommunityController::validateCommentInput()     
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1721   Method App\Controller\CommunityController::validateEventInput()       
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1797   Offset 0 on array{list<string>} on left side of ?? always exists and  
+           is not nullable.                                                     
+          ­ƒ¬¬  nullCoalesce.offset                                               
+ ------- ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\HomeController.php                                          
+ ------ ----------------------------------------------------------------------- 
+  :96    Method App\Controller\HomeController::buildActivityFeed() return type  
+         has no value type specified in iterable type array.                    
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :188   Method App\Controller\HomeController::toTimestamp() has parameter      
+         $date with no type specified.                                          
+         ­ƒ¬¬  missingType.parameter                                              
+  :196   Method App\Controller\HomeController::relativeTime() has parameter     
+         $date with no type specified.                                          
+         ­ƒ¬¬  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\InvestmentAdvancedController.php                            
+ ------ ----------------------------------------------------------------------- 
+  :70    Method                                                                 
+         App\Controller\InvestmentAdvancedController::buildClimateVerdict()     
+         has parameter $ecoData with no value type specified in iterable type   
+         array.                                                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :213   Parameter #1 $user of method                                           
+         App\Repository\InvestorProfileRepository::findByUser() expects         
+         App\Entity\User,                                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+  :226   Parameter #1 $user of method                                           
+         App\Repository\InvestorProfileRepository::findByUser() expects         
+         App\Entity\User,                                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+  :265   Parameter #1 $user of method                                           
+         App\Repository\InvestorProfileRepository::findByUser() expects         
+         App\Entity\User,                                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+  :268   Parameter #1 $user of method App\Entity\InvestorProfile::setUser()     
+         expects App\Entity\User|null,                                          
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+  :359   Parameter #1 $user of method                                           
+         App\Repository\InvestorProfileRepository::findByUser() expects         
+         App\Entity\User,                                                       
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------- ---------------------------------------------------------------------- 
+  Line    Controller\InvestmentContractController.php                           
+ ------- ---------------------------------------------------------------------- 
+  :957    Method                                                                
+          App\Controller\InvestmentContractController::serializeMessage()       
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :969    Method                                                                
+          App\Controller\InvestmentContractController::serializeContract()      
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :990    Method App\Controller\InvestmentContractController::resolveParties()  
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1015   PHPDoc tag @return with type array<int, DateTimeInterface|int|string  
+          |null> is incompatible with native type string.                       
+          ­ƒ¬¬  return.phpDocType                                                 
+  :1024   Method                                                                
+          App\Controller\InvestmentContractController::computeDealTemperature(  
+          ) has parameter $messages with no value type specified in iterable    
+          type array.                                                           
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1024   Method                                                                
+          App\Controller\InvestmentContractController::computeDealTemperature(  
+          ) return type has no value type specified in iterable type array.     
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+ ------- ---------------------------------------------------------------------- 
+
+ ------- ---------------------------------------------------------------------- 
+  Line    Controller\InvestmentController.php                                   
+ ------- ---------------------------------------------------------------------- 
+  :71     Parameter #1 $entrepreneur of method                                  
+          App\Repository\InvestmentOfferRepository::countPendingForEntrepreneu  
+          r() expects App\Entity\User,                                          
+          Symfony\Component\Security\Core\User\UserInterface given.             
+          ­ƒ¬¬  argument.type                                                     
+  :99     Parameter #1 $user of method                                          
+          App\Repository\InvestorProfileRepository::findByUser() expects        
+          App\Entity\User, Symfony\Component\Security\Core\User\UserInterface   
+          given.                                                                
+          ­ƒ¬¬  argument.type                                                     
+  :239    Using nullsafe method call on non-nullable type App\Entity\Projet.    
+          Use -> instead.                                                       
+          ­ƒ¬¬  nullsafe.neverNull                                                
+  :280    Using nullsafe method call on non-nullable type App\Entity\Projet.    
+          Use -> instead.                                                       
+          ­ƒ¬¬  nullsafe.neverNull                                                
+  :328    Parameter #1 $investor of method                                      
+          App\Repository\InvestmentOfferRepository::findExistingOffer()         
+          expects App\Entity\User,                                              
+          Symfony\Component\Security\Core\User\UserInterface|null given.        
+          ­ƒ¬¬  argument.type                                                     
+  :349    Parameter #1 $v of method App\Entity\InvestmentOffer::setInvestor()   
+          expects App\Entity\User|null,                                         
+          Symfony\Component\Security\Core\User\UserInterface|null given.        
+          ­ƒ¬¬  argument.type                                                     
+  :449    Method App\Controller\InvestmentController::buildDealFeed() return    
+          type has no value type specified in iterable type array.              
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :598    Method App\Controller\InvestmentController::buildActivityTicker()     
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :764    Method App\Controller\InvestmentController::buildTopRiskFactors()     
+          has parameter $ecoData with no value type specified in iterable type  
+          array.                                                                
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :764    Method App\Controller\InvestmentController::buildTopRiskFactors()     
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :813    Parameter #1 $user of method                                          
+          App\Repository\InvestmentOfferRepository::findUnpaidByInvestorQuery(  
+          ) expects App\Entity\User,                                            
+          Symfony\Component\Security\Core\User\UserInterface|null given.        
+          ­ƒ¬¬  argument.type                                                     
+  :953    Parameter #1 $user of method                                          
+          App\Repository\InvestmentOfferRepository::findPaidByInvestor()        
+          expects App\Entity\User,                                              
+          Symfony\Component\Security\Core\User\UserInterface|null given.        
+          ­ƒ¬¬  argument.type                                                     
+  :993    Parameter #1 $array of function usort contains unresolvable type.     
+          ­ƒ¬¬  argument.unresolvableType                                         
+  :993    Parameter #2 $callback of function usort contains unresolvable type.  
+          ­ƒ¬¬  argument.unresolvableType                                         
+  :1049   Parameter #1 $user of method                                          
+          App\Repository\InvestmentOfferRepository::findUnpaidByInvestorQuery(  
+          ) expects App\Entity\User,                                            
+          Symfony\Component\Security\Core\User\UserInterface|null given.        
+          ­ƒ¬¬  argument.type                                                     
+  :1232   Call to an undefined method Doctrine\ORM\EntityRepository<App\Entity  
+          \Projet>::findByUser().                                               
+          ­ƒ¬¬  method.notFound                                                   
+ ------- ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\MentoratController.php                                      
+ ------ ----------------------------------------------------------------------- 
+  :68    Call to an undefined method Doctrine\ORM\EntityRepository<App\Entity\  
+         Projet>::findByUser().                                                 
+         ­ƒ¬¬  method.notFound                                                    
+  :135   Call to an undefined method Doctrine\ORM\EntityRepository<App\Entity\  
+         Projet>::findByUser().                                                 
+         ­ƒ¬¬  method.notFound                                                    
+  :191   Call to an undefined method Doctrine\ORM\EntityRepository<App\Entity\  
+         Projet>::findByUser().                                                 
+         ­ƒ¬¬  method.notFound                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Controller\ProjetController.php                                        
+ ------ ----------------------------------------------------------------------- 
+  :61    Parameter #1 $user of method App\Entity\Projet::setUser() expects      
+         App\Entity\User|null,                                                  
+         Symfony\Component\Security\Core\User\UserInterface|null given.         
+         ­ƒ¬¬  argument.type                                                      
+  :98    Call to an undefined method                                            
+         Symfony\Component\Security\Core\User\UserInterface::getEmail().        
+         ­ƒ¬¬  method.notFound                                                    
+  :355   Parameter #1 $amountDT of method                                       
+         App\Service\ExchangeRateService::convert() expects float, string|null  
+         given.                                                                 
+         ­ƒ¬¬  argument.type                                                      
+  :482   Parameter #1 $v of method                                              
+         App\Entity\DonneesBusiness::setTailleMarche() expects string|null,     
+         float given.                                                           
+         ­ƒ¬¬  argument.type                                                      
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Badge.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  :21    Property App\Entity\Badge::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         ­ƒ¬¬  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity\Comment.php                                                    
+ ------ ---------------------------------------------------------------------- 
+  :16    Property App\Entity\Comment::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                             
+         ­ƒ¬¬  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------- 
+  Line   Entity\ContractMilestone.php                                    
+ ------ ---------------------------------------------------------------- 
+  :22    Property App\Entity\ContractMilestone::$id (int|null) is never  
+         assigned int so it can be removed from the property type.       
+         ­ƒ¬¬  property.unusedType                                         
+ ------ ---------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Cours.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  :24    Property App\Entity\Cours::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         ­ƒ¬¬  property.unusedType                                                
+  :75    Property App\Entity\Cours::$progressions with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+  :78    Property App\Entity\Cours::$comments with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity\CoursComment.php                                             
+ ------ -------------------------------------------------------------------- 
+  :17    Property App\Entity\CoursComment::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         ­ƒ¬¬  property.unusedType                                             
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\DonneesBusiness.php                                             
+ ------ ----------------------------------------------------------------------- 
+  :16    Property App\Entity\DonneesBusiness::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                       
+         ­ƒ¬¬  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Event.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  :18    Property App\Entity\Event::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         ­ƒ¬¬  property.unusedType                                                
+  :47    Property App\Entity\Event::$participants with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------- 
+  Line   Entity\EventParticipant.php                                    
+ ------ --------------------------------------------------------------- 
+  :15    Property App\Entity\EventParticipant::$id (int|null) is never  
+         assigned int so it can be removed from the property type.      
+         ­ƒ¬¬  property.unusedType                                        
+ ------ --------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Group.php                                                       
+ ------ ----------------------------------------------------------------------- 
+  :18    Property App\Entity\Group::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                 
+         ­ƒ¬¬  property.unusedType                                                
+  :38    Property App\Entity\Group::$threads with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+  :41    Property App\Entity\Group::$members with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\GroupMember.php                                                 
+ ------ ----------------------------------------------------------------------- 
+  :14    Property App\Entity\GroupMember::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                           
+         ­ƒ¬¬  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\InvestmentContract.php                                          
+ ------ ----------------------------------------------------------------------- 
+  :24    Property App\Entity\InvestmentContract::$id (int|null) is never        
+         assigned int so it can be removed from the property type.              
+         ­ƒ¬¬  property.unusedType                                                
+  :94    Property App\Entity\InvestmentContract::$messages with generic         
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ------------------------------------------------------------------ 
+  Line   Entity\InvestmentContractMessage.php                              
+ ------ ------------------------------------------------------------------ 
+  :16    Property App\Entity\InvestmentContractMessage::$id (int|null) is  
+         never assigned int so it can be removed from the property type.   
+         ­ƒ¬¬  property.unusedType                                           
+ ------ ------------------------------------------------------------------ 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\InvestmentOffer.php                                             
+ ------ ----------------------------------------------------------------------- 
+  :22    Property App\Entity\InvestmentOffer::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                       
+         ­ƒ¬¬  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\InvestmentOpportunity.php                                       
+ ------ ----------------------------------------------------------------------- 
+  :23    Property App\Entity\InvestmentOpportunity::$id (int|null) is never     
+         assigned int so it can be removed from the property type.              
+         ­ƒ¬¬  property.unusedType                                                
+  :60    Property App\Entity\InvestmentOpportunity::$offers with generic        
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\InvestorProfile.php                                             
+ ------ ----------------------------------------------------------------------- 
+  :18    Property App\Entity\InvestorProfile::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                       
+         ­ƒ¬¬  property.unusedType                                                
+  :69    Method App\Entity\InvestorProfile::getSectorArray() return type has    
+         no value type specified in iterable type array.                        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity\LoginHistory.php                                             
+ ------ -------------------------------------------------------------------- 
+  :16    Property App\Entity\LoginHistory::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         ­ƒ¬¬  property.unusedType                                             
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------- 
+  Line   Entity\MentorAvailability.php                                    
+ ------ ----------------------------------------------------------------- 
+  :16    Property App\Entity\MentorAvailability::$id (int|null) is never  
+         assigned int so it can be removed from the property type.        
+         ­ƒ¬¬  property.unusedType                                          
+ ------ ----------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\MentorshipRequest.php                                           
+ ------ ----------------------------------------------------------------------- 
+  :26    Property App\Entity\MentorshipRequest::$id (int|null) is never         
+         assigned int so it can be removed from the property type.              
+         ­ƒ¬¬  property.unusedType                                                
+  :68    Property App\Entity\MentorshipRequest::$sessions with generic          
+         interface Doctrine\Common\Collections\Collection does not specify its  
+         types: TKey, T                                                         
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------- 
+  Line   Entity\MentorshipSession.php                                    
+ ------ ---------------------------------------------------------------- 
+  :21    Property App\Entity\MentorshipSession::$id (int|null) is never  
+         assigned int so it can be removed from the property type.       
+         ­ƒ¬¬  property.unusedType                                         
+ ------ ---------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity\Notification.php                                             
+ ------ -------------------------------------------------------------------- 
+  :16    Property App\Entity\Notification::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         ­ƒ¬¬  property.unusedType                                             
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Post.php                                                        
+ ------ ----------------------------------------------------------------------- 
+  :18    Property App\Entity\Post::$id (int|null) is never assigned int so it   
+         can be removed from the property type.                                 
+         ­ƒ¬¬  property.unusedType                                                
+  :36    Property App\Entity\Post::$reactions with generic interface            
+         Doctrine\Common\Collections\Collection does not specify its types:     
+         TKey, T                                                                
+         ­ƒ¬¬  missingType.generics                                               
+  :80    Method App\Entity\Post::getReactionSummary() return type has no value  
+         type specified in iterable type array.                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Entity\PostReaction.php                                             
+ ------ -------------------------------------------------------------------- 
+  :22    Property App\Entity\PostReaction::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                    
+         ­ƒ¬¬  property.unusedType                                             
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Entity\Progression.php                                                 
+ ------ ----------------------------------------------------------------------- 
+  :23    Property App\Entity\Progression::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                           
+         ­ƒ¬¬  property.unusedType                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity\Projet.php                                                    
+ ------ --------------------------------------------------------------------- 
+  :22    Property App\Entity\Projet::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                            
+         ­ƒ¬¬  property.unusedType                                              
+  :75    Property App\Entity\Projet::$opportunities with generic interface    
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         ­ƒ¬¬  missingType.generics                                             
+ ------ --------------------------------------------------------------------- 
+
+ ------ --------------------------------------------------------------------- 
+  Line   Entity\Thread.php                                                    
+ ------ --------------------------------------------------------------------- 
+  :18    Property App\Entity\Thread::$id (int|null) is never assigned int so  
+         it can be removed from the property type.                            
+         ­ƒ¬¬  property.unusedType                                              
+  :40    Property App\Entity\Thread::$comments with generic interface         
+         Doctrine\Common\Collections\Collection does not specify its types:   
+         TKey, T                                                              
+         ­ƒ¬¬  missingType.generics                                             
+ ------ --------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity\User.php                                                       
+ ------ ---------------------------------------------------------------------- 
+  :29    Property App\Entity\User::$id (int|null) is never assigned int so it  
+         can be removed from the property type.                                
+         ­ƒ¬¬  property.unusedType                                               
+  :134   Property App\Entity\User::$projets with generic interface             
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         ­ƒ¬¬  missingType.generics                                              
+  :137   Property App\Entity\User::$progressions with generic interface        
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         ­ƒ¬¬  missingType.generics                                              
+  :140   Property App\Entity\User::$posts with generic interface               
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         ­ƒ¬¬  missingType.generics                                              
+  :145   Property App\Entity\User::$badges with generic interface              
+         Doctrine\Common\Collections\Collection does not specify its types:    
+         TKey, T                                                               
+         ­ƒ¬¬  missingType.generics                                              
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity\UserConnection.php                                             
+ ------ ---------------------------------------------------------------------- 
+  :15    Property App\Entity\UserConnection::$id (int|null) is never assigned  
+         int so it can be removed from the property type.                      
+         ­ƒ¬¬  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ---------------------------------------------------------------------- 
+  Line   Entity\UserFollow.php                                                 
+ ------ ---------------------------------------------------------------------- 
+  :15    Property App\Entity\UserFollow::$id (int|null) is never assigned int  
+         so it can be removed from the property type.                          
+         ­ƒ¬¬  property.unusedType                                               
+ ------ ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\BadgeRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\BadgeRepository extends generic class             
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\BadgeRepository::findActifs() return type has    
+         no value type specified in iterable type array.                        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\CommentRepository.php                                       
+ ------ ----------------------------------------------------------------------- 
+  :7     Class App\Repository\CommentRepository extends generic class           
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :10    Method App\Repository\CommentRepository::findByThreadChronological()   
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\CoursCommentRepository.php                                  
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\CoursCommentRepository extends generic class      
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\CoursCommentRepository::findByCours() has        
+         parameter $cours with no type specified.                               
+         ­ƒ¬¬  missingType.parameter                                              
+  :8     Method App\Repository\CoursCommentRepository::findByCours() return     
+         type has no value type specified in iterable type array.               
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\CoursRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\CoursRepository extends generic class             
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\CoursRepository::findBySearch() has no return    
+         type specified.                                                        
+         ­ƒ¬¬  missingType.return                                                 
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\DonneesBusinessRepository.php                               
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\DonneesBusinessRepository extends generic class   
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\EventRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\EventRepository extends generic class             
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :9     Method App\Repository\EventRepository::findUpcoming() return type has  
+         no value type specified in iterable type array.                        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\GroupRepository.php                                         
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\GroupRepository extends generic class             
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :9     Method App\Repository\GroupRepository::findCommunityGroups() return    
+         type has no value type specified in iterable type array.               
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :119   Method App\Repository\GroupRepository::approveRequest() return type    
+         has no value type specified in iterable type array.                    
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\InvestmentContractMessageRepository.php                     
+ ------ ----------------------------------------------------------------------- 
+  :10    Class App\Repository\InvestmentContractMessageRepository extends       
+         generic class                                                          
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :17    Method                                                                 
+         App\Repository\InvestmentContractMessageRepository::findChronological  
+         () return type has no value type specified in iterable type array.     
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :27    Method                                                                 
+         App\Repository\InvestmentContractMessageRepository::findAfterId()      
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\InvestmentContractRepository.php                            
+ ------ ----------------------------------------------------------------------- 
+  :11    Class App\Repository\InvestmentContractRepository extends generic      
+         class                                                                  
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :23    Method                                                                 
+         App\Repository\InvestmentContractRepository::findRecentForUser()       
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\InvestmentOfferRepository.php                               
+ ------ ----------------------------------------------------------------------- 
+  :11    Class App\Repository\InvestmentOfferRepository extends generic class   
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :18    Method App\Repository\InvestmentOfferRepository::findByInvestor() has  
+         parameter $user with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+  :18    Method App\Repository\InvestmentOfferRepository::findByInvestor()      
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :33    Method                                                                 
+         App\Repository\InvestmentOfferRepository::findUnpaidByInvestor()       
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :40    Method App\Repository\InvestmentOfferRepository::findPaidByInvestor()  
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :53    Method App\Repository\InvestmentOfferRepository::findByOpportunity()   
+         has parameter $opp with no type specified.                             
+         ­ƒ¬¬  missingType.parameter                                              
+  :53    Method App\Repository\InvestmentOfferRepository::findByOpportunity()   
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :58    Method                                                                 
+         App\Repository\InvestmentOfferRepository::findPendingForEntrepreneur(  
+         ) return type has no value type specified in iterable type array.      
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :136   Method App\Repository\InvestmentOfferRepository::buildFilteredQuery()  
+         has parameter $filters with no value type specified in iterable type   
+         array.                                                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\InvestmentOpportunityRepository.php                         
+ ------ ----------------------------------------------------------------------- 
+  :9     Class App\Repository\InvestmentOpportunityRepository extends generic   
+         class                                                                  
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :16    Method App\Repository\InvestmentOpportunityRepository::findOpen()      
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :21    Method                                                                 
+         App\Repository\InvestmentOpportunityRepository::findByProject() has    
+         parameter $project with no type specified.                             
+         ­ƒ¬¬  missingType.parameter                                              
+  :21    Method                                                                 
+         App\Repository\InvestmentOpportunityRepository::findByProject()        
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :29    Method App\Repository\InvestmentOpportunityRepository::searchOpen()    
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :62    Method                                                                 
+         App\Repository\InvestmentOpportunityRepository::buildAdminQuery() has  
+         parameter $filters with no value type specified in iterable type       
+         array.                                                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :165   Method                                                                 
+         App\Repository\InvestmentOpportunityRepository::findExpiringSoon()     
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\InvestorProfileRepository.php                               
+ ------ ----------------------------------------------------------------------- 
+  :10    Class App\Repository\InvestorProfileRepository extends generic class   
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\LoginHistoryRepository.php                                  
+ ------ ----------------------------------------------------------------------- 
+  :9     Class App\Repository\LoginHistoryRepository extends generic class      
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :16    Method App\Repository\LoginHistoryRepository::findByUser() return      
+         type has no value type specified in iterable type array.               
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :27    Method App\Repository\LoginHistoryRepository::findAllWithUsers()       
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\MentorAvailabilityRepository.php                            
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\MentorAvailabilityRepository extends generic      
+         class                                                                  
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\MentorAvailabilityRepository::findByMentor()     
+         has parameter $mentor with no type specified.                          
+         ­ƒ¬¬  missingType.parameter                                              
+  :8     Method App\Repository\MentorAvailabilityRepository::findByMentor()     
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\MentorshipRequestRepository.php                             
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\MentorshipRequestRepository extends generic       
+         class                                                                  
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\MentorshipSessionRepository.php                             
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\MentorshipSessionRepository extends generic       
+         class                                                                  
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :9     Method App\Repository\MentorshipSessionRepository::findByUser() has    
+         parameter $user with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+  :9     Method App\Repository\MentorshipSessionRepository::findByUser()        
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\NotificationRepository.php                                  
+ ------ ----------------------------------------------------------------------- 
+  :9     Class App\Repository\NotificationRepository extends generic class      
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :16    Method App\Repository\NotificationRepository::findByUser() return      
+         type has no value type specified in iterable type array.               
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\PostReactionRepository.php                                  
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\PostReactionRepository extends generic class      
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\PostReactionRepository::findByPostAndUser() has  
+         parameter $post with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+  :8     Method App\Repository\PostReactionRepository::findByPostAndUser() has  
+         parameter $user with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\PostRepository.php                                          
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\PostRepository extends generic class              
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :9     Method App\Repository\PostRepository::findFeed() return type has no    
+         value type specified in iterable type array.                           
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\ProgressionRepository.php                                   
+ ------ ----------------------------------------------------------------------- 
+  :6     Class App\Repository\ProgressionRepository extends generic class       
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :8     Method App\Repository\ProgressionRepository::findByUser() has          
+         parameter $user with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+  :8     Method App\Repository\ProgressionRepository::findByUser() return type  
+         has no value type specified in iterable type array.                    
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\ProjetRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  :8     Class App\Repository\ProjetRepository extends generic class            
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :28    Method App\Repository\ProjetRepository::findByUserWithFilters() has    
+         parameter $user with no type specified.                                
+         ­ƒ¬¬  missingType.parameter                                              
+  :28    Method App\Repository\ProjetRepository::findByUserWithFilters()        
+         return type has no value type specified in iterable type array.        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :56    Method App\Repository\ProjetRepository::findByUser() has parameter     
+         $user with no type specified.                                          
+         ­ƒ¬¬  missingType.parameter                                              
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Repository\ThreadRepository.php                                        
+ ------ ----------------------------------------------------------------------- 
+  :7     Class App\Repository\ThreadRepository extends generic class            
+         Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository but  
+         does not specify its types: T                                          
+         ­ƒ¬¬  missingType.generics                                               
+  :10    Method App\Repository\ThreadRepository::findByGroup() return type has  
+         no value type specified in iterable type array.                        
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ -------------------------------------------------------------------- 
+  Line   Repository\UserRepository.php                                       
+ ------ -------------------------------------------------------------------- 
+  :47    Method App\Repository\UserRepository::findBySearch() has no return  
+         type specified.                                                     
+         ­ƒ¬¬  missingType.return                                              
+ ------ -------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Security\GoogleAuthenticator.php                                       
+ ------ ----------------------------------------------------------------------- 
+  :124   Call to an undefined method                                            
+         Symfony\Component\HttpFoundation\Session\SessionInterface::getFlashBa  
+         g().                                                                   
+         ­ƒ¬¬  method.notFound                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Security\LoginFormAuthenticator.php                                    
+ ------ ----------------------------------------------------------------------- 
+  :37    Property App\Security\LoginFormAuthenticator::$passwordHasher is       
+         never read, only written.                                              
+         ­ƒ¬¬  property.onlyWritten                                               
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+  :118   Call to an undefined method                                            
+         Symfony\Component\HttpFoundation\Session\SessionInterface::getFlashBa  
+         g().                                                                   
+         ­ƒ¬¬  method.notFound                                                    
+  :127   Call to an undefined method                                            
+         Symfony\Component\HttpFoundation\Session\SessionInterface::getFlashBa  
+         g().                                                                   
+         ­ƒ¬¬  method.notFound                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------- ---------------------------------------------------------------------- 
+  Line    Service\CommunityAiService.php                                        
+ ------- ---------------------------------------------------------------------- 
+  :35     Property App\Service\CommunityAiService::$httpClient is never read,   
+          only written.                                                         
+          ­ƒ¬¬  property.onlyWritten                                              
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/developing-extensions/always-read-written-proper  
+          ties                                                                  
+  :265    Method App\Service\CommunityAiService::fallbackReplySuggestions()     
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :272    Variable $secondaryIdea on left side of ?? always exists and is not   
+          nullable.                                                             
+          ­ƒ¬¬  nullCoalesce.variable                                             
+  :423    Parameter #2 $options of function curl_setopt_array expects           
+          array{19913: bool, 47: bool, 10023: array<int, string>, 10015: array  
+          |string, 13: int, 64: bool, 81: 0|2}, array{19913: true, 47: true,    
+          10023: array{non-falsy-string, 'Content-Type:ÔÇª', 'Accept:             
+          applicationÔÇª'}, 10015: non-empty-string, 13: int, 64: false, 81:      
+          false} given.                                                         
+          ­ƒ¬¬  argument.type                                                     
+          ­ƒÆí  Offset 81 (0|2) does not accept type false.                       
+  :717    Method App\Service\CommunityAiService::recentChronologicalComments()  
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :862    Offset 'agreement'|'problem'|'question'|'suggestion' on               
+          array{question: int<0, max>, problem: int<0, max>, suggestion:        
+          int<0, max>, agreement: int<0, max>} on left side of ?? always        
+          exists and is not nullable.                                           
+          ­ƒ¬¬  nullCoalesce.offset                                               
+  :882    Method App\Service\CommunityAiService::extractKeywordsFromComments()  
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :892    Method App\Service\CommunityAiService::extractKeywordsFromText()      
+          return type has no value type specified in iterable type array.       
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :900    Method App\Service\CommunityAiService::keywordFrequencies() return    
+          type has no value type specified in iterable type array.              
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :924    Offset 0 on array{list<string>} on left side of ?? always exists and  
+           is not nullable.                                                     
+          ­ƒ¬¬  nullCoalesce.offset                                               
+  :960    Method App\Service\CommunityAiService::uniqueSuggestions() return     
+          type has no value type specified in iterable type array.              
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1245   Method App\Service\CommunityAiService::participantNames() return      
+          type has no value type specified in iterable type array.              
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1333   Method App\Service\CommunityAiService::parseNumberedList() return     
+          type has no value type specified in iterable type array.              
+          ­ƒ¬¬  missingType.iterableValue                                         
+          ­ƒÆí  See:                                                              
+          https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-  
+          iterable-type                                                         
+  :1339   Offset 1 on array{list<string>, list<non-empty-string>} on left side  
+           of ?? always exists and is not nullable.                             
+          ­ƒ¬¬  nullCoalesce.offset                                               
+  :1393   Method App\Service\CommunityAiService::allowInsecureTls() is unused.  
+          ­ƒ¬¬  method.unused                                                     
+ ------- ---------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\CommunityEventPdfService.php                                   
+ ------ ----------------------------------------------------------------------- 
+  :131   Method App\Service\CommunityEventPdfService::drawParagraph() has       
+         parameter $color with no value type specified in iterable type array.  
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :298   Method App\Service\CommunityEventPdfService::drawPanel() has           
+         parameter $fill with no value type specified in iterable type array.   
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :298   Method App\Service\CommunityEventPdfService::drawPanel() has           
+         parameter $stroke with no value type specified in iterable type        
+         array.                                                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :311   Method App\Service\CommunityEventPdfService::drawFilledRect() has      
+         parameter $fill with no value type specified in iterable type array.   
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :316   Method App\Service\CommunityEventPdfService::drawText() has parameter  
+         $color with no value type specified in iterable type array.            
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+  :568   Method App\Service\CommunityEventPdfService::rgb() has parameter       
+         $color with no value type specified in iterable type array.            
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\CommunityTicketService.php                                     
+ ------ ----------------------------------------------------------------------- 
+  :81    Call to function is_string() with string will always evaluate to       
+         true.                                                                  
+         ­ƒ¬¬  function.alreadyNarrowedType                                       
+  :165   Offset 0 on non-empty-list<string> on left side of ?? always exists a  
+         nd is not nullable.                                                    
+         ­ƒ¬¬  nullCoalesce.offset                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\ExchangeRateService.php                                        
+ ------ ----------------------------------------------------------------------- 
+  :22    Method App\Service\ExchangeRateService::getRates() return type has no  
+         value type specified in iterable type array.                           
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\Investment\InvestmentChatbotService.php                        
+ ------ ----------------------------------------------------------------------- 
+  :150   Offset 'role' on array{role: string, content: string} on left side of  
+         ?? always exists and is not nullable.                                  
+         ­ƒ¬¬  nullCoalesce.offset                                                
+  :151   Offset 'content' on array{role: string, content: string} on left side  
+         of ?? always exists and is not nullable.                               
+         ­ƒ¬¬  nullCoalesce.offset                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\NewsApiService.php                                             
+ ------ ----------------------------------------------------------------------- 
+  :164   Method App\Service\NewsApiService::fetchGoogleNewsRss() should return  
+         array<int, array<string, string>> but returns list<array<string, stri  
+         ng|null>>.                                                             
+         ­ƒ¬¬  return.type                                                        
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\ReCaptchaService.php                                           
+ ------ ----------------------------------------------------------------------- 
+  :24    Property App\Service\ReCaptchaService::$scoreThreshold is never read,  
+         only written.                                                          
+         ­ƒ¬¬  property.onlyWritten                                               
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/developing-extensions/always-read-written-propert  
+         ies                                                                    
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   Service\WebSocketNotifier.php                                          
+ ------ ----------------------------------------------------------------------- 
+  :26    Method App\Service\WebSocketNotifier::pushNotification() has           
+         parameter $notification with no value type specified in iterable type  
+         array.                                                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   WebSocket\Server.php                                                   
+ ------ ----------------------------------------------------------------------- 
+  :22    Property App\WebSocket\Server::$wsServer has no type specified.        
+         ­ƒ¬¬  missingType.property                                               
+  :23    Property App\WebSocket\Server::$pushServer has no type specified.      
+         ­ƒ¬¬  missingType.property                                               
+  :55    While loop condition is always true.                                   
+         ­ƒ¬¬  while.alwaysTrue                                                   
+  :97    Method App\WebSocket\Server::handleNewWsClient() has parameter         
+         $socket with no type specified.                                        
+         ­ƒ¬¬  missingType.parameter                                              
+  :169   Method App\WebSocket\Server::handlePushConnection() has parameter      
+         $socket with no type specified.                                        
+         ­ƒ¬¬  missingType.parameter                                              
+  :247   Method App\WebSocket\Server::decodeWsFrame() return type has no value  
+         type specified in iterable type array.                                 
+         ­ƒ¬¬  missingType.iterableValue                                          
+         ­ƒÆí  See:                                                               
+         https://phpstan.org/blog/solving-phpstan-no-value-type-specified-in-i  
+         terable-type                                                           
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 205 errors                                                      
+

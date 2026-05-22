@@ -6,41 +6,52 @@
 
 {% block stylesheets %}
 <style>
-/* ═══════════════════════════════════════════════════════════
-   HOMEPAGE — ALL FEATURES
-   ═══════════════════════════════════════════════════════════ */
-
-/* Override layout wrapper padding for full-bleed hero */
 main.container-fluid { padding: 0 !important; }
-body { background: #f0f2f5; }
+body {
+    background:
+        radial-gradient(circle at 18% 10%, rgba(139, 184, 255, .18), transparent 28%),
+        radial-gradient(circle at 86% 4%, rgba(245, 158, 11, .12), transparent 22%),
+        linear-gradient(180deg, #f5f8fc 0%, #edf2f8 38%, #f7f9fc 100%);
+}
 
-/* ── Guest value proposition ── */
-.nj-audience-section { padding: 4rem 0 2rem; }
+.nj-audience-section {
+    padding: 4rem 0 2rem;
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(180deg, #0d0f1a 0%, #111827 100%);
+    color: #e2e8f0;
+}
+.nj-audience-section h3 { color: #ffffff; }
+.nj-audience-section .text-muted { color: rgba(255,255,255,0.55) !important; }
 .nj-audience-card {
     height: 100%;
-    border-radius: 1rem;
-    background: #fff;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, .08);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.04);
+    box-shadow: 0 16px 42px rgba(15, 23, 42, .08);
     padding: 2rem 1.6rem;
-    border: 1px solid rgba(148, 163, 184, .16);
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(14px);
+    color: #e2e8f0;
     opacity: 0;
     transform: translateY(30px);
     transition: opacity .5s ease, transform .5s ease, box-shadow .25s ease;
 }
 .nj-audience-card.revealed { opacity: 1; transform: translateY(0); }
-.nj-audience-card:hover { box-shadow: 0 18px 42px rgba(15, 23, 42, .12); }
+.nj-audience-card:hover { box-shadow: 0 24px 52px rgba(15, 23, 42, .12); }
 .nj-audience-icon {
     width: 56px;
     height: 56px;
-    border-radius: 16px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.08) !important;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 1.4rem;
     margin-bottom: 1rem;
 }
-.nj-audience-card h4 { font-size: 1.15rem; font-weight: 800; color: #111827; margin-bottom: .55rem; }
-.nj-audience-card p { color: #6b7280; font-size: .93rem; line-height: 1.6; margin-bottom: 1rem; }
+.nj-audience-card h4,
+.nj-audience-card strong { font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-bottom: .55rem; }
+.nj-audience-card p { color: rgba(255,255,255,0.7); font-size: .93rem; line-height: 1.6; margin-bottom: 1rem; }
 .nj-audience-points {
     list-style: none;
     padding: 0;
@@ -49,7 +60,7 @@ body { background: #f0f2f5; }
     gap: .55rem;
 }
 .nj-audience-points li {
-    color: #374151;
+    color: rgba(255,255,255,0.65);
     font-size: .86rem;
     display: flex;
     align-items: flex-start;
@@ -57,302 +68,1411 @@ body { background: #f0f2f5; }
 }
 .nj-audience-points i { color: var(--nj-primary); margin-top: .1rem; }
 
-/* ── Feature 1: Hero ── */
 .nj-hero {
+    --hero-progress: 0;
+    --hero-exit-progress: 0;
     position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 172vh;
     overflow: hidden;
-    background: linear-gradient(-45deg, #0a0e27, #1a0533, #0f1b4d, #12063a);
-    background-size: 400% 400%;
-    animation: gradientShift 12s ease infinite;
+    background:
+        radial-gradient(circle at 16% 18%, rgba(103, 232, 249, .16), transparent 24%),
+        radial-gradient(circle at 84% 20%, rgba(245, 158, 11, .18), transparent 26%),
+        radial-gradient(circle at 48% 84%, rgba(124, 58, 237, .26), transparent 34%),
+        linear-gradient(135deg, #040816 0%, #0b1431 38%, #120928 70%, #040816 100%);
 }
-@keyframes gradientShift {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.nj-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
+    background-size: 120px 120px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.55), transparent 90%);
+    opacity: .28;
+}
+.nj-hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 -12rem;
+    height: 24rem;
+    background: radial-gradient(circle at 50% 50%, rgba(67, 97, 238, .22), transparent 72%);
+    filter: blur(20px);
+    opacity: .8;
+}
+.nj-hero-grid {
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.03), transparent 28%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.05), transparent 55%);
+    pointer-events: none;
+    transform: translate3d(0, calc(var(--hero-progress) * 8vh), 0);
+    opacity: calc(.48 - (var(--hero-progress) * .16));
+}
+.nj-hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(12px);
+    opacity: .75;
+    pointer-events: none;
+}
+.nj-hero-orb-a {
+    width: 18rem;
+    height: 18rem;
+    top: 10%;
+    left: -6rem;
+    background: radial-gradient(circle, rgba(56, 189, 248, .45), transparent 68%);
+    transform: translate3d(calc(var(--hero-progress) * -12vw), calc(var(--hero-progress) * -8vh), 0) scale(calc(1 + (var(--hero-progress) * .35)));
+}
+.nj-hero-orb-b {
+    width: 24rem;
+    height: 24rem;
+    top: 12%;
+    right: -6rem;
+    background: radial-gradient(circle, rgba(245, 158, 11, .28), transparent 70%);
+    transform: translate3d(calc(var(--hero-progress) * 10vw), calc(var(--hero-progress) * -5vh), 0) scale(calc(1 + (var(--hero-progress) * .2)));
+}
+.nj-hero-orb-c {
+    width: 20rem;
+    height: 20rem;
+    bottom: -6rem;
+    left: 40%;
+    background: radial-gradient(circle, rgba(124, 58, 237, .34), transparent 72%);
+    transform: translate3d(calc(var(--hero-progress) * -4vw), calc(var(--hero-progress) * 10vh), 0) scale(calc(1 + (var(--hero-progress) * .28)));
 }
 .nj-hero-canvas {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
-    z-index: 0;
     opacity: 0;
-    transition: opacity 2s ease;
+    transition: opacity 1.2s ease;
 }
-.nj-hero-canvas.loaded { opacity: .35; }
-.nj-hero-content {
+.nj-hero-canvas.loaded { opacity: .88; }
+.nj-hero-shell {
     position: relative;
-    z-index: 1;
-    text-align: center;
-    color: #fff;
-    padding: 2rem 1rem;
-    max-width: 780px;
+    z-index: 2;
+    width: min(1240px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 7rem 0 4.5rem;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: minmax(0, 1.04fr) minmax(420px, .96fr);
+    gap: 2.75rem;
+    align-items: center;
+    position: sticky;
+    top: 0;
 }
-
-/* Cycling pill badge */
-.nj-stat-pill {
-    display: inline-block;
-    background: rgba(255,255,255,.12);
-    backdrop-filter: blur(6px);
+.nj-hero-copy {
+    position: relative;
+    z-index: 2;
     color: #fff;
-    padding: .4rem 1.2rem;
+    max-width: 640px;
+    transform: translate3d(0, calc(var(--hero-progress) * -12vh), 0) scale(calc(1 - (var(--hero-progress) * .04)));
+    opacity: calc(1 - (var(--hero-exit-progress) * .6));
+    filter: blur(calc(var(--hero-exit-progress) * 5px));
+    transition: transform .12s linear, opacity .12s linear, filter .12s linear;
+}
+.nj-hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    padding: .55rem .9rem;
+    margin-bottom: 1rem;
     border-radius: 999px;
-    font-size: .82rem;
-    font-weight: 500;
-    margin-bottom: 1.5rem;
-    min-width: 200px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(14px);
+    font-size: .78rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.78);
+}
+.nj-hero-kicker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #67e8f9;
+    box-shadow: 0 0 0 6px rgba(103, 232, 249, .12);
+}
+.nj-stat-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .65rem;
+    background: linear-gradient(135deg, rgba(255,255,255,.14), rgba(255,255,255,.04));
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    padding: .5rem 1.15rem;
+    border-radius: 999px;
+    font-size: .84rem;
+    font-weight: 600;
+    margin-bottom: 1.6rem;
+    min-width: 240px;
+    box-shadow: 0 12px 30px rgba(6, 9, 24, .32);
     transition: opacity .35s ease;
 }
+.nj-stat-pill::before {
+    content: '';
+    width: .6rem;
+    height: .6rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #67e8f9, #3b82f6);
+    box-shadow: 0 0 20px rgba(103, 232, 249, .55);
+}
 .nj-stat-pill.fade-out { opacity: 0; }
-
-/* Shimmer headline */
-.nj-hero h1 { font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin-bottom: 1rem; }
-@media(max-width:767px){ .nj-hero h1 { font-size: 2rem; } }
-.nj-hero h1 .gradient-text {
-    background: linear-gradient(90deg, #7c3aed, #3b82f6, #06d6a0, #f59e0b, #7c3aed);
-    background-size: 300% 100%;
+.nj-hero-title {
+    margin: 0 0 1.25rem;
+    font-size: clamp(3rem, 7vw, 5.4rem);
+    font-weight: 800;
+    line-height: .94;
+    letter-spacing: -.05em;
+}
+.nj-hero-title-line {
+    display: block;
+    text-wrap: balance;
+}
+.nj-hero-title-accent {
+    background: linear-gradient(90deg, #ffffff 0%, #c4fbff 24%, #8bb8ff 52%, #f9c86b 82%, #ffffff 100%);
+    background-size: 240% 100%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    animation: shimmerText 6s linear infinite;
+    animation: shimmerText 7s linear infinite;
 }
 @keyframes shimmerText {
-    0%   { background-position: 0% 50%;   }
-    100% { background-position: 300% 50%; }
+    0% { background-position: 0% 50%; }
+    100% { background-position: 240% 50%; }
 }
-
-.nj-hero .lead { font-size: 1.05rem; opacity: .8; max-width: 560px; margin: 0 auto 2rem; }
-
-/* CTA buttons */
+.nj-hero-lead {
+    font-size: 1.06rem;
+    color: rgba(233, 240, 255, .76);
+    max-width: 36rem;
+    margin: 0 0 2rem;
+    line-height: 1.7;
+}
+.nj-hero-actions {
+    display: flex;
+    gap: .95rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.35rem;
+}
 .btn-hero-primary {
-    background: linear-gradient(135deg, #7c3aed, #3b82f6);
-    border: none; color: #fff; font-weight: 700; font-size: 1rem;
-    padding: .75rem 2rem; border-radius: .75rem;
+    background: linear-gradient(135deg, #7c3aed, #3b82f6 56%, #67e8f9 120%);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: .85rem 1.9rem;
+    border-radius: .9rem;
     transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 18px 40px rgba(59,130,246,.28);
 }
-.btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,.45); color:#fff; }
+.btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,.45); color: #fff; }
 .btn-hero-secondary {
-    background: transparent; border: 2px solid rgba(255,255,255,.5); color: #fff;
-    font-weight: 600; font-size: 1rem; padding: .7rem 2rem; border-radius: .75rem;
+    background: rgba(255,255,255,.02);
+    border: 1px solid rgba(255,255,255,.18);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: .82rem 1.65rem;
+    border-radius: .9rem;
     transition: background .2s, border-color .2s;
+    backdrop-filter: blur(10px);
 }
-.btn-hero-secondary:hover { background: rgba(255,255,255,.12); border-color: #fff; color:#fff; }
-
-/* Micro-stats row */
+.btn-hero-secondary:hover { background: rgba(255,255,255,.12); border-color: #fff; color: #fff; }
+.nj-hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .65rem;
+    margin-bottom: 2rem;
+}
+.nj-hero-meta-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem .85rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.74);
+    font-size: .8rem;
+}
 .nj-hero-stats {
-    display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap;
-    margin-top: 2.5rem; padding-top: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,.12);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: .9rem;
 }
-.nj-hero-stat { text-align: center; color: rgba(255,255,255,.85); }
-.nj-hero-stat .stat-num { font-size: 1.6rem; font-weight: 800; display: block; }
-.nj-hero-stat .stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: .8px; opacity: .65; }
-
-/* Scroll indicator */
+.nj-hero-stat {
+    padding: 1rem 1.05rem;
+    border-radius: 1.1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+    border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.9);
+    box-shadow: 0 16px 40px rgba(7, 10, 24, .24);
+}
+.nj-hero-stat .stat-num {
+    font-size: 1.8rem;
+    font-weight: 800;
+    display: block;
+    line-height: 1;
+    margin-bottom: .4rem;
+}
+.nj-hero-stat .stat-label {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    opacity: .62;
+}
+.nj-hero-stage {
+    position: relative;
+    min-height: 620px;
+    display: flex;
+    justify-content: flex-end;
+    perspective: 1600px;
+}
+.nj-stage-shell {
+    --stage-tilt-x: 0deg;
+    --stage-tilt-y: 0deg;
+    --stage-pointer-x: 50%;
+    --stage-pointer-y: 50%;
+    position: relative;
+    width: min(560px, 100%);
+    min-height: 620px;
+    margin-left: auto;
+    border-radius: 2rem;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.02)),
+        linear-gradient(160deg, rgba(6, 13, 30, .92), rgba(12, 22, 49, .88));
+    box-shadow: 0 42px 90px rgba(1, 4, 17, .48);
+    backdrop-filter: blur(16px);
+    transform: translate3d(0, var(--stage-story-y, 0px), 0) rotateX(calc(var(--stage-tilt-y) + var(--stage-story-rotate-x, 0deg))) rotateY(calc(var(--stage-tilt-x) + var(--stage-story-rotate-y, 0deg))) scale(calc(var(--stage-story-scale, 1) + (var(--hero-exit-progress) * .04)));
+    transition: transform .35s ease, box-shadow .35s ease, opacity .35s ease;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+.nj-stage-shell.is-journey-fixed {
+    position: fixed;
+    top: 16vh;
+    right: clamp(1rem, 4vw, 3rem);
+    width: min(35vw, 500px);
+    min-height: min(62vh, 620px);
+    z-index: 18;
+    pointer-events: none;
+    box-shadow: 0 48px 120px rgba(2, 6, 23, .48);
+}
+.nj-stage-shell::before,
+.nj-stage-shell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+.nj-stage-shell::before {
+    background:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,.65), transparent 100%);
+    opacity: .24;
+}
+.nj-stage-shell::after {
+    background: radial-gradient(circle at var(--stage-pointer-x) var(--stage-pointer-y), rgba(125,211,252,.24), transparent 34%);
+    opacity: .9;
+}
+.nj-stage-ring,
+.nj-stage-badge,
+.nj-stage-beacon,
+.nj-stage-card,
+.nj-stage-chip {
+    position: absolute;
+    z-index: 2;
+    opacity: calc(1 - (var(--journey-scene-progress, 0) * .78));
+    filter: blur(calc(var(--journey-scene-progress, 0) * 2px));
+    transition: opacity .35s ease, filter .35s ease;
+}
+.nj-stage-ring {
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,.12);
+    box-shadow: inset 0 0 45px rgba(255,255,255,.04), 0 0 40px rgba(59,130,246,.08);
+}
+.nj-stage-ring-a { inset: 12% 16%; animation: orbitSpin 20s linear infinite; }
+.nj-stage-ring-b { inset: 20% 24%; border-color: rgba(103,232,249,.18); animation: orbitSpinReverse 24s linear infinite; }
+.nj-stage-ring-c { inset: 30% 34%; border-color: rgba(245,158,11,.18); animation: orbitSpin 16s linear infinite; }
+@keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes orbitSpinReverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+.nj-stage-badge {
+    padding: .45rem .8rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(5, 11, 29, .5);
+    backdrop-filter: blur(10px);
+    color: rgba(255,255,255,.75);
+    font-size: .72rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.nj-stage-badge-a { top: 11%; right: 11%; }
+.nj-stage-badge-b { bottom: 13%; left: 10%; }
+.nj-stage-beacon {
+    top: 47%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6.25rem;
+    height: 6.25rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle, rgba(103,232,249,.24), rgba(103,232,249,0));
+}
+.nj-stage-beacon-core {
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #67e8f9, #3b82f6);
+    box-shadow: 0 0 0 10px rgba(103,232,249,.12), 0 0 28px rgba(103,232,249,.5);
+    animation: beaconPulse 2.8s ease-in-out infinite;
+}
+.nj-stage-beacon-label {
+    position: absolute;
+    bottom: -1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: .74rem;
+    color: rgba(255,255,255,.62);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+@keyframes beaconPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 10px rgba(103,232,249,.12), 0 0 28px rgba(103,232,249,.5); }
+    50% { transform: scale(1.12); box-shadow: 0 0 0 18px rgba(103,232,249,.08), 0 0 38px rgba(103,232,249,.7); }
+}
+.nj-stage-card {
+    padding: 1rem 1.05rem;
+    border-radius: 1.25rem;
+    border: 1px solid rgba(255,255,255,.12);
+    background: linear-gradient(180deg, rgba(10,18,41,.82), rgba(10,18,41,.56));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 22px 50px rgba(2, 6, 21, .34);
+    color: #fff;
+}
+.nj-stage-card-main { top: 9%; left: 7%; width: 250px; animation: floatCardA 10s ease-in-out infinite; }
+.nj-stage-card-secondary { right: 6%; top: 29%; width: 220px; animation: floatCardB 11s ease-in-out infinite; }
+.nj-stage-card-tertiary { left: 11%; bottom: 10%; width: 280px; animation: floatCardC 12s ease-in-out infinite; }
+@keyframes floatCardA { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -14px, 0); } }
+@keyframes floatCardB { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -12px, 0); } }
+@keyframes floatCardC { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+.nj-stage-card-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    margin-bottom: .7rem;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: rgba(255,255,255,.58);
+}
+.nj-stage-card-eyebrow::before {
+    content: '';
+    width: .45rem;
+    height: .45rem;
+    border-radius: 50%;
+    background: #67e8f9;
+}
+.nj-stage-card-main strong,
+.nj-stage-card-secondary h3 {
+    display: block;
+    margin: 0 0 .4rem;
+    font-size: 2.6rem;
+    line-height: .94;
+    letter-spacing: -.05em;
+}
+.nj-stage-card-secondary h3 { font-size: 1.18rem; line-height: 1.2; }
+.nj-stage-card p { margin: 0; color: rgba(255,255,255,.72); font-size: .84rem; line-height: 1.55; }
+.nj-stage-bars { display: grid; gap: .45rem; margin-top: 1rem; }
+.nj-stage-bars span {
+    display: block;
+    height: .42rem;
+    width: var(--bar-size);
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(103,232,249,.85), rgba(59,130,246,.35));
+}
+.nj-stage-metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .7rem;
+    margin-top: .85rem;
+}
+.nj-stage-metric-grid strong { display: block; font-size: 1.2rem; line-height: 1; margin-bottom: .3rem; }
+.nj-stage-metric-grid span { font-size: .74rem; color: rgba(255,255,255,.58); text-transform: uppercase; letter-spacing: .08em; }
+.nj-stage-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .55rem .85rem;
+    border-radius: 999px;
+    background: rgba(5, 11, 29, .6);
+    border: 1px solid rgba(255,255,255,.14);
+    backdrop-filter: blur(10px);
+    color: rgba(255,255,255,.8);
+    font-size: .78rem;
+}
+.nj-stage-chip span { width: .55rem; height: .55rem; border-radius: 50%; }
+.nj-stage-chip-a { top: 18%; right: 12%; }
+.nj-stage-chip-a span { background: #67e8f9; }
+.nj-stage-chip-b { right: 8%; bottom: 17%; }
+.nj-stage-chip-b span { background: #f59e0b; }
+.nj-stage-chip-c { left: 14%; top: 56%; }
+.nj-stage-chip-c span { background: #a855f7; }
 .nj-scroll-indicator {
-    position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
-    z-index: 1; color: rgba(255,255,255,.5);
+    position: absolute;
+    bottom: 1.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    color: rgba(255,255,255,.56);
     animation: scrollBounce 2s ease-in-out infinite;
+    text-align: center;
+    font-size: .78rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    opacity: calc(1 - (var(--hero-progress) * 1.8));
 }
 @keyframes scrollBounce {
     0%, 100% { transform: translateX(-50%) translateY(0); }
-    50%      { transform: translateX(-50%) translateY(10px); }
+    50% { transform: translateX(-50%) translateY(10px); }
 }
 
-/* ── Feature 2: Activity Ticker ── */
+.nj-signal-section {
+    position: relative;
+    z-index: 3;
+    padding: 3.5rem 0 2.75rem;
+    background: linear-gradient(180deg, #06101f 0%, #09121f 68%, rgba(6, 16, 31, .96) 100%);
+}
+.nj-signal-shell {
+    border-radius: 1.75rem;
+    padding: clamp(1.5rem, 4vw, 2.4rem);
+    border: 1px solid rgba(148, 163, 184, .16);
+    background: linear-gradient(180deg, rgba(9, 18, 31, .92), rgba(9, 18, 31, .72));
+    box-shadow: 0 30px 80px rgba(2, 6, 23, .34);
+    backdrop-filter: blur(14px);
+}
+.nj-chapter-label {
+    display: inline-flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .58rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, .22);
+    background: rgba(255, 255, 255, .66);
+    color: #0f172a;
+    opacity: 0;
+    transform: translate3d(-20px, 0, 0);
+}
+.nj-chapter-label.is-visible { opacity: 1; transform: translate3d(0, 0, 0); }
+.nj-chapter-label.is-visible,
+#proofLabel,
+#proofLabel.is-visible {
+    color: #ffffff;
+    opacity: 1;
+}
+.nj-chapter-label.is-dark {
+    background: rgba(255,255,255,.06);
+    color: #ffffff;
+    border-color: rgba(255,255,255,.12);
+}
+.nj-chapter-index {
+    font-size: .72rem;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    opacity: .72;
+}
+.nj-chapter-text {
+    font-size: .92rem;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+.nj-chapter-cursor {
+    width: .5rem;
+    height: 1rem;
+    border-radius: 999px;
+    background: currentColor;
+    animation: chapterBlink 1s steps(1, end) infinite;
+}
+@keyframes chapterBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .2; } }
+.nj-signal-intro,
+.nj-journey-note,
+.nj-proof-intro {
+    max-width: 46rem;
+    margin: 1rem 0 0;
+    line-height: 1.75;
+    color: rgba(226, 232, 240, .74);
+}
+.nj-proof-intro { color: #566274; }
 .nj-ticker {
-    height: 40px; overflow: hidden;
-    background: rgba(15,12,41,.92);
+    --ticker-progress: 0;
+    height: 56px;
+    margin-top: 1.6rem;
+    overflow: hidden;
+    border-radius: 999px;
+    border: 1px solid rgba(148, 163, 184, .18);
+    background: rgba(15, 12, 41, .92);
     backdrop-filter: blur(8px);
     position: relative;
-    opacity: 0; transform: translateY(-20px);
-    transition: opacity .4s ease, transform .4s ease;
+    opacity: 0;
+    transform: translate3d(0, calc((1 - var(--ticker-progress)) * 42px), 0) scale(calc(.94 + (var(--ticker-progress) * .06)));
+    filter: blur(calc((1 - var(--ticker-progress)) * 8px));
+    transition: opacity .4s ease, transform .18s linear, filter .18s linear;
 }
-.nj-ticker.revealed { opacity: 1; transform: translateY(0); }
+.nj-ticker.revealed { opacity: calc(.25 + (var(--ticker-progress) * .75)); }
 .nj-ticker-track {
-    display: flex; align-items: center; height: 100%;
+    display: flex;
+    align-items: center;
+    height: 100%;
     animation: tickerScroll 55s linear infinite;
     width: max-content;
 }
 .nj-ticker:hover .nj-ticker-track { animation-play-state: paused; }
-@keyframes tickerScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-}
+@keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 .nj-ticker-item {
-    display: inline-flex; align-items: center; gap: .4rem;
-    padding: 0 1.5rem; white-space: nowrap;
-    color: rgba(255,255,255,.75); font-size: .78rem; font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: 0 1.6rem;
+    white-space: nowrap;
+    color: rgba(255,255,255,.78);
+    font-size: .82rem;
+    font-weight: 500;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: opacity 0.4s ease;
 }
 .nj-ticker-dot {
-    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
-.nj-ticker-dot.project     { background: #3b82f6; }
-.nj-ticker-dot.investment  { background: #06d6a0; }
-.nj-ticker-dot.mentorship  { background: #f59e0b; }
-.nj-ticker-dot.community   { background: #a855f7; }
-.nj-ticker-dot.user         { background: #94a3b8; }
+.nj-ticker-dot.project { background: #3b82f6; }
+.nj-ticker-dot.investment { background: #06d6a0; }
+.nj-ticker-dot.mentorship { background: #f59e0b; }
+.nj-ticker-dot.community { background: #a855f7; }
+.nj-ticker-dot.user { background: #94a3b8; }
+.nj-signal-empty {
+    margin-top: 1.6rem;
+    padding: 1rem 1.2rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: rgba(255,255,255,.68);
+}
 
-/* ── Feature 3: Module Cards ── */
-.nj-modules { padding: 4rem 0; }
-.nj-module-card {
-    border-radius: 1rem; overflow: hidden; background: #fff;
-    box-shadow: 0 2px 12px rgba(0,0,0,.06);
-    transition: transform .35s ease, box-shadow .35s ease;
-    position: relative; height: 100%;
-    display: flex; flex-direction: column;
-    /* Scroll reveal initial state */
-    opacity: 0; transform: translateY(30px);
-    transition: opacity .5s ease, transform .5s ease, box-shadow .35s ease;
+.nj-journey {
+    position: relative;
+    height: 500vh;
+    background:
+        radial-gradient(circle at 18% 22%, rgba(103, 232, 249, .08), transparent 24%),
+        radial-gradient(circle at 84% 16%, rgba(245, 158, 11, .08), transparent 18%),
+        linear-gradient(180deg, #07101c 0%, #0a1220 54%, #0d1320 100%);
+    color: #fff;
+    z-index: 4;
 }
-.nj-module-card.revealed { opacity: 1; transform: translateY(0); }
-.nj-module-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(0,0,0,.14); }
-.nj-module-card.revealed:hover { transform: translateY(-8px); }
-.nj-module-header {
-    padding: 1.8rem 1.5rem 1.5rem; text-align: center;
-    background-size: 200% 200%;
-    background-position: 0% 50%;
-    transition: background-position .6s ease;
+.nj-journey-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
 }
-.nj-module-card:hover .nj-module-header { background-position: 100% 50%; }
-.nj-module-header i { font-size: 2.2rem; color: #fff; }
-.nj-module-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-.nj-module-body h5 { font-weight: 700; font-size: 1.05rem; margin-bottom: .4rem; color: #1a1a2e; }
-.nj-module-body p { color: #6c757d; font-size: .88rem; line-height: 1.5; flex: 1; }
-.nj-module-stat {
-    position: absolute; top: .8rem; right: .8rem;
-    background: rgba(255,255,255,.25); backdrop-filter: blur(4px);
-    color: #fff; font-size: .68rem; font-weight: 600;
-    padding: .2rem .65rem; border-radius: 999px;
+.nj-journey-head {
+    position: absolute;
+    top: clamp(1.2rem, 4vw, 2.4rem);
+    left: clamp(1rem, 4vw, 3rem);
+    z-index: 16;
+    max-width: 34rem;
 }
-.nj-module-cta {
-    display: inline-block; font-weight: 600; font-size: .85rem;
-    color: var(--nj-primary); text-decoration: none;
-    transition: color .2s;
+.nj-journey-track {
+    --journey-translate: 0vw;
+    display: flex;
+    width: 600vw;
+    height: 100%;
+    transform: translate3d(var(--journey-translate), 0, 0);
+    will-change: transform;
 }
-.nj-module-cta:hover { color: var(--nj-accent); }
-.nj-module-cta i { transition: transform .2s; }
-.nj-module-cta:hover i { transform: translateX(4px); }
+.nj-journey-slide {
+    --slide-active: 0;
+    position: relative;
+    width: 100vw;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8.5rem 0 4rem;
+    opacity: calc(.38 + (var(--slide-active) * .62));
+}
+.nj-journey-slide::before {
+    content: '';
+    position: absolute;
+    inset: 16% auto auto 7%;
+    width: 24rem;
+    height: 24rem;
+    border-radius: 50%;
+    background: var(--slide-glow);
+    filter: blur(26px);
+    opacity: calc(.18 + (var(--slide-active) * .24));
+}
+.nj-journey-slide-inner {
+    position: relative;
+    z-index: 2;
+    width: min(78rem, calc(100vw - 4rem));
+    margin: 0 auto;
+    padding-right: min(36vw, 24rem);
+}
+.nj-journey-panel {
+    max-width: min(42rem, calc(100vw - 4rem));
+    min-height: 30rem;
+    margin: 0 auto;
+    padding: clamp(1.8rem, 4vw, 2.6rem);
+    position: relative;
+    left: auto;
+    right: auto;
+    border-radius: 2rem;
+    border: 1px solid rgba(255,255,255,.12);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
+        var(--slide-gradient);
+    box-shadow: 0 36px 90px rgba(2, 6, 23, .34);
+    backdrop-filter: blur(12px);
+    transform: translate3d(0, calc((1 - var(--slide-active)) * 36px), 0) scale(calc(.92 + (var(--slide-active) * .08)));
+    transition: transform .18s linear, box-shadow .3s ease;
+}
+.nj-journey-topline {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    margin-bottom: 1.25rem;
+}
+.nj-journey-index {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    font-weight: 800;
+    letter-spacing: .08em;
+}
+.nj-journey-step {
+    display: inline-flex;
+    align-items: center;
+    padding: .5rem .8rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    font-size: .78rem;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: rgba(255,255,255,.74);
+}
+.nj-journey-icon {
+    width: 4rem;
+    height: 4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.2rem;
+    margin-bottom: 1.4rem;
+    background: var(--slide-surface);
+    border: 1px solid rgba(255,255,255,.16);
+    font-size: 1.55rem;
+    color: var(--slide-accent);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.nj-journey-panel h3 {
+    margin: 0 0 1rem;
+    font-size: clamp(2.3rem, 4vw, 3.7rem);
+    line-height: .96;
+    letter-spacing: -.05em;
+    max-width: 10ch;
+}
+.nj-journey-panel p {
+    margin: 0 0 1.35rem;
+    max-width: 33rem;
+    color: rgba(255,255,255,.78);
+    line-height: 1.78;
+}
+.nj-journey-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+    margin-bottom: 1.7rem;
+}
+.nj-journey-metrics span {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .6rem .9rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.14);
+    color: rgba(255,255,255,.82);
+    font-size: .84rem;
+}
+.nj-journey-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    padding: .9rem 1.15rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: 0 18px 40px rgba(2, 6, 23, .18);
+}
+.nj-journey-cta:hover { color: #fff; transform: translateY(-2px); }
+.nj-journey-dots {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(1.3rem, 4vw, 2rem);
+    transform: translateX(-50%);
+    z-index: 16;
+    display: inline-flex;
+    align-items: center;
+    gap: .7rem;
+    padding: .7rem .9rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(14px);
+}
+.nj-journey-dot {
+    --dot-active: 0;
+    display: block;
+    width: .72rem;
+    height: .72rem;
+    border-radius: 50%;
+    background: var(--dot-color);
+    opacity: calc(.32 + (var(--dot-active) * .68));
+    transform: scale(calc(.7 + (var(--dot-active) * .55)));
+    box-shadow: 0 0 calc(18px * var(--dot-active)) var(--dot-color);
+    transition: transform .2s ease, opacity .2s ease;
+}
 
-/* ── Feature 4: Social Proof ── */
-.nj-social-proof { padding: 4rem 0; }
+.nj-social-proof {
+    position: relative;
+    z-index: 3;
+    padding: 4.5rem 0 0;
+    background: #0d0f1a;
+    color: #e2e8f0;
+}
+.nj-social-proof .nj-chapter-label,
+.nj-social-proof .nj-proof-intro {
+    color: #e2e8f0;
+}
 .nj-impact-grid {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem;
-    /* Scroll reveal initial state */
-    opacity: 0; transform: translateY(30px);
-    transition: opacity .6s ease, transform .6s ease;
+    --impact-progress: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.35rem;
+    margin-top: 2rem;
+    opacity: 0;
+    transform: translate3d(0, calc(30px + ((1 - var(--impact-progress)) * 7vh)), 0) scale(calc(.95 + (var(--impact-progress) * .05)));
+    transition: opacity .6s ease, transform .18s linear;
 }
-.nj-impact-grid.revealed { opacity: 1; transform: translateY(0); }
-@media(max-width:991px){ .nj-impact-grid { grid-template-columns: repeat(2, 1fr); } }
-@media(max-width:575px){ .nj-impact-grid { grid-template-columns: 1fr 1fr; gap: 1rem; } }
-.nj-impact-item { text-align: center; padding: 1.5rem; }
-.nj-impact-num { font-size: 2.8rem; font-weight: 800; color: var(--nj-dark); line-height: 1; }
-.nj-impact-label { font-weight: 700; font-size: .95rem; color: #333; margin-top: .25rem; }
-.nj-impact-sub { font-size: .78rem; color: #6c757d; margin-top: .15rem; }
+.nj-impact-grid.revealed {
+    opacity: calc(.25 + (var(--impact-progress) * .75));
+    transform: translate3d(0, calc((1 - var(--impact-progress)) * 7vh), 0) scale(calc(.95 + (var(--impact-progress) * .05)));
+}
+.nj-impact-card {
+    position: relative;
+    padding: 1.55rem 1.25rem;
+    border-radius: 1.5rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, .08);
+    color: #e2e8f0;
+    display: grid;
+    justify-items: center;
+    gap: .7rem;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+}
+.nj-impact-card::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+.nj-impact-card:nth-child(1)::before { background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%); }
+.nj-impact-card:nth-child(2)::before { background: radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%); }
+.nj-impact-card:nth-child(3)::before { background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%); }
+.nj-impact-card:nth-child(4)::before { background: radial-gradient(circle, rgba(168,85,247,0.18) 0%, transparent 70%); }
+.nj-impact-card::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 5rem;
+    background: linear-gradient(180deg, transparent, rgba(15, 23, 42, .03));
+}
+.nj-impact-num { font-size: 2.8rem; font-weight: 800; color: #ffffff; line-height: 1; position: relative; z-index: 1; }
+.nj-impact-label { font-weight: 700; font-size: .95rem; color: rgba(255,255,255,0.6); }
+.nj-impact-sub { font-size: .78rem; color: rgba(255,255,255,0.6); margin-top: -.15rem; }
 
-/* Strengths cards */
 .nj-strengths {
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.2rem;
     margin-top: 3rem;
 }
-@media(max-width:991px){
-    .nj-strengths { grid-template-columns: repeat(2, 1fr); }
-}
-@media(max-width:575px){
-    .nj-strengths { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 1rem; padding-bottom: .5rem; }
-    .nj-strengths .nj-strength-card { min-width: 260px; scroll-snap-align: start; }
-}
 .nj-strength-card {
-    background: #1a1a2e; border-radius: .75rem; padding: 1.2rem 1.3rem;
-    color: #fff; position: relative; overflow: hidden;
-    /* Scroll reveal initial state */
-    opacity: 0; transform: translateX(-30px);
-    transition: opacity .4s ease, transform .4s ease;
+    --story-shift: 0px;
+    --story-tilt: 0deg;
+    --magnetic-x: 0px;
+    --magnetic-y: 0px;
+    --magnetic-rotate-x: 0deg;
+    --magnetic-rotate-y: 0deg;
+    background: linear-gradient(180deg, #111827, #0f172a 68%, #10192c 100%);
+    border-radius: 1.1rem;
+    padding: 1.35rem 1.4rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(148, 163, 184, .14);
+    opacity: 0;
+    transform: translate3d(calc(-30px + var(--magnetic-x)), calc(var(--story-shift) + var(--magnetic-y)), 0) rotateX(calc(var(--story-tilt) + var(--magnetic-rotate-x))) rotateY(var(--magnetic-rotate-y));
+    transform-style: preserve-3d;
+    transition: opacity .4s ease, transform .18s linear, box-shadow .25s ease;
 }
-.nj-strength-card.revealed { opacity: 1; transform: translateX(0); }
+.nj-strength-card.revealed {
+    opacity: 1;
+    transform: translate3d(var(--magnetic-x), calc(var(--story-shift) + var(--magnetic-y)), 0) rotateX(calc(var(--story-tilt) + var(--magnetic-rotate-x))) rotateY(var(--magnetic-rotate-y));
+}
 .nj-strength-card::before {
-    content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%;
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
 }
 .nj-strength-card:nth-child(1)::before { background: #3b82f6; }
 .nj-strength-card:nth-child(2)::before { background: #06d6a0; }
 .nj-strength-card:nth-child(3)::before { background: #f59e0b; }
 .nj-strength-card:nth-child(4)::before { background: #a855f7; }
-.nj-strength-card i { font-size: 1.4rem; margin-bottom: .5rem; display: block; }
-.nj-strength-card h6 { font-weight: 700; font-size: .9rem; margin-bottom: .25rem; }
-.nj-strength-card p { font-size: .78rem; color: rgba(255,255,255,.6); margin: 0; }
-
-/* Closing statement */
-.nj-closing {
-    background: var(--nj-dark); padding: 5rem 2rem; text-align: center;
-    margin-top: 3rem; border-radius: 1.5rem;
-    /* Scroll reveal */
-    opacity: 0; transform: scale(.97);
-    transition: opacity .8s ease, transform .8s ease;
+.nj-strength-card i { font-size: 1.4rem; margin-bottom: .55rem; display: block; color: rgba(255,255,255,.92); }
+.nj-strength-card h6 { font-weight: 700; font-size: .95rem; margin-bottom: .25rem; }
+.nj-strength-card p { font-size: .8rem; color: rgba(255,255,255,.62); margin: 0; line-height: 1.65; }
+.nj-strength-card.is-magnetic {
+    transition: opacity .4s ease, transform .08s linear, box-shadow .18s ease;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, .22);
 }
-.nj-closing.revealed { opacity: 1; transform: scale(1); }
-.nj-closing h2 { color: #fff; font-weight: 800; font-size: 1.6rem; max-width: 700px; margin: 0 auto 1.5rem; line-height: 1.4; }
-@media(max-width:767px){ .nj-closing h2 { font-size: 1.2rem; } }
+.nj-strength-card.is-magnetic-reset {
+    transition: opacity .4s ease, transform .6s cubic-bezier(.16, 1, .3, 1), box-shadow .3s ease;
+}
+
+.nj-closing-section {
+    position: relative;
+    z-index: 3;
+    padding: 3rem 0 5rem;
+    background: #0d0f1a;
+    padding-bottom: 0;
+}
+.nj-closing {
+    --closing-progress: 0;
+    border-radius: 2rem;
+    background:
+        radial-gradient(circle at 12% 18%, rgba(103,232,249,.16), transparent 20%),
+        radial-gradient(circle at 88% 20%, rgba(245,158,11,.18), transparent 18%),
+        linear-gradient(135deg, #08101f 0%, #0f172a 46%, #131129 100%);
+    border: 1px solid rgba(148, 163, 184, .16);
+    box-shadow: 0 34px 90px rgba(2, 6, 23, .24);
+    overflow: hidden;
+    opacity: 0;
+    transform: translate3d(0, calc((1 - var(--closing-progress)) * 8vh), 0) scale(calc(.94 + (var(--closing-progress) * .06)));
+    transition: opacity .8s ease, transform .18s linear;
+}
+.nj-closing.revealed {
+    opacity: calc(.2 + (var(--closing-progress) * .8));
+    transform: translate3d(0, calc((1 - var(--closing-progress)) * 8vh), 0) scale(calc(.94 + (var(--closing-progress) * .06)));
+}
+.nj-closing-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, .88fr);
+    gap: 2rem;
+    align-items: center;
+    padding: clamp(1.6rem, 4vw, 2.8rem);
+}
+.nj-closing-copy {
+    color: #fff;
+    max-width: 38rem;
+}
+.nj-closing-copy h2 {
+    margin: 1.1rem 0 1rem;
+    font-size: clamp(2rem, 4vw, 3.25rem);
+    line-height: .98;
+    letter-spacing: -.04em;
+}
+.nj-closing-copy p {
+    margin: 0 0 1.6rem;
+    color: rgba(226, 232, 240, .76);
+    line-height: 1.78;
+}
+.nj-closing-actions {
+    display: flex;
+    gap: .9rem;
+    flex-wrap: wrap;
+}
+.nj-closing .btn-hero-primary {
+    animation: closingBreath 4.5s ease-in-out infinite;
+}
+@keyframes closingBreath {
+    0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 18px 40px rgba(59,130,246,.28); }
+    50% { transform: translateY(-2px) scale(1.03); box-shadow: 0 24px 56px rgba(59,130,246,.36); }
+}
+.nj-closing-visual {
+    position: relative;
+    min-height: 360px;
+    border-radius: 1.7rem;
+    border: 1px solid rgba(255,255,255,.12);
+    background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03)),
+        linear-gradient(160deg, rgba(6, 13, 30, .82), rgba(12, 22, 49, .8));
+    overflow: hidden;
+}
+.nj-closing-visual::before,
+.nj-closing-visual::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+}
+.nj-closing-visual::before {
+    inset: 12% 18%;
+    border: 1px solid rgba(255,255,255,.12);
+    animation: orbitSpin 22s linear infinite;
+}
+.nj-closing-visual::after {
+    inset: 24% 30%;
+    border: 1px solid rgba(103,232,249,.18);
+    animation: orbitSpinReverse 18s linear infinite;
+}
+.nj-closing-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 8rem;
+    height: 8rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(103,232,249,.36), rgba(59,130,246,.16) 52%, transparent 70%);
+    display: grid;
+    place-items: center;
+}
+.nj-closing-core::before {
+    content: '';
+    width: 1.45rem;
+    height: 1.45rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #67e8f9, #3b82f6);
+    box-shadow: 0 0 0 10px rgba(103,232,249,.08), 0 0 34px rgba(103,232,249,.45);
+}
+.nj-closing-chip {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .65rem .95rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    color: rgba(255,255,255,.82);
+    backdrop-filter: blur(10px);
+    font-size: .8rem;
+}
+.nj-closing-chip span {
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+}
+.nj-closing-chip-a { top: 14%; right: 10%; }
+.nj-closing-chip-a span { background: #67e8f9; }
+.nj-closing-chip-b { left: 10%; bottom: 16%; }
+.nj-closing-chip-b span { background: #f59e0b; }
+.nj-closing-chip-c { right: 12%; bottom: 22%; }
+.nj-closing-chip-c span { background: #8b5cf6; }
+
+@media (max-width: 991px) {
+    .nj-hero-shell {
+        grid-template-columns: 1fr;
+        padding: 6.5rem 0 4rem;
+    }
+    .nj-hero-stage { min-height: 540px; }
+    .nj-stage-shell {
+        min-height: 540px;
+        width: min(100%, 620px);
+        margin: 0 auto;
+    }
+    .nj-impact-grid,
+    .nj-strengths { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .nj-closing-shell { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 819px) {
+    .nj-journey {
+        height: auto;
+        padding: 3rem 0 4rem;
+    }
+    .nj-journey-sticky {
+        position: relative;
+        height: auto;
+        overflow: visible;
+    }
+    .nj-journey-head {
+        position: relative;
+        top: auto;
+        left: auto;
+        padding: 0 1rem 1.5rem;
+    }
+    .nj-journey-track {
+        width: 100%;
+        display: grid;
+        gap: 1rem;
+        transform: none !important;
+    }
+    .nj-journey-slide {
+        width: auto;
+        height: auto;
+        padding: 0 1rem;
+        opacity: 1;
+    }
+    .nj-journey-slide::before { inset: 1rem auto auto 10%; width: 18rem; height: 18rem; }
+    .nj-journey-slide-inner { width: 100%; padding-right: 0; }
+    .nj-journey-panel {
+        max-width: 100%;
+        min-height: auto;
+        transform: none;
+    }
+    .nj-journey-dots { display: none; }
+    .nj-stage-shell.is-journey-fixed {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: min(100%, 620px);
+        min-height: 540px;
+        pointer-events: auto;
+    }
+}
+
+@media (max-width: 767px) {
+    .nj-hero { min-height: 128vh; }
+    .nj-hero-title { font-size: 2.45rem; line-height: .98; }
+    .nj-hero-lead { font-size: .98rem; }
+    .nj-hero-stats { grid-template-columns: 1fr; }
+    .nj-stage-shell {
+        min-height: 500px;
+        border-radius: 1.5rem;
+    }
+    .nj-stage-card-main { top: 8%; left: 5%; width: 220px; }
+    .nj-stage-card-secondary { right: 4%; top: 31%; width: 200px; }
+    .nj-stage-card-tertiary { left: 6%; bottom: 8%; width: 240px; }
+    .nj-impact-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+}
+
+@media (max-width: 575px) {
+    .nj-hero-shell {
+        width: min(100% - 1.25rem, 100%);
+        padding-top: 6rem;
+    }
+    .nj-hero-actions .btn-hero-primary,
+    .nj-hero-actions .btn-hero-secondary,
+    .nj-closing-actions .btn-hero-primary,
+    .nj-closing-actions .btn-hero-secondary {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+    .nj-stage-shell { min-height: 470px; }
+    .nj-stage-card-main,
+    .nj-stage-card-secondary,
+    .nj-stage-card-tertiary {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: auto;
+        margin: 1rem;
+        animation: none;
+    }
+    .nj-stage-card-secondary,
+    .nj-stage-card-tertiary,
+    .nj-stage-chip-b,
+    .nj-stage-chip-c,
+    .nj-stage-badge-b { display: none; }
+    .nj-stage-beacon { top: 45%; }
+    .nj-impact-grid,
+    .nj-strengths { grid-template-columns: 1fr; }
+    .nj-closing-visual { min-height: 300px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .nj-hero-title-accent,
+    .nj-stage-ring-a,
+    .nj-stage-ring-b,
+    .nj-stage-ring-c,
+    .nj-stage-beacon-core,
+    .nj-stage-card-main,
+    .nj-stage-card-secondary,
+    .nj-stage-card-tertiary,
+    .nj-scroll-indicator,
+    .nj-chapter-cursor,
+    .nj-closing .btn-hero-primary,
+    .nj-closing-visual::before,
+    .nj-closing-visual::after {
+        animation: none !important;
+    }
+    .nj-ticker-track { animation-duration: .01ms; animation-iteration-count: 1; transform: none; }
+}
 </style>
 {% endblock %}
 
 {% block main %}
 {% set isGuest = not is_granted('ROLE_USER') %}
-{# ═══════════════════════════════════════════════
-   FEATURE 1 — Hero Section
-   ═══════════════════════════════════════════════ #}
+{% set modules = [
+    {
+        icon: "bi-cash-stack",
+        eyebrow: "Capital en mouvement",
+        gradient: "linear-gradient(140deg, rgba(30, 64, 175, .94), rgba(14, 116, 144, .86) 56%, rgba(15, 23, 42, .92) 100%)",
+        surface: "rgba(59, 130, 246, .16)",
+        glow: "radial-gradient(circle, rgba(59,130,246,.28), transparent 68%)",
+        accent: "#60a5fa",
+        title: "Trouvez le capital qui correspond au bon signal.",
+        desc: "Publiez une opportunite claire, structurez l'offre, negociez dans un cadre propre et faites avancer la discussion jusqu'au contrat.",
+        stat: platformStats.openOpportunities ~ " opportunites actives",
+        secondary: platformStats.totalInvestors ~ " investisseurs a l'affut",
+        cta: "Ouvrir les opportunites",
+        route: path('app_invest_opportunities')
+    },
+    {
+        icon: "bi-rocket-takeoff",
+        eyebrow: "Execution structuree",
+        gradient: "linear-gradient(140deg, rgba(194, 65, 12, .92), rgba(234, 88, 12, .82) 56%, rgba(51, 25, 8, .94) 100%)",
+        surface: "rgba(249, 115, 22, .16)",
+        glow: "radial-gradient(circle, rgba(249,115,22,.22), transparent 70%)",
+        accent: "#fb923c",
+        title: "Transformez une idee en projet lisible, solide et diffusable.",
+        desc: "Cadrez la proposition, suivez les briques importantes, rendez le projet visible et gardez le momentum quand l'attention arrive.",
+        stat: platformStats.totalProjects ~ " projets en cours",
+        secondary: platformStats.activeProjects ~ " projets encore actifs",
+        cta: "Entrer dans mes projets",
+        route: path('app_projet_index')
+    },
+    {
+        icon: "bi-people-fill",
+        eyebrow: "Energie communautaire",
+        gradient: "linear-gradient(140deg, rgba(88, 28, 135, .94), rgba(109, 40, 217, .84) 54%, rgba(24, 24, 51, .94) 100%)",
+        surface: "rgba(139, 92, 246, .16)",
+        glow: "radial-gradient(circle, rgba(168,85,247,.24), transparent 70%)",
+        accent: "#c084fc",
+        title: "Faites circuler les retours, les contacts et la traction sociale.",
+        desc: "Najahni ne laisse pas les projets seuls. La communaute apporte de la visibilite, des retours et un contexte qui fait gagner du temps.",
+        stat: platformStats.totalUsers ~ " membres actifs",
+        secondary: platformStats.totalEntrepreneurs ~ " entrepreneurs presents",
+        cta: "Voir la communaute",
+        route: path('app_community_posts')
+    },
+    {
+        icon: "bi-mortarboard",
+        eyebrow: "Mentorat utile",
+        gradient: "linear-gradient(140deg, rgba(6, 95, 70, .94), rgba(13, 148, 136, .82) 54%, rgba(6, 32, 33, .94) 100%)",
+        surface: "rgba(20, 184, 166, .16)",
+        glow: "radial-gradient(circle, rgba(20,184,166,.2), transparent 70%)",
+        accent: "#2dd4bf",
+        title: "Activez la bonne personne au bon moment du parcours.",
+        desc: "Les mentors interviennent quand la question est reelle: clarifier une offre, debloquer une etape, preparer une decision.",
+        stat: platformStats.totalMentorsAvail ~ " mentors disponibles",
+        secondary: platformStats.totalSessions ~ " sessions deja menees",
+        cta: "Trouver un mentor",
+        route: path('app_mentorat_requests')
+    },
+    {
+        icon: "bi-book-half",
+        eyebrow: "Competences qui accelerent",
+        gradient: "linear-gradient(140deg, rgba(157, 23, 77, .94), rgba(236, 72, 153, .82) 54%, rgba(58, 12, 35, .94) 100%)",
+        surface: "rgba(236, 72, 153, .16)",
+        glow: "radial-gradient(circle, rgba(236,72,153,.22), transparent 70%)",
+        accent: "#f472b6",
+        title: "Apprenez exactement ce qui renforce la qualite du deal.",
+        desc: "Les contenus donnent de la profondeur au projet: pitch, negociation, posture, structuration et execution entrepreneuriale.",
+        stat: platformStats.totalCours ~ " cours disponibles",
+        secondary: platformStats.totalUsers ~ " profils qui peuvent monter en niveau",
+        cta: "Lancer un parcours",
+        route: path('app_apprentissage_cours')
+    },
+    {
+        icon: "bi-person-vcard",
+        eyebrow: "Identite lisible",
+        gradient: "linear-gradient(140deg, rgba(161, 98, 7, .94), rgba(245, 158, 11, .84) 54%, rgba(47, 32, 7, .94) 100%)",
+        surface: "rgba(245, 158, 11, .16)",
+        glow: "radial-gradient(circle, rgba(245,158,11,.2), transparent 70%)",
+        accent: "#fbbf24",
+        title: "Faites de votre profil un point d'entree qui inspire confiance.",
+        desc: "La plateforme assemble reputation, activite, accompagnement et trajectoire pour donner une lecture immediate de votre presence.",
+        stat: platformStats.totalUsers ~ " profils visibles",
+        secondary: platformStats.fundedDeals ~ " deals comme preuve sociale",
+        cta: "Ouvrir mon profil",
+        route: path('app_profile')
+    }
+] %}
+{% set closingRoute = is_granted('ROLE_ADMIN') ? path('admin_dashboard') : path('app_projet_index') %}
+
 <section class="nj-hero" id="njHero">
-    <canvas class="nj-hero-canvas" id="heroCanvas"></canvas>
-    <div class="nj-hero-content">
-        {# Cycling stats pill #}
-        <div class="nj-stat-pill" id="heroPill">
-            <span id="heroPillText">{{ platformStats.activeProjects }} projets actifs</span>
-        </div>
+    <div class="nj-hero-grid"></div>
+    <div class="nj-hero-orb nj-hero-orb-a"></div>
+    <div class="nj-hero-orb nj-hero-orb-b"></div>
+    <div class="nj-hero-orb nj-hero-orb-c"></div>
 
-        {% if isGuest %}
-            <h1>Vous avez un projet.<br><span class="gradient-text">Najahni vous donne les moyens de le realiser.</span></h1>
-            <p class="lead">Najahni connecte les entrepreneurs avec des investisseurs, les met en relation avec des mentors, et leur donne les outils pour faire grandir leur projet.</p>
-        {% else %}
-            <h1>La plateforme qui transforme<br><span class="gradient-text">les idees en investissements.</span></h1>
-            <p class="lead">Najahni connecte les entrepreneurs tunisiens avec des investisseurs, mentors, et une communaute de {{ platformStats.totalUsers }}+ membres.</p>
-        {% endif %}
+    <div class="nj-hero-shell">
+        <div class="nj-hero-copy">
+            <div class="nj-hero-kicker">
+                <span class="nj-hero-kicker-dot"></span>
+                Ecosysteme startup tunisien
+            </div>
 
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-            {% if app.user %}
-                <a href="{{ path('app_projet_index') }}" class="btn btn-hero-primary">Mes Projets</a>
-                <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Opportunites d'investissement</a>
+            <div class="nj-stat-pill" id="heroPill">
+                <span id="heroPillText">{{ platformStats.activeProjects }} projets actifs</span>
+            </div>
+
+            {% if isGuest %}
+                <h1 class="nj-hero-title">
+                    <span class="nj-hero-title-line">Une plateforme qui donne</span>
+                    <span class="nj-hero-title-line nj-hero-title-accent">de la profondeur a votre ambition.</span>
+                </h1>
+                <p class="lead nj-hero-lead">Najahni connecte financement, mentorat, apprentissage et communaute dans une seule experience pensee pour faire passer un projet du signal faible au deal concret.</p>
             {% else %}
-                <a href="#" data-bs-toggle="modal" data-bs-target="#registerModal" class="btn btn-hero-primary"><i class="bi bi-person-plus me-2"></i>Rejoindre Najahni - c'est gratuit</a>
-                <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" class="btn btn-hero-secondary"><i class="bi bi-box-arrow-in-right me-2"></i>Se connecter</a>
+                <h1 class="nj-hero-title">
+                    <span class="nj-hero-title-line">Pilotez vos projets avec</span>
+                    <span class="nj-hero-title-line nj-hero-title-accent">un deal flow visible et vivant.</span>
+                </h1>
+                <p class="lead nj-hero-lead">Suivez les opportunites, activez des mentors, exposez vos projets et faites circuler l'energie de l'ecosysteme depuis un seul cockpit.</p>
             {% endif %}
+
+            <div class="nj-hero-actions">
+                {% if app.user %}
+                    <a href="{{ path('app_projet_index') }}" class="btn btn-hero-primary">Mes Projets</a>
+                    <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Opportunites d'investissement</a>
+                {% else %}
+                    <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Rejoindre Najahni - c'est gratuit</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-hero-secondary">Se connecter</a>
+                {% endif %}
+            </div>
+
+            <div class="nj-hero-meta">
+                <span class="nj-hero-meta-pill"><i class="bi bi-graph-up-arrow"></i> Investissement</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-people-fill"></i> Communaute</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-mortarboard"></i> Mentorat</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-book-half"></i> Apprentissage</span>
+            </div>
+
+            <div class="nj-hero-stats">
+                <div class="nj-hero-stat">
+                    <span class="stat-num" data-count="{{ platformStats.activeProjects }}">0</span>
+                    <span class="stat-label">Projets actifs</span>
+                </div>
+                <div class="nj-hero-stat">
+                    <span class="stat-num" data-count="{{ platformStats.totalInvestors }}">0</span>
+                    <span class="stat-label">Investisseurs</span>
+                </div>
+                <div class="nj-hero-stat">
+                    <span class="stat-num" data-count="{{ platformStats.fundedDeals }}">0</span>
+                    <span class="stat-label">Deals finances</span>
+                </div>
+            </div>
         </div>
 
-        <div class="nj-hero-stats">
-            <div class="nj-hero-stat">
-                <span class="stat-num" data-count="{{ platformStats.activeProjects }}">0</span>
-                <span class="stat-label">Projets actifs</span>
-            </div>
-            <div class="nj-hero-stat">
-                <span class="stat-num" data-count="{{ platformStats.totalInvestors }}">0</span>
-                <span class="stat-label">Investisseurs</span>
-            </div>
-            <div class="nj-hero-stat">
-                <span class="stat-num" data-count="{{ platformStats.fundedDeals }}">0</span>
-                <span class="stat-label">Deals finances</span>
+        <div class="nj-hero-stage" id="heroStage">
+            <div class="nj-stage-shell" id="heroStageShell">
+                <canvas class="nj-hero-canvas" id="heroCanvas"></canvas>
+                <div class="nj-stage-ring nj-stage-ring-a"></div>
+                <div class="nj-stage-ring nj-stage-ring-b"></div>
+                <div class="nj-stage-ring nj-stage-ring-c"></div>
+
+                <div class="nj-stage-badge nj-stage-badge-a">Immersive deal map</div>
+                <div class="nj-stage-badge nj-stage-badge-b">Tunisian founder signal</div>
+
+                <div class="nj-stage-beacon">
+                    <span class="nj-stage-beacon-core"></span>
+                    <span class="nj-stage-beacon-label">Live startup pulse</span>
+                </div>
+
+                <article class="nj-stage-card nj-stage-card-main">
+                    <span class="nj-stage-card-eyebrow">Open pipeline</span>
+                    <strong>{{ platformStats.openOpportunities }}</strong>
+                    <p>opportunites en cours de discussion sur la plateforme.</p>
+                    <div class="nj-stage-bars">
+                        <span style="--bar-size:92%"></span>
+                        <span style="--bar-size:78%"></span>
+                        <span style="--bar-size:64%"></span>
+                    </div>
+                </article>
+
+                <article class="nj-stage-card nj-stage-card-secondary">
+                    <span class="nj-stage-card-eyebrow">Latest momentum</span>
+                    <h3>{{ platformStats.latestProjectName ? platformStats.latestProjectName : 'Projet en vedette' }}</h3>
+                    <p>{{ platformStats.latestProjectSector ? platformStats.latestProjectSector : 'Ecosysteme tunisien' }}</p>
+                </article>
+
+                <article class="nj-stage-card nj-stage-card-tertiary">
+                    <span class="nj-stage-card-eyebrow">Platform reach</span>
+                    <p>Un reseau qui connecte des acteurs differents au bon moment.</p>
+                    <div class="nj-stage-metric-grid">
+                        <div>
+                            <strong>{{ platformStats.totalUsers }}</strong>
+                            <span>Membres</span>
+                        </div>
+                        <div>
+                            <strong>{{ platformStats.totalMentorsAvail }}</strong>
+                            <span>Mentors</span>
+                        </div>
+                        <div>
+                            <strong>{{ platformStats.totalSessions }}</strong>
+                            <span>Sessions</span>
+                        </div>
+                        <div>
+                            <strong>{{ platformStats.fundedDeals }}</strong>
+                            <span>Deals</span>
+                        </div>
+                    </div>
+                </article>
+
+                <div class="nj-stage-chip nj-stage-chip-a"><span></span>{{ platformStats.totalUsers }} membres actifs</div>
+                <div class="nj-stage-chip nj-stage-chip-b"><span></span>{{ platformStats.fundedDeals }} deals finances</div>
+                <div class="nj-stage-chip nj-stage-chip-c"><span></span>{{ platformStats.totalMentorsAvail }} mentors mobilisables</div>
             </div>
         </div>
     </div>
+
     <div class="nj-scroll-indicator">
+        <div>Explorer</div>
         <i class="bi bi-chevron-down" style="font-size:1.5rem"></i>
     </div>
 </section>
 
 {% if isGuest %}
-{# ═══════════════════════════════════════════════
-   GUEST VALUE PROPOSITION
-   ═══════════════════════════════════════════════ #}
 <section class="nj-audience-section">
     <div class="container">
         <div class="text-center mb-4">
@@ -410,143 +1530,114 @@ body { background: #f0f2f5; }
 </section>
 {% endif %}
 
-{# ═══════════════════════════════════════════════
-   FEATURE 2 — Activity Ticker
-   ═══════════════════════════════════════════════ #}
-{% if activityFeed|length > 0 %}
-<div class="nj-ticker" id="njTicker">
-    <div class="nj-ticker-track" id="tickerTrack">
-        {% for event in activityFeed %}
-            <span class="nj-ticker-item">
-                <span class="nj-ticker-dot {{ event.type }}"></span>
-                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
-            </span>
-        {% endfor %}
-        {# Duplicate for seamless loop #}
-        {% for event in activityFeed %}
-            <span class="nj-ticker-item">
-                <span class="nj-ticker-dot {{ event.type }}"></span>
-                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
-            </span>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-{# ═══════════════════════════════════════════════
-   FEATURE 3 — Module Cards
-   ═══════════════════════════════════════════════ #}
-<section class="nj-modules">
+<section class="nj-signal-section" id="signalChapter">
     <div class="container">
-        <h3 class="fw-bold text-center mb-2">Ce que Najahni fait pour vous</h3>
-        <p class="text-center text-muted mb-4">Six modules. Un seul objectif : votre reussite.</p>
-        <div class="row g-4">
-            {% set modules = [
-                {
-                    icon: 'bi-cash-stack',
-                    gradient: 'linear-gradient(135deg, #7209b7, #3a0ca3)',
-                    title: 'Trouvez des investisseurs pour votre projet',
-                    desc: 'Publiez votre opportunite, negociez les termes, et finalisez un contrat signe numeriquement.',
-                    stat: platformStats.openOpportunities ~ ' opportunites actives',
-                    cta: 'Voir les opportunites',
-                    route: path('app_invest_opportunities')
-                },
-                {
-                    icon: 'bi-rocket-takeoff',
-                    gradient: 'linear-gradient(135deg, #4361ee, #3a0ca3)',
-                    title: 'Transformez votre idee en projet structure',
-                    desc: 'Creez, evaluez et presentez votre projet a une communaute d\'experts et d\'investisseurs.',
-                    stat: platformStats.totalProjects ~ ' projets en cours',
-                    cta: 'Creer un projet',
-                    route: path('app_projet_index')
-                },
-                {
-                    icon: 'bi-people-fill',
-                    gradient: 'linear-gradient(135deg, #3a0ca3, #7209b7)',
-                    title: 'Rejoignez une communaute d\'entrepreneurs actifs',
-                    desc: 'Echangez, collaborez, et grandissez avec des milliers d\'entrepreneurs tunisiens.',
-                    stat: platformStats.totalUsers ~ ' membres actifs',
-                    cta: 'Rejoindre',
-                    route: path('app_community_posts')
-                },
-                {
-                    icon: 'bi-mortarboard',
-                    gradient: 'linear-gradient(135deg, #06d6a0, #0d9488)',
-                    title: 'Apprenez de ceux qui ont deja reussi',
-                    desc: 'Reservez des sessions avec des mentors experimentes et progressez plus vite.',
-                    stat: platformStats.totalMentorsAvail ~ ' mentors disponibles',
-                    cta: 'Trouver un mentor',
-                    route: path('app_mentorat_requests')
-                },
-                {
-                    icon: 'bi-book',
-                    gradient: 'linear-gradient(135deg, #f72585, #b5179e)',
-                    title: 'Developpez les competences qui font la difference',
-                    desc: 'Suivez des formations adaptees aux entrepreneurs et obtenez des badges reconnus.',
-                    stat: platformStats.totalCours ~ ' cours disponibles',
-                    cta: 'Commencer',
-                    route: path('app_apprentissage_cours')
-                },
-                {
-                    icon: 'bi-person-vcard',
-                    gradient: 'linear-gradient(135deg, #f59e0b, #e6a700)',
-                    title: 'Votre profil, votre identite entrepreneuriale',
-                    desc: 'Un profil complet qui vous represente aupres des investisseurs, mentors, et partenaires.',
-                    stat: platformStats.totalUsers ~ ' profils crees',
-                    cta: 'Creer mon profil',
-                    route: path('app_profile')
-                }
-            ] %}
+        <div class="nj-signal-shell">
+            <div class="nj-chapter-label is-dark" id="signalLabel">
+                <span class="nj-chapter-index">Chapitre 2</span>
+                <span class="nj-chapter-text">Activite en temps reel</span>
+                <span class="nj-chapter-cursor"></span>
+            </div>
+            <p class="nj-signal-intro">Le flux ne se contente pas de faire joli. Il montre que la plateforme respire, bouge et relie des actions humaines a des signaux concrets.</p>
 
-            {% for m in modules %}
-            <div class="col-md-6 col-lg-4">
-                <div class="nj-module-card" data-tilt style="transition-delay: {{ (loop.index0 % 3) * 100 }}ms">
-                    <span class="nj-module-stat">{{ m.stat }}</span>
-                    <div class="nj-module-header" style="background: {{ m.gradient }}">
-                        <i class="bi {{ m.icon }}"></i>
-                    </div>
-                    <div class="nj-module-body">
-                        <h5>{{ m.title }}</h5>
-                        <p>{{ m.desc }}</p>
-                        <a href="{{ m.route }}" class="nj-module-cta">{{ m.cta }} <i class="bi bi-arrow-right ms-1"></i></a>
+            {% if activityFeed|length > 0 %}
+                <div class="nj-ticker" id="njTicker">
+                    <div class="nj-ticker-track" id="tickerTrack">
+                        {% for event in activityFeed %}
+                            <span class="nj-ticker-item">
+                                <span class="nj-ticker-dot {{ event.type }}"></span>
+                                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
+                            </span>
+                        {% endfor %}
+                        {% for event in activityFeed %}
+                            <span class="nj-ticker-item">
+                                <span class="nj-ticker-dot {{ event.type }}"></span>
+                                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
+                            </span>
+                        {% endfor %}
                     </div>
                 </div>
+            {% else %}
+                <div class="nj-signal-empty">Le flux reprendra des qu'une nouvelle activite sera enregistree sur la plateforme.</div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="nj-journey" id="journeyWrapper">
+    <div class="nj-journey-sticky">
+        <div class="nj-journey-head">
+            <div class="nj-chapter-label is-dark" id="journeyLabel">
+                <span class="nj-chapter-index">Chapitre 3</span>
+                <span class="nj-chapter-text">Parcours fondateur</span>
+                <span class="nj-chapter-cursor"></span>
             </div>
+            <p class="nj-journey-note">Six ecrans, un seul mouvement: l'idee devient projet, le projet devient relation, la relation devient traction.</p>
+        </div>
+
+        <div class="nj-journey-track" id="journeyTrack">
+            {% for m in modules %}
+                <article class="nj-journey-slide" data-journey-slide style="--slide-glow: {{ m.glow }}; --slide-gradient: {{ m.gradient }}; --slide-accent: {{ m.accent }}; --slide-surface: {{ m.surface }};">
+                    <div class="nj-journey-slide-inner">
+                        <div class="nj-journey-panel">
+                            <div class="nj-journey-topline">
+                                <span class="nj-journey-index">{{ '%02d'|format(loop.index) }}</span>
+                                <span class="nj-journey-step">{{ m.eyebrow }}</span>
+                            </div>
+                            <div class="nj-journey-icon"><i class="bi {{ m.icon }}"></i></div>
+                            <h3>{{ m.title }}</h3>
+                            <p>{{ m.desc }}</p>
+                            <div class="nj-journey-metrics">
+                                <span>{{ m.stat }}</span>
+                                <span>{{ m.secondary }}</span>
+                            </div>
+                            <a href="{{ m.route }}" class="nj-journey-cta">{{ m.cta }} <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+
+        <div class="nj-journey-dots" aria-hidden="true">
+            {% for m in modules %}
+                <span class="nj-journey-dot" data-journey-dot style="--dot-color: {{ m.accent }}"></span>
             {% endfor %}
         </div>
     </div>
 </section>
 
-{# ═══════════════════════════════════════════════
-   FEATURE 4 — Social Proof
-   ═══════════════════════════════════════════════ #}
-<section class="nj-social-proof">
+<section class="nj-social-proof" id="proofChapter">
     <div class="container">
-        {# Part 1 — Impact numbers #}
+        <div class="nj-chapter-label" id="proofLabel">
+            <span class="nj-chapter-index">Chapitre 4</span>
+            <span class="nj-chapter-text">Impact mesurable</span>
+            <span class="nj-chapter-cursor"></span>
+        </div>
+        <p class="nj-proof-intro">Quand le mouvement est bon, il laisse des traces. Les chiffres ci-dessous doivent se sentir comme des resonances, pas comme des cases a cocher.</p>
+
         <div class="nj-impact-grid" id="impactGrid">
-            <div class="nj-impact-item">
+            <div class="nj-impact-card">
                 <span class="nj-impact-num" data-count="{{ platformStats.totalEntrepreneurs }}">0</span>
                 <div class="nj-impact-label">Entrepreneurs</div>
                 <div class="nj-impact-sub">ont cree leur projet sur Najahni</div>
             </div>
-            <div class="nj-impact-item">
+            <div class="nj-impact-card">
                 <span class="nj-impact-num" data-count="{{ platformStats.totalInvestors }}">0</span>
                 <div class="nj-impact-label">Investisseurs</div>
                 <div class="nj-impact-sub">cherchent activement des opportunites</div>
             </div>
-            <div class="nj-impact-item">
+            <div class="nj-impact-card">
                 <span class="nj-impact-num" data-count="{{ platformStats.fundedDeals }}">0</span>
                 <div class="nj-impact-label">Deals</div>
                 <div class="nj-impact-sub">finances avec succes sur la plateforme</div>
             </div>
-            <div class="nj-impact-item">
+            <div class="nj-impact-card">
                 <span class="nj-impact-num" data-count="{{ platformStats.totalSessions }}">0</span>
                 <div class="nj-impact-label">Sessions</div>
                 <div class="nj-impact-sub">de mentorat realisees</div>
             </div>
         </div>
 
-        {# Part 2 — Strengths #}
         <div class="nj-strengths" id="strengthsGrid">
             <div class="nj-strength-card" style="transition-delay:0ms">
                 <i class="bi bi-file-earmark-lock2"></i>
@@ -569,262 +1660,54 @@ body { background: #f0f2f5; }
                 <p>Concu pour l'ecosysteme entrepreneurial local</p>
             </div>
         </div>
+    </div>
+</section>
 
-        {# Part 3 — Closing statement #}
+<section class="nj-closing-section">
+    <div class="container">
         <div class="nj-closing" id="njClosing">
-            {% if isGuest %}
-                <h2>Pret a commencer ? Creez votre compte gratuitement.</h2>
-                <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Creer mon compte gratuitement</a>
-            {% else %}
-                <h2>Najahni n'est pas un outil. C'est l'ecosysteme complet dont chaque entrepreneur tunisien a besoin.</h2>
-                <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Commencer maintenant</a>
-            {% endif %}
+            <div class="nj-closing-shell">
+                <div class="nj-closing-copy">
+                    <div class="nj-chapter-label is-dark" id="closingLabel">
+                        <span class="nj-chapter-index">Chapitre 5</span>
+                        <span class="nj-chapter-text">Plateforme complete</span>
+                        <span class="nj-chapter-cursor"></span>
+                    </div>
+
+                    {% if isGuest %}
+                        <h2>Entrez dans une plateforme ou le financement, l'accompagnement et la traction avancent ensemble.</h2>
+                        <p>La derniere section doit donner envie de cliquer maintenant. Elle reprend la tension du hero, mais avec une promesse plus mature et plus concrete.</p>
+                        <div class="nj-closing-actions">
+                            <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Creer mon compte gratuitement</a>
+                            <a href="{{ path('app_login') }}" class="btn btn-hero-secondary">Se connecter</a>
+                        </div>
+                    {% else %}
+                        <h2>Tout ce dont votre projet a besoin est deja dans la boucle. Il ne reste qu'a relancer le mouvement.</h2>
+                        <p>Le bug de routage est corrige: un utilisateur connecte repart maintenant vers un espace utile, et non plus vers l'inscription.</p>
+                        <div class="nj-closing-actions">
+                            <a href="{{ closingRoute }}" class="btn btn-hero-primary">{% if is_granted('ROLE_ADMIN') %}Ouvrir le tableau de bord{% else %}Retourner a mes projets{% endif %}</a>
+                            <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Explorer les opportunites</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="nj-closing-visual" aria-hidden="true">
+                    <div class="nj-closing-core"></div>
+                    <div class="nj-closing-chip nj-closing-chip-a"><span></span>{{ platformStats.totalUsers }} membres relies</div>
+                    <div class="nj-closing-chip nj-closing-chip-b"><span></span>{{ platformStats.openOpportunities }} signaux chauds</div>
+                    <div class="nj-closing-chip nj-closing-chip-c"><span></span>{{ platformStats.totalSessions }} sessions activees</div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
-{% endblock %}
 
-{% block javascripts %}
-<script>
-(function() {
-    'use strict';
-
-    /* ═══════════════════════════════════════════
-       FEATURE 1 — Hero counter + pill cycling
-       ═══════════════════════════════════════════ */
-
-    // Animate counters from 0 to target over duration ms
-    function animateCounters(elements, duration) {
-        elements.forEach(function(el) {
-            var target = parseInt(el.getAttribute('data-count'), 10) || 0;
-            if (target === 0) { el.textContent = '0'; return; }
-            var start = performance.now();
-            function step(now) {
-                var progress = Math.min((now - start) / duration, 1);
-                var eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
-                el.textContent = Math.floor(eased * target);
-                if (progress < 1) requestAnimationFrame(step);
-                else el.textContent = target;
-            }
-            requestAnimationFrame(step);
-        });
-    }
-
-    // Hero micro-stats count-up on load
-    var heroNums = document.querySelectorAll('.nj-hero-stat .stat-num');
-    if (heroNums.length) animateCounters(heroNums, 1500);
-
-    // Pill badge cycling
-    var pillEl = document.getElementById('heroPillText');
-    if (pillEl) {
-        var pillData = [
-            '{{ platformStats.activeProjects }} projets actifs',
-            '{{ platformStats.totalInvestors }} investisseurs inscrits',
-            '{{ platformStats.fundedDeals }} deals finances'
-        ];
-        var pillIndex = 0;
-        var pillContainer = pillEl.parentElement;
-        setInterval(function() {
-            pillContainer.classList.add('fade-out');
-            setTimeout(function() {
-                pillIndex = (pillIndex + 1) % pillData.length;
-                pillEl.textContent = pillData[pillIndex];
-                pillContainer.classList.remove('fade-out');
-            }, 350);
-        }, 3000);
-    }
-
-    /* ═══════════════════════════════════════════
-       FEATURE 5 — Three.js Network Visualization
-       ═══════════════════════════════════════════ */
-    function initThreeNetwork() {
-        if (window.innerWidth < 768) return; // skip mobile
-        var canvas = document.getElementById('heroCanvas');
-        if (!canvas || typeof THREE === 'undefined') return;
-
-        var hero = document.getElementById('njHero');
-        var W = hero.offsetWidth, H = hero.offsetHeight;
-        var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-        renderer.setSize(W, H);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-        var scene = new THREE.Scene();
-        var camera = new THREE.PerspectiveCamera(60, W / H, 1, 1000);
-        camera.position.z = 250;
-
-        var BOUNDS = 160;
-        var nodes = [];
-        var nodeMeshes = [];
-        var velocities = [];
-
-        // Node types: 5 investor (gold, large), 30 entrepreneur (blue, med), 45 community (white, small)
-        var types = [];
-        var i;
-        for (i = 0; i < 5; i++) types.push({ color: 0xf59e0b, size: 3.5 });
-        for (i = 0; i < 30; i++) types.push({ color: 0x3b82f6, size: 2.2 });
-        for (i = 0; i < 45; i++) types.push({ color: 0xffffff, size: 1.3 });
-
-        for (i = 0; i < 80; i++) {
-            var geo = new THREE.SphereGeometry(types[i].size, 12, 12);
-            var mat = new THREE.MeshBasicMaterial({ color: types[i].color, transparent: true, opacity: .7 });
-            var mesh = new THREE.Mesh(geo, mat);
-            mesh.position.set(
-                (Math.random() - .5) * BOUNDS * 2,
-                (Math.random() - .5) * BOUNDS * 2,
-                (Math.random() - .5) * BOUNDS * 2
-            );
-            scene.add(mesh);
-            nodeMeshes.push(mesh);
-            velocities.push(new THREE.Vector3(
-                (Math.random() - .5) * .15,
-                (Math.random() - .5) * .15,
-                (Math.random() - .5) * .15
-            ));
-        }
-
-        // Lines
-        var lineMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .12 });
-        var lineGeo = new THREE.BufferGeometry();
-        var MAX_LINES = 300;
-        var linePositions = new Float32Array(MAX_LINES * 6);
-        lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-        lineGeo.setDrawRange(0, 0);
-        var lines = new THREE.LineSegments(lineGeo, lineMat);
-        scene.add(lines);
-
-        var angle = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Move nodes
-            for (var n = 0; n < 80; n++) {
-                var p = nodeMeshes[n].position;
-                var v = velocities[n];
-                p.add(v);
-                if (Math.abs(p.x) > BOUNDS) v.x *= -1;
-                if (Math.abs(p.y) > BOUNDS) v.y *= -1;
-                if (Math.abs(p.z) > BOUNDS) v.z *= -1;
-            }
-
-            // Update lines (proximity)
-            var lineCount = 0;
-            var DIST = 80;
-            for (var a = 0; a < 80 && lineCount < MAX_LINES; a++) {
-                for (var b = a + 1; b < 80 && lineCount < MAX_LINES; b++) {
-                    var d = nodeMeshes[a].position.distanceTo(nodeMeshes[b].position);
-                    if (d < DIST) {
-                        var idx = lineCount * 6;
-                        linePositions[idx]     = nodeMeshes[a].position.x;
-                        linePositions[idx + 1] = nodeMeshes[a].position.y;
-                        linePositions[idx + 2] = nodeMeshes[a].position.z;
-                        linePositions[idx + 3] = nodeMeshes[b].position.x;
-                        linePositions[idx + 4] = nodeMeshes[b].position.y;
-                        linePositions[idx + 5] = nodeMeshes[b].position.z;
-                        lineCount++;
-                    }
-                }
-            }
-            lineGeo.attributes.position.needsUpdate = true;
-            lineGeo.setDrawRange(0, lineCount * 2);
-
-            // Auto-rotate camera
-            angle += 0.001745; // ~0.1 deg/frame => ~60s per revolution at 60fps
-            camera.position.x = 250 * Math.sin(angle);
-            camera.position.z = 250 * Math.cos(angle);
-            camera.lookAt(0, 0, 0);
-
-            renderer.render(scene, camera);
-        }
-        animate();
-        canvas.classList.add('loaded');
-
-        window.addEventListener('resize', function() {
-            W = hero.offsetWidth; H = hero.offsetHeight;
-            camera.aspect = W / H;
-            camera.updateProjectionMatrix();
-            renderer.setSize(W, H);
-        });
-    }
-
-    // Load Three.js then init
-    if (window.innerWidth >= 768) {
-        var s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-        s.onload = initThreeNetwork;
-        document.head.appendChild(s);
-    }
-
-    /* ═══════════════════════════════════════════
-       FEATURE 6 — Scroll-triggered reveals
-       ═══════════════════════════════════════════ */
-    if ('IntersectionObserver' in window) {
-        var revealObs = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('revealed');
-                    revealObs.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.15 });
-
-        // Ticker
-        var ticker = document.getElementById('njTicker');
-        if (ticker) revealObs.observe(ticker);
-
-        // Module cards
-        document.querySelectorAll('.nj-module-card').forEach(function(card) {
-            revealObs.observe(card);
-        });
-
-        // Audience cards
-        document.querySelectorAll('.nj-audience-card').forEach(function(card) {
-            revealObs.observe(card);
-        });
-
-        // Strength cards
-        document.querySelectorAll('.nj-strength-card').forEach(function(card) {
-            revealObs.observe(card);
-        });
-
-        // Closing
-        var closing = document.getElementById('njClosing');
-        if (closing) revealObs.observe(closing);
-
-        // Impact grid — also triggers counter animation
-        var impactGrid = document.getElementById('impactGrid');
-        if (impactGrid) {
-            var impactObs = new IntersectionObserver(function(entries) {
-                entries.forEach(function(entry) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('revealed');
-                        animateCounters(entry.target.querySelectorAll('.nj-impact-num'), 1500);
-                        impactObs.unobserve(entry.target);
-                    }
-                });
-            }, { threshold: 0.15 });
-            impactObs.observe(impactGrid);
-        }
-    }
-
-    /* ═══════════════════════════════════════════
-       FEATURE 3 — 3D Tilt on module cards
-       ═══════════════════════════════════════════ */
-    document.querySelectorAll('[data-tilt]').forEach(function(card) {
-        card.addEventListener('mousemove', function(e) {
-            var rect = card.getBoundingClientRect();
-            var x = e.clientX - rect.left;
-            var y = e.clientY - rect.top;
-            var cx = rect.width / 2;
-            var cy = rect.height / 2;
-            var rotY = ((x - cx) / cx) * 6;
-            var rotX = ((cy - y) / cy) * 6;
-            card.style.transform = 'perspective(800px) rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) translateY(-8px)';
-        });
-        card.addEventListener('mouseleave', function() {
-            card.style.transform = '';
-        });
-    });
-
-})();
-</script>
+<script type="application/json" id="homeExperienceData">{{ {
+    pillItems: [
+        platformStats.activeProjects ~ ' projets actifs',
+        platformStats.totalInvestors ~ ' investisseurs engages',
+        platformStats.totalMentorsAvail ~ ' mentors disponibles',
+        platformStats.fundedDeals ~ ' deals finances'
+    ]
+}|json_encode|raw }}</script>
 {% endblock %}

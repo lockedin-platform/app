@@ -32,6 +32,7 @@ class ProjetExportService
         return $dompdf->output();
     }
 
+    /** @param Projet[] $projets */
     public function exportProjectCsv(array $projets): string
     {
         $handle = fopen('php://temp', 'r+');

@@ -72,6 +72,7 @@ class GeminiService
         }
     }
 
+    /** @return array<string, mixed>|null */
     public function generateJson(string $prompt, float $temperature = 0.3): ?array
     {
         $result = $this->generate($prompt, $temperature);
@@ -95,26 +96,4 @@ class GeminiService
         return is_array($decoded) ? $decoded : null;
     }
 
-    public function analyzeSentiment(string $text): ?array
-    {
-        $prompt = <<<PROMPT
-Analyse le sentiment du texte suivant d'un projet entrepreneurial. Retourne un JSON avec:
-- "sentiment": "positif", "neutre" ou "négatif"
-- "score": nombre entre -1.0 (très négatif) et 1.0 (très positif)
-- "confiance": nombre entre 0 et 1
-- "emotions": tableau des émotions détectées (ex: "optimisme", "ambition", "prudence", "inquiétude")
-- "tonalite": description courte du ton général (1 phrase)
-- "mots_cles_positifs": tableau des mots/expressions positifs trouvés
-- "mots_cles_negatifs": tableau des mots/expressions négatifs trouvés
-
-Texte à analyser:
-"""
-{$text}
-"""
-
-Retourne UNIQUEMENT le JSON, rien d'autre.
-PROMPT;
-
-        return $this->generateJson($prompt, 0.2);
-    }
 }

@@ -7,6 +7,9 @@ use App\Repository\LoginHistoryRepository;
 use App\Repository\NotificationRepository;
 use App\Repository\UserRepository;
 use App\Service\EmailService;
+use App\Service\GeminiService;
+use App\Service\UserMatchingService;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -22,6 +25,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[IsGranted('ROLE_USER')]
 class ProfileController extends AbstractController
 {
+    public function __construct(
+        private readonly GeminiService $ai,
+        private readonly ManagerRegistry $doctrine,
+    ) {
+    }
+
     #[Route('/profile', name: 'app_profile')]
     public function index(
         LoginHistoryRepository $loginHistoryRepo,
@@ -32,7 +41,171 @@ class ProfileController extends AbstractController
         return $this->render('front/profile/index.html.twig', [
             'loginHistory' => $loginHistoryRepo->findByUser($user->getId(), 10),
             'unreadNotifs' => $notifRepo->countUnread($user->getId()),
+            'aiEnabled' => $this->ai->isConfigured(),
         ]);
+    }
+
+    #[Route('/profile/ai/bio', name: 'app_profile_ai_generate_bio', methods: ['POST'])]
+    public function generateProfileBio(EntityManagerInterface $em): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->ai->isConfigured()) {
+            return new JsonResponse(['error' => 'IA non configurée'], 503);
+        }
+
+        $prompt = $this->buildProfileBioPrompt($user);
+        $bio = $this->ai->generate($prompt, 0.6);
+        if (!$bio) {
+            return new JsonResponse(['error' => 'Impossible de générer la bio pour le moment.'], 500);
+        }
+
+        $user->setBio($bio);
+        $em->flush();
+
+        return new JsonResponse(['bio' => $bio, 'saved' => true]);
+    }
+
+
+
+    #[Route('/profile/ai/chat', name: 'app_profile_ai_chat', methods: ['POST'])]
+    public function chatProfileAi(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        try {
+            $body = $request->toArray();
+        } catch (\Throwable $e) {
+            $body = [];
+        }
+        $question = trim((string) ($body['message'] ?? ''));
+        if ($question === '') {
+            return new JsonResponse(['error' => 'Message requis'], 400);
+        }
+        if (!$this->ai->isConfigured()) {
+            return new JsonResponse(['error' => 'IA non configurée'], 503);
+        }
+
+        $prompt = $this->buildProfileChatPrompt($user, $question);
+        $answer = $this->ai->generate($prompt, 0.7);
+        if (!$answer) {
+            return new JsonResponse(['error' => 'Impossible de répondre pour le moment.'], 500);
+        }
+
+        return new JsonResponse(['answer' => $answer]);
+    }
+
+    #[Route('/profile/ai/recommendations', name: 'app_profile_ai_recommendations', methods: ['POST'])]
+    public function profileRecommendations(): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->ai->isConfigured()) {
+            return new JsonResponse(['error' => 'IA non configurée'], 503);
+        }
+
+        $stats = $this->getUserStats($user);
+        $prompt = $this->buildProfileRecommendationPrompt($user, $stats);
+        $recommendationText = $this->ai->generate($prompt, 0.45);
+        if (!$recommendationText) {
+            return new JsonResponse(['error' => 'Impossible de générer les recommandations.'], 500);
+        }
+
+        return new JsonResponse(['recommendations' => $recommendationText]);
+    }
+
+    #[Route('/profile/ai/matching', name: 'app_profile_ai_matching', methods: ['POST'])]
+    public function aiMatching(UserMatchingService $matchingService): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        if (!$this->ai->isConfigured()) {
+            return new JsonResponse(['error' => 'IA non configurée'], 503);
+        }
+
+        $matches = $matchingService->findMatches($user, 5);
+
+        $result = array_map(fn($m) => [
+            'id' => $m['user']->getId(),
+            'name' => $m['user']->getFullName(),
+            'role' => $m['user']->getRole(),
+            'company' => $m['user']->getCompanyName(),
+            'picture' => $m['user']->getProfilePicture(),
+            'reason' => $m['reason'],
+            'score' => $m['score'],
+        ], $matches);
+
+        return new JsonResponse(['matches' => $result]);
+    }
+
+    private function buildProfileBioPrompt(User $user): string
+    {
+        $bio = $user->getBio() ? "Bio actuelle : {$user->getBio()}" : 'Bio actuelle : aucune bio disponible.';
+        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}" : '';
+        $linkedin = $user->getLinkedinUrl() ? "LinkedIn : {$user->getLinkedinUrl()}" : '';
+        $role = $user->getRole();
+        $context = "Name: {$user->getFullName()}\nRole: {$role}\n{$company}\n{$linkedin}\n{$bio}";
+
+        return <<<PROMPT
+Tu es un assistant IA de profil pour Najahni. En te basant sur le profil utilisateur suivant, rédige une bio professionnelle en français en 2 à 3 phrases. Le ton doit être clair, engageant et orienté vers l’action, en mettant en avant le rôle et la valeur apportée.
+
+{$context}
+
+Réponds uniquement avec le texte final de la bio, sans explications.
+PROMPT;
+    }
+
+    private function buildProfileChatPrompt(User $user, string $question): string
+    {
+        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}\n" : '';
+        $bio = $user->getBio() ? "Bio : {$user->getBio()}\n" : '';
+        return <<<PROMPT
+Tu es un assistant personnel pour un utilisateur de Najahni.
+Fais des réponses utiles, concises et adaptées à un profil d'entrepreneur ou mentor en Tunisie.
+Voici le contexte du profil:
+- Nom: {$user->getFullName()}
+- Rôle: {$user->getRole()}
+{$company}{$bio}
+Question: {$question}
+PROMPT;
+    }
+
+    /** @param array<string, int> $stats */
+    private function buildProfileRecommendationPrompt(User $user, array $stats): string
+    {
+        $bio = $user->getBio() ? "Bio actuelle : {$user->getBio()}" : 'Aucune bio fournie.';
+        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}" : 'Entreprise non précisée.';
+        return <<<PROMPT
+Tu es un coach IA de carrière pour Najahni. Donne quatre recommandations pratiques à cet utilisateur afin d'améliorer son profil, augmenter sa visibilité et mieux tirer parti de la plateforme.
+Informations du profil :
+- Nom: {$user->getFullName()}
+- Rôle: {$user->getRole()}
+- {$company}
+- {$bio}
+- Publications: {$stats['posts']}
+- Commentaires: {$stats['comments']}
+- Groupes: {$stats['groups']}
+- Projets: {$stats['projets']}
+
+Réponds en français avec un paragraphe clair pour chaque recommandation. Ne renvoie pas de JSON.
+PROMPT;
+    }
+
+    /** @return array<string, int> */
+    private function getUserStats(User $user): array
+    {
+        $conn = $this->doctrine->getConnection();
+        $posts = (int) $conn->fetchOne('SELECT COUNT(*) FROM posts WHERE user_id = ?', [$user->getId()]);
+        $groups = (int) $conn->fetchOne('SELECT COUNT(*) FROM group_members WHERE user_id = ?', [$user->getId()]);
+        $projets = (int) $conn->fetchOne('SELECT COUNT(*) FROM projet WHERE user_id = ?', [$user->getId()]);
+        $comments = (int) $conn->fetchOne('SELECT COUNT(*) FROM comments WHERE user_id = ?', [$user->getId()]);
+
+        return [
+            'posts' => $posts,
+            'groups' => $groups,
+            'projets' => $projets,
+            'comments' => $comments,
+        ];
     }
 
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]

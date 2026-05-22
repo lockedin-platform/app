@@ -15,6 +15,7 @@ class ProjetBusinessPlanService
     ) {
     }
 
+    /** @return array<string, mixed> */
     public function generate(Projet $projet): array
     {
         $db = $projet->getDonneesBusiness();
@@ -26,6 +27,7 @@ class ProjetBusinessPlanService
         return $this->generateLocal($projet);
     }
 
+    /** @param array<string, mixed> $businessPlan */
     public function generatePdf(Projet $projet, array $businessPlan): string
     {
         $html = $this->twig->render('front/projet/business_plan_pdf.html.twig', [
@@ -46,6 +48,7 @@ class ProjetBusinessPlanService
         return $dompdf->output();
     }
 
+    /** @return array<string, mixed> */
     private function generateWithAi(Projet $projet): array
     {
         $db = $projet->getDonneesBusiness();
@@ -117,6 +120,7 @@ Sois réaliste et adapté au contexte tunisien (DT, réglementations, marché lo
         return $result ?? $this->generateLocal($projet);
     }
 
+    /** @return array<string, mixed> */
     private function generateLocal(Projet $projet): array
     {
         $db = $projet->getDonneesBusiness();

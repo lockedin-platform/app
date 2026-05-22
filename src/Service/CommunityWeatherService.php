@@ -18,6 +18,7 @@ final class CommunityWeatherService
     {
     }
 
+    /** @return array<string, mixed> */
     public function forecastForEvent(?\DateTimeInterface $eventDate): array
     {
         if ($eventDate === null) {
@@ -73,6 +74,7 @@ final class CommunityWeatherService
         }
     }
 
+    /** @return array<string, float|int> */
     private function fetchDaily(DateTimeImmutable $day): array
     {
         $options = [
@@ -101,6 +103,10 @@ final class CommunityWeatherService
         }
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @return array<string, float|int>
+     */
     private function decodeForecast(string $method, string $url, array $options): array
     {
         $response = $this->httpClient->request($method, $url, $options);

@@ -5,5 +5,5 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 class MentorAvailabilityRepository extends ServiceEntityRepository {
     public function __construct(ManagerRegistry $registry) { parent::__construct($registry, MentorAvailability::class); }
-    public function findByMentor($mentor): array { return $this->findBy(['mentor' => $mentor], ['date' => 'ASC']); }
+    public function findByMentor(mixed $mentor): array { return $this->findBy(['mentor' => $mentor], ['date' => 'ASC']); }
 }

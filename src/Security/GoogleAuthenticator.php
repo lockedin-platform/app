@@ -121,7 +121,9 @@ class GoogleAuthenticator extends OAuth2Authenticator
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        $request->getSession()->getFlashBag()->add('danger', 'Échec de la connexion Google: ' . $exception->getMessage());
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $request->getSession();
+        $session->getFlashBag()->add('danger', 'Échec de la connexion Google: ' . $exception->getMessage());
         return new RedirectResponse($this->router->generate('app_login'));
     }
 }

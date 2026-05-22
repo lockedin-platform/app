@@ -7,4 +7,16 @@ import './stimulus_bootstrap.js';
  */
 import './styles/app.css';
 
-console.log('This log comes from assets/app.js - welcome to AssetMapper!');
+async function bootPageExperience() {
+	const page = document.body?.dataset.page;
+
+	if (page !== 'home') {
+		return;
+	}
+
+	const { mountHomeExperience } = await import('home');
+	mountHomeExperience();
+}
+
+bootPageExperience();
+document.addEventListener('turbo:load', bootPageExperience);

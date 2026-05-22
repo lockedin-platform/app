@@ -80,6 +80,7 @@ class EmailService
         $this->mailer->send($email);
     }
 
+    /** @param array<string, mixed> $ticket */
     public function sendCommunityEventTicket(
         string $to,
         string $firstname,
@@ -109,6 +110,7 @@ class EmailService
         $this->mailer->send($email);
     }
 
+    /** @param array<int, string> $recipients */
     public function sendBroadcast(array $recipients, string $subject, string $body): int
     {
         $sent = 0;

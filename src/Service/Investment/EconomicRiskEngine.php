@@ -29,6 +29,7 @@ class EconomicRiskEngine
     public const THRESHOLD_LOW = 33;
     public const THRESHOLD_MEDIUM = 66;
 
+    /** @param array<string, mixed> $economicData */
     public function computeEconomicFactor(array $economicData): float
     {
         if (empty($economicData) || !($economicData['dataAvailable'] ?? false)) {
@@ -46,6 +47,7 @@ class EconomicRiskEngine
         return self::clamp($composite, 0.0, 100.0);
     }
 
+    /** @param array<string, mixed> $economicData */
     public function calculateFullRisk(float $targetAmount, ?\DateTimeInterface $deadline, array $economicData): int
     {
         if ($targetAmount <= 0) {
@@ -148,6 +150,7 @@ class EconomicRiskEngine
         return 'Risque critique. Report de l\'investissement fortement recommande.';
     }
 
+    /** @param array<string, mixed> $economicData */
     public function buildDeterministicVerdict(
         int $score,
         array $economicData,

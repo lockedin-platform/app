@@ -15,7 +15,7 @@ class InvestmentOfferRepository extends ServiceEntityRepository
         parent::__construct($registry, InvestmentOffer::class);
     }
 
-    public function findByInvestor($user): array
+    public function findByInvestor(mixed $user): array
     {
         return $this->findBy(['investor' => $user], ['id' => 'DESC']);
     }
@@ -50,7 +50,7 @@ class InvestmentOfferRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByOpportunity($opp): array
+    public function findByOpportunity(mixed $opp): array
     {
         return $this->findBy(['opportunity' => $opp], ['id' => 'DESC']);
     }

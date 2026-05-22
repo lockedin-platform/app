@@ -15,7 +15,7 @@ class ReCaptchaService
     ];
 
     // Google's official test keys (always pass)
-    private const TEST_SECRET_KEY = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe';
+    private const TEST_SECRET_KEY = '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe'; // @phpstan-ignore classConstant.unused
 
     public function __construct(
         private HttpClientInterface $httpClient,

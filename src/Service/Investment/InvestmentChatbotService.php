@@ -48,6 +48,7 @@ Technologie, Agriculture, Tourisme, Sante, Energie renouvelable, Industrie texti
 - Si la question n'est pas liee a NAJAHNI ou la finance, reponds que tu es specialise dans la plateforme NAJAHNI
 PROMPT;
 
+    /** @var array<int, array{role: string, content: string}> */
     private array $conversationHistory = [];
     private string $hfToken;
     private ?string $workingModel = null;
@@ -100,6 +101,7 @@ PROMPT;
      * Generate a short, plain-language risk verdict (2-3 sentences max).
      * Designed to feel like advice from a financial advisor, not a dashboard widget.
      */
+    /** @param array<string, mixed> $economicContext */
     public function generateRiskVerdict(
         string $projectTitle,
         string $sector,
@@ -136,6 +138,8 @@ PROMPT;
 
     /**
      * Chat with full investment context and conversation history.
+     * @param array<string, mixed> $context
+     * @param array<int, array{role: string, content: string}> $conversationHistory
      */
     public function chatWithContext(string $userMessage, array $context, array $conversationHistory): string
     {
@@ -154,6 +158,7 @@ PROMPT;
         return $this->sendRequest($messages, 600);
     }
 
+    /** @param array<string, mixed> $ctx */
     private function buildContextualSystemPrompt(array $ctx): string
     {
         $mode = $ctx['mode'] ?? 'risk';
@@ -234,6 +239,7 @@ PROMPT;
         return $this->sendRequest($messages, $maxTokens);
     }
 
+    /** @return array<int, array{role: string, content: string}> */
     private function buildMessages(): array
     {
         $messages = [['role' => 'system', 'content' => self::SYSTEM_INSTRUCTION]];
@@ -243,6 +249,7 @@ PROMPT;
         return $messages;
     }
 
+    /** @param array<int, array{role: string, content: string}> $messages */
     private function sendRequest(array $messages, int $maxTokens = 512): string
     {
         if (!$this->isConfigured()) {
@@ -342,6 +349,7 @@ PROMPT;
         }
     }
 
+    /** @return array<int, string> */
     private function getCandidateModels(): array
     {
         if ($this->workingModel !== null) {

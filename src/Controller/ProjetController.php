@@ -93,9 +93,11 @@ class ProjetController extends AbstractController
 
             // Send confirmation email
             try {
+                /** @var \App\Entity\User $currentUser */
+                $currentUser = $this->getUser();
                 $email = (new TemplatedEmail())
                     ->from('mahdibenmariem1@gmail.com')
-                    ->to($this->getUser()->getEmail())
+                    ->to($currentUser->getEmail())
                     ->subject('🚀 Projet créé : ' . $projet->getTitre())
                     ->htmlTemplate('emails/projet_created.html.twig')
                     ->context(['projet' => $projet]);
@@ -352,10 +354,10 @@ class ProjetController extends AbstractController
         if ($db) {
             foreach (['EUR', 'USD', 'GBP'] as $currency) {
                 $conversions[$currency] = [
-                    'taille_marche' => $exchangeService->convert($db->getTailleMarche(), $currency),
-                    'couts_estimes' => $exchangeService->convert($db->getCoutsEstimes(), $currency),
-                    'revenus_attendus' => $exchangeService->convert($db->getRevenusAttendus(), $currency),
-                    'marge' => $exchangeService->convert($db->getMargeEstimee(), $currency),
+                    'taille_marche' => $exchangeService->convert((float) $db->getTailleMarche(), $currency),
+                    'couts_estimes' => $exchangeService->convert((float) $db->getCoutsEstimes(), $currency),
+                    'revenus_attendus' => $exchangeService->convert((float) $db->getRevenusAttendus(), $currency),
+                    'marge' => $exchangeService->convert((float) $db->getMargeEstimee(), $currency),
                 ];
             }
         }
@@ -480,7 +482,7 @@ PROMPT;
 
     private function hydrateDonnees(DonneesBusiness $d, Request $r): void
     {
-        $d->setTailleMarche((float) $r->request->get('taille_marche', 0));
+        $d->setTailleMarche((string) (float) $r->request->get('taille_marche', 0));
         $d->setModeleRevenu($r->request->get('modele_revenu'));
         $d->setCoutsEstimes((float) $r->request->get('couts_estimes', 0));
         $d->setRevenusAttendus((float) $r->request->get('revenus_attendus', 0));

@@ -18,7 +18,7 @@ class InvestmentOpportunityRepository extends ServiceEntityRepository
         return $this->findBy(['status' => 'OPEN'], ['createdAt' => 'DESC']);
     }
 
-    public function findByProject($project): array
+    public function findByProject(mixed $project): array
     {
         return $this->findBy(['project' => $project], ['id' => 'DESC']);
     }

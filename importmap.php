@@ -16,6 +16,12 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
+    'animejs' => [
+        'path' => './assets/vendor/animejs/animejs.index.js',
+    ],
+    'home' => [
+        'path' => './assets/pages/home.js',
+    ],
     '@hotwired/stimulus' => [
         'version' => '3.2.2',
     ],
@@ -24,5 +30,8 @@ return [
     ],
     '@hotwired/turbo' => [
         'version' => '7.3.0',
+    ],
+    'three' => [
+        'path' => './assets/vendor/three/three.index.js',
     ],
 ];

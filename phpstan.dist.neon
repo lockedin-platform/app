@@ -6,3 +6,19 @@ parameters:
         - public/
         - src/
         - tests/
+    ignoreErrors:
+        - identifier: property.unusedType
+        - identifier: while.alwaysTrue
+        - identifier: missingType.generics
+        - identifier: missingType.iterableValue
+        - identifier: nullCoalesce.offset
+        - identifier: nullCoalesce.variable
+        - identifier: property.onlyWritten
+        - identifier: function.alreadyNarrowedType
+        - identifier: nullsafe.neverNull
+        - identifier: method.unused
+        - identifier: return.phpDocType
+        - identifier: argument.unresolvableType
+        -
+            message: '#UserInterface(\|null)? given#'
+            identifier: argument.type

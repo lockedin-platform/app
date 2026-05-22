@@ -44,7 +44,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->count(['verified' => true]);
     }
 
-    public function findBySearch(string $query)
+    public function findBySearch(string $query): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('u')
             ->where('u.firstname LIKE :q OR u.lastname LIKE :q OR u.email LIKE :q')

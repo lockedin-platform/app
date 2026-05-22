@@ -42,6 +42,7 @@ class NewsApiService
         return true; // Google News RSS is free, no key needed
     }
 
+    /** @return array<int, array<string, string>> */
     public function getNewsBySector(string $secteur, int $limit = 6): array
     {
         $cacheKey = 'news_tn_' . md5($secteur . '_v8_rss');
@@ -94,6 +95,7 @@ class NewsApiService
         }
     }
 
+    /** @return array<int, array<string, string|null>> */
     private function fetchGoogleNewsRss(string $query, int $limit): array
     {
         try {

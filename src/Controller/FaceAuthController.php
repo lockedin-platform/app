@@ -147,6 +147,10 @@ class FaceAuthController extends AbstractController
         ]);
     }
 
+    /**
+     * @param array<int, float> $a
+     * @param array<int, float> $b
+     */
     private function euclideanDistance(array $a, array $b): float
     {
         $sum = 0.0;
