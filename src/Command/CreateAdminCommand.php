@@ -34,11 +34,11 @@ class CreateAdminCommand extends Command
 
         $user = new User();
         $user->setEmail($email);
-        $user->setNom('Admin');
-        $user->setPrenom('LockedIn');
-        $user->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $user->setFirstname('Admin');
+        $user->setLastname('LockedIn');
+        $user->setRole('ROLE_ADMIN');
         $user->setPassword($this->hasher->hashPassword($user, $password));
-        $user->setIsVerified(true);
+        $user->setVerified(true);
 
         $this->em->persist($user);
         $this->em->flush();
