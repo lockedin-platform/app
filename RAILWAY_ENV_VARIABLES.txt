@@ -1,0 +1,44 @@
+# ── Copy these into Railway's "Variables" panel ──
+# Replace every value marked with <...> before deploying
+
+APP_ENV=prod
+APP_DEBUG=false
+APP_SECRET=<generate with: php -r "echo bin2hex(random_bytes(32));">
+APP_PUBLIC_URL=https://<your-railway-domain>.railway.app
+
+# PostgreSQL — Railway provides this automatically when you add a Postgres service
+# Copy the value from Railway's Postgres service → Connect tab
+DATABASE_URL=postgresql://<user>:<password>@<host>:5432/<dbname>?serverVersion=15&charset=utf8
+
+# Messenger — use database transport (no Redis needed at this stage)
+MESSENGER_TRANSPORT_DSN=doctrine://default?auto_setup=0
+
+# Mailer — use your Gmail app password
+# How to get one: Google Account → Security → 2FA → App Passwords
+MAILER_DSN=smtp://your_email%40gmail.com:your_app_password@smtp.gmail.com:587
+
+# GROQ AI (get your key at console.groq.com)
+GROQ_API_KEY=<your_groq_api_key>
+GROQ_URL=https://api.groq.com/openai/v1/chat/completions
+GROQ_MODEL=llama-3.3-70b-versatile
+COMMUNITY_GROQ_INSECURE=false
+COMMUNITY_GROQ_TIMEOUT=30
+
+# Google OAuth (optional — disable login with Google if not configured)
+GOOGLE_CLIENT_ID=<your_google_client_id>.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+
+# reCAPTCHA v3 (optional — get from console.developers.google.com)
+RECAPTCHA3_KEY=<your_recaptcha_site_key>
+RECAPTCHA3_SECRET=<your_recaptcha_secret_key>
+
+# Stripe (optional — leave as-is if payment not active yet)
+STRIPE_SECRET_KEY=sk_test_your_stripe_key
+
+# HuggingFace (optional)
+HF_TOKEN=
+
+# RapidAPI (optional — profanity filter)
+RAPIDAPI_KEY=
+PROFANITY_API_URL=https://community-purgomalum.p.rapidapi.com/json
+PROFANITY_API_HOST=community-purgomalum.p.rapidapi.com

@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["php82", "php82Extensions.pdo_pgsql", "php82Extensions.pgsql", "php82Extensions.intl", "php82Extensions.mbstring", "php82Extensions.ctype", "php82Extensions.iconv", "php82Extensions.gd", "php82Extensions.zip", "composer"]
+
+[phases.install]
+cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
+
+[phases.build]
+cmds = [
+    "php bin/console cache:clear --env=prod --no-debug",
+    "php bin/console asset-map:compile --env=prod"
+]
+
+[start]
+cmd = "php bin/console doctrine:schema:update --force --env=prod && php -S 0.0.0.0:$PORT -t public/"
