@@ -66,54 +66,54 @@ class ProjetBusinessPlanService
             'score_global' => $projet->getScoreGlobal(),
         ], JSON_UNESCAPED_UNICODE);
 
-        $prompt = "Tu es un consultant expert en entrepreneuriat en Tunisie. Génère un business plan structuré en français pour ce projet.
+        $prompt = "You are an expert business consultant specializing in Tunisian entrepreneurship. Generate a structured business plan in English for this project.
 
-Données : {$data}
+Data: {$data}
 
-Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
+Reply ONLY with valid JSON using this exact structure:
 {
-  \"resume_executif\": \"Résumé du projet en 3-4 phrases\",
+  \"resume_executif\": \"Project summary in 3-4 sentences\",
   \"probleme_solution\": {
-    \"probleme\": \"Le problème adressé\",
-    \"solution\": \"La solution proposée\",
-    \"proposition_valeur\": \"Ce qui rend unique\"
+    \"probleme\": \"The problem being addressed\",
+    \"solution\": \"The proposed solution\",
+    \"proposition_valeur\": \"What makes this unique\"
   },
   \"analyse_marche\": {
-    \"taille\": \"Taille et potentiel du marché\",
-    \"cible\": \"Clientèle cible\",
-    \"tendances\": \"Tendances du secteur\",
-    \"concurrence\": \"Analyse concurrentielle\"
+    \"taille\": \"Market size and potential\",
+    \"cible\": \"Target customers\",
+    \"tendances\": \"Sector trends\",
+    \"concurrence\": \"Competitive analysis\"
   },
   \"modele_economique\": {
-    \"sources_revenus\": \"Comment le projet génère des revenus\",
-    \"structure_couts\": \"Principales postes de coûts\",
-    \"prix\": \"Stratégie de pricing\",
-    \"rentabilite\": \"Projection de rentabilité\"
+    \"sources_revenus\": \"How the project generates revenue\",
+    \"structure_couts\": \"Main cost categories\",
+    \"prix\": \"Pricing strategy\",
+    \"rentabilite\": \"Profitability projection\"
   },
   \"strategie_marketing\": {
-    \"positionnement\": \"Positionnement sur le marché\",
-    \"canaux\": \"Canaux de distribution et communication\",
+    \"positionnement\": \"Market positioning\",
+    \"canaux\": \"Distribution and communication channels\",
     \"actions\": [\"Action 1\", \"Action 2\", \"Action 3\"]
   },
   \"plan_operationnel\": {
-    \"etapes_cles\": [\"Étape 1\", \"Étape 2\", \"Étape 3\", \"Étape 4\"],
-    \"ressources\": \"Ressources nécessaires\",
-    \"timeline\": \"Planning sur 12 mois\"
+    \"etapes_cles\": [\"Milestone 1\", \"Milestone 2\", \"Milestone 3\", \"Milestone 4\"],
+    \"ressources\": \"Required resources\",
+    \"timeline\": \"12-month roadmap\"
   },
   \"analyse_risques\": {
-    \"risques\": [{\"risque\": \"Risque 1\", \"mitigation\": \"Comment le mitiger\"}],
-    \"plan_b\": \"Plan de contingence\"
+    \"risques\": [{\"risque\": \"Risk 1\", \"mitigation\": \"How to mitigate it\"}],
+    \"plan_b\": \"Contingency plan\"
   },
   \"projections_financieres\": {
     \"annee_1\": {\"revenus\": 0, \"couts\": 0, \"benefice\": 0},
     \"annee_2\": {\"revenus\": 0, \"couts\": 0, \"benefice\": 0},
     \"annee_3\": {\"revenus\": 0, \"couts\": 0, \"benefice\": 0},
-    \"point_equilibre\": \"Quand le projet atteint l'équilibre\"
+    \"point_equilibre\": \"When the project reaches break-even\"
   },
-  \"conclusion\": \"Conclusion et prochaines étapes\"
+  \"conclusion\": \"Conclusion and next steps\"
 }
 
-Sois réaliste et adapté au contexte tunisien (DT, réglementations, marché local).";
+Be realistic and relevant to the Tunisian context (TND currency, local market, regulations). All text values must be in English.";
 
         $result = $this->gemini->generateJson($prompt, 0.4);
 
@@ -128,65 +128,67 @@ Sois réaliste et adapté au contexte tunisien (DT, réglementations, marché lo
         $revenus = $db?->getRevenusAttendus() ?? 0;
         $marge = $revenus - $couts;
 
+        $sector = $projet->getSecteur() ?? 'the target sector';
+
         return [
             'resume_executif' => sprintf(
-                '%s est un projet dans le secteur %s, actuellement en phase de %s. Avec un marché estimé à %s DT et des revenus attendus de %s DT, ce projet vise à se positionner comme un acteur clé de son secteur.',
-                $projet->getTitre(), $projet->getSecteur(), $projet->getEtape(),
+                '%s is a project in the %s sector, currently in the %s phase. With an estimated market size of %s TND and expected revenues of %s TND, this project aims to position itself as a key player in its sector.',
+                $projet->getTitre(), $sector, $projet->getEtape(),
                 number_format((float) ($db?->getTailleMarche() ?? 0), 0, ',', ' '),
                 number_format($revenus, 0, ',', ' ')
             ),
             'probleme_solution' => [
-                'probleme' => 'À définir selon l\'étude de marché approfondie',
+                'probleme' => 'To be defined based on a thorough market study',
                 'solution' => $projet->getDescription(),
-                'proposition_valeur' => 'À compléter avec votre avantage concurrentiel',
+                'proposition_valeur' => 'To be completed with your competitive advantage',
             ],
             'analyse_marche' => [
-                'taille' => number_format((float) ($db?->getTailleMarche() ?? 0), 0, ',', ' ') . ' DT',
-                'cible' => 'À définir selon le secteur ' . $projet->getSecteur(),
-                'tendances' => 'Croissance du secteur ' . $projet->getSecteur() . ' en Tunisie',
-                'concurrence' => 'Analyse concurrentielle à compléter',
+                'taille' => ($db?->getTailleMarche() ?? 'N/A') . ' TND',
+                'cible' => 'To be defined for the ' . $sector . ' sector',
+                'tendances' => 'Growth of the ' . $sector . ' sector in Tunisia',
+                'concurrence' => 'Competitive analysis to be completed',
             ],
             'modele_economique' => [
-                'sources_revenus' => $db?->getModeleRevenu() ?? 'Non défini',
-                'structure_couts' => number_format($couts, 0, ',', ' ') . ' DT estimés',
-                'prix' => 'Stratégie de prix à définir',
+                'sources_revenus' => $db?->getModeleRevenu() ?? 'Not defined',
+                'structure_couts' => number_format($couts, 0, ',', ' ') . ' TND estimated',
+                'prix' => 'Pricing strategy to be defined',
                 'rentabilite' => $marge > 0
-                    ? 'Marge positive de ' . number_format($marge, 0, ',', ' ') . ' DT'
-                    : 'Marge négative - révision nécessaire',
+                    ? 'Positive margin of ' . number_format($marge, 0, ',', ' ') . ' TND'
+                    : 'Negative margin — revision required',
             ],
             'strategie_marketing' => [
-                'positionnement' => 'À définir',
-                'canaux' => 'Digital, réseaux sociaux, partenariats locaux',
+                'positionnement' => 'To be defined',
+                'canaux' => 'Digital, social media, local partnerships',
                 'actions' => [
-                    'Lancer une présence en ligne',
-                    'Développer des partenariats stratégiques',
-                    'Participer aux événements du secteur',
+                    'Build an online presence',
+                    'Develop strategic partnerships',
+                    'Participate in sector events',
                 ],
             ],
             'plan_operationnel' => [
                 'etapes_cles' => [
-                    'Validation du concept (Mois 1-2)',
-                    'Développement MVP (Mois 3-5)',
-                    'Lancement beta (Mois 6-8)',
-                    'Croissance (Mois 9-12)',
+                    'Concept validation (Months 1-2)',
+                    'MVP development (Months 3-5)',
+                    'Beta launch (Months 6-8)',
+                    'Growth phase (Months 9-12)',
                 ],
-                'ressources' => 'Équipe de ' . ($db?->getForceEquipe() ?? 'N/A') . '/10',
-                'timeline' => 'Plan sur 12 mois',
+                'ressources' => 'Team strength: ' . ($db?->getForceEquipe() ?? 'N/A') . '/10',
+                'timeline' => '12-month roadmap',
             ],
             'analyse_risques' => [
                 'risques' => [
-                    ['risque' => 'Risque de marché - adoption lente', 'mitigation' => 'Tests utilisateurs précoces'],
-                    ['risque' => 'Risque financier - dépassement de budget', 'mitigation' => 'Suivi budgétaire mensuel'],
+                    ['risque' => 'Market risk — slow adoption', 'mitigation' => 'Early user testing and validation'],
+                    ['risque' => 'Financial risk — budget overrun', 'mitigation' => 'Monthly budget tracking'],
                 ],
-                'plan_b' => 'Pivot vers un segment de marché adjacent si nécessaire',
+                'plan_b' => 'Pivot toward an adjacent market segment if necessary',
             ],
             'projections_financieres' => [
                 'annee_1' => ['revenus' => $revenus, 'couts' => $couts, 'benefice' => $marge],
                 'annee_2' => ['revenus' => $revenus * 1.5, 'couts' => $couts * 1.2, 'benefice' => ($revenus * 1.5) - ($couts * 1.2)],
                 'annee_3' => ['revenus' => $revenus * 2.2, 'couts' => $couts * 1.4, 'benefice' => ($revenus * 2.2) - ($couts * 1.4)],
-                'point_equilibre' => $marge > 0 ? 'Dès la première année' : 'Estimé en année 2',
+                'point_equilibre' => $marge > 0 ? 'From year one' : 'Estimated in year 2',
             ],
-            'conclusion' => 'Ce business plan nécessite une analyse IA approfondie. Configurez votre clé API Gemini pour un plan personnalisé et détaillé.',
+            'conclusion' => 'This business plan requires a full AI-powered analysis. Configure your Gemini API key to get a personalized and detailed plan tailored to your project.',
         ];
     }
 }

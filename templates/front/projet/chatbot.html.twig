@@ -16,7 +16,7 @@
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm" style="border-radius:1rem;overflow:hidden;height:620px;display:flex;flex-direction:column">
             {# Chat Header #}
-            <div class="px-4 py-3 border-bottom" style="background:linear-gradient(135deg,rgba(67,97,238,.06),rgba(114,9,183,.06))">
+            <div class="px-4 py-3 border-bottom" style="background:linear-gradient(135deg,rgba(67,97,238,.18),rgba(114,9,183,.12))">
                 <div class="d-flex align-items-center gap-2">
                     <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#4361ee,#7209b7);display:flex;align-items:center;justify-content:center">
                         <i class="bi bi-robot text-white fs-5"></i>
@@ -29,12 +29,12 @@
             </div>
 
             {# Messages Area #}
-            <div id="chatMessages" class="flex-grow-1 p-4" style="overflow-y:auto;background:#fafbfc">
+            <div id="chatMessages" class="flex-grow-1 p-4" style="overflow-y:auto;background:rgba(255,255,255,.02)">
                 <div class="d-flex gap-3 mb-4">
                     <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,#4361ee,#7209b7);display:flex;align-items:center;justify-content:center">
                         <i class="bi bi-robot text-white"></i>
                     </div>
-                    <div class="p-3 rounded-3" style="background:#fff;border:1px solid #e9ecef;max-width:80%">
+                    <div class="p-3 rounded-3" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);max-width:80%">
                         <p class="mb-2">Bonjour ! 👋 Je suis <strong>Najahni AI</strong>, votre assistant pour la gestion de projets.</p>
                         <p class="mb-0 text-muted small">J'ai accès à vos <strong>{{ projets|length }} projet{{ projets|length > 1 ? 's' : '' }}</strong>. Posez-moi des questions : comparaison, stratégie, finances, risques, priorisation, conseils sectoriels en Tunisie...</p>
                     </div>
@@ -42,7 +42,7 @@
             </div>
 
             {# Input Area #}
-            <div class="p-3 border-top" style="background:#fff">
+            <div class="p-3 border-top" style="background:rgba(255,255,255,.03)">
                 <form id="chatForm" class="d-flex gap-2 align-items-center">
                     <input type="text" id="chatInput" class="form-control" placeholder="Posez votre question..." autocomplete="off" style="border-radius:1.5rem;padding:.6rem 1.25rem">
                     <button type="button" id="voiceBtn" class="btn btn-outline-secondary d-flex align-items-center" style="border-radius:50%;width:44px;height:44px" title="Parler">
@@ -207,7 +207,7 @@
             <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,#4361ee,#7209b7);display:flex;align-items:center;justify-content:center">
                 <i class="bi bi-robot text-white"></i>
             </div>
-            <div class="p-3 rounded-3" style="background:#fff;border:1px solid #e9ecef;max-width:80%">
+            <div class="p-3 rounded-3" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);max-width:80%">
                 <div class="mb-0 chat-response">${formatResponse(text)}</div>
             </div>`;
         messages.appendChild(d);
@@ -224,7 +224,7 @@
             <div style="width:36px;height:36px;min-width:36px;border-radius:50%;background:linear-gradient(135deg,#4361ee,#7209b7);display:flex;align-items:center;justify-content:center">
                 <i class="bi bi-robot text-white"></i>
             </div>
-            <div class="p-3 rounded-3" style="background:#fff;border:1px solid #e9ecef">
+            <div class="p-3 rounded-3" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)">
                 <div class="d-flex gap-1">
                     <div class="spinner-grow spinner-grow-sm text-primary" style="width:.5rem;height:.5rem"></div>
                     <div class="spinner-grow spinner-grow-sm text-primary" style="width:.5rem;height:.5rem;animation-delay:.15s"></div>

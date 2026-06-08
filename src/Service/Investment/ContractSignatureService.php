@@ -72,14 +72,14 @@ class ContractSignatureService
         $projectTitle = $offer->getOpportunity()?->getProject()?->getTitre() ?? 'Projet';
 
         return implode("\n\n", [
-            '1. Objet du contrat',
-            'Ce contrat formalise la proposition d\'investissement entre l\'entrepreneur et l\'investisseur pour le projet ' . $projectTitle . '.',
-            '2. Montant de l\'investissement',
-            'L\'investisseur s\'engage a financer le montant accepte de ' . number_format((float) $offer->getProposedAmount(), 2, '.', '') . ' DT, sous reserve de la signature des deux parties.',
-            '3. Contreparties et droits',
-            'Les parties definissent ci-dessous les contreparties, notamment une participation au capital, un acces prioritaire au produit ou tout autre avantage negocie.',
+            '1. Subject of the Agreement',
+            'This contract formalises the investment proposal between the entrepreneur and the investor for the project ' . $projectTitle . '.',
+            '2. Investment Amount',
+            'The investor agrees to fund the accepted amount of ' . number_format((float) $offer->getProposedAmount(), 2, '.', '') . ' TND, subject to the signature of both parties.',
+            '3. Counterparties and Rights',
+            'The parties define below the counterparties, including an equity stake, priority product access, or any other negotiated benefit.',
             '4. Execution',
-            'Toute modification des termes annule les signatures precedentes et necessite une nouvelle signature SHA-256 des deux parties.',
+            'Any modification of the terms cancels previous signatures and requires a new SHA-256 signature from both parties.',
         ]);
     }
 }

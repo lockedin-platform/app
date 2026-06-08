@@ -69,18 +69,18 @@
 .fund-timeline { position: relative; display: flex; justify-content: space-between; padding: 0; margin: 1.2rem 0 1.5rem; }
 .fund-timeline::before { content: ''; position: absolute; top: 13px; left: 14px; right: 14px; height: 2px; background: #e2e8f0; z-index: 0; }
 .ft-event { position: relative; display: flex; flex-direction: column; align-items: center; z-index: 1; flex: 1; max-width: 120px; min-width: 0; }
-.ft-dot { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; font-size: .7rem; color: #94a3b8; margin-bottom: .35rem; transition: all .3s; }
+.ft-dot { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.04); border: 2px solid rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: .7rem; color: rgba(255,255,255,.45); margin-bottom: .35rem; transition: all .3s; }
 .ft-dot.done { background: #3b82f6; border-color: #2563eb; color: #fff; }
 .ft-dot.future { background: #f8fafc; border: 2px dashed #cbd5e1; }
 .ft-label { font-size: .67rem; color: #475569; text-align: center; line-height: 1.15; font-weight: 500; }
-.ft-date { font-size: .6rem; color: #94a3b8; margin-top: 1px; }
+.ft-date { font-size: .6rem; color: rgba(255,255,255,.45); margin-top: 1px; }
 
 /* ── Milestone Vertical Tracker ───────── */
 .ms-vertical { position: relative; padding-left: 2rem; margin: .6rem 0; }
 .ms-vertical::before { content: ''; position: absolute; left: 9px; top: 4px; bottom: 4px; width: 2px; background: #e2e8f0; border-radius: 1px; }
 .ms-v-item { position: relative; padding-bottom: .85rem; }
 .ms-v-item:last-child { padding-bottom: 0; }
-.ms-v-dot { position: absolute; left: -2rem; top: 2px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid #cbd5e1; background: #fff; z-index: 1; }
+.ms-v-dot { position: absolute; left: -2rem; top: 2px; width: 20px; height: 20px; border-radius: 50%; border: 2px solid rgba(255,255,255,.15); background: rgba(255,255,255,.04); z-index: 1; }
 .ms-v-dot.released { background: #22c55e; border-color: #16a34a; }
 .ms-v-dot.pending { animation: msDotPulse 1.8s ease-in-out infinite; }
 @keyframes msDotPulse { 0%,100%{ box-shadow: 0 0 0 0 rgba(59,130,246,.35); } 50%{ box-shadow: 0 0 0 7px rgba(59,130,246,0); } }

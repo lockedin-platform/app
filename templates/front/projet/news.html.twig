@@ -1,48 +1,156 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Actualités {{ projet.secteur }} en Tunisie - Najahni{% endblock %}
+{% block title %}{{ projet.secteur }} Sector News - Najahni{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.news-ticker-wrap {
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg,rgba(67,97,238,.07),rgba(114,9,183,.07));
+    border: 1px solid rgba(67,97,238,.15);
+    border-radius: 1rem;
+    padding: 1rem 0;
+}
+.news-ticker-wrap::before,
+.news-ticker-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 80px;
+    z-index: 2;
+    pointer-events: none;
+}
+.news-ticker-wrap::before {
+    left: 0;
+    background: linear-gradient(to right, #0d1117, transparent);
+}
+.news-ticker-wrap::after {
+    right: 0;
+    background: linear-gradient(to left, #0d1117, transparent);
+}
+.news-ticker-track {
+    display: flex;
+    gap: 1.25rem;
+    animation: newsTickerScroll 45s linear infinite;
+    width: max-content;
+    padding: 0 1rem;
+}
+.news-ticker-track:hover {
+    animation-play-state: paused;
+}
+@keyframes newsTickerScroll {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}
+.news-ticker-item {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .5rem 1rem;
+    border-radius: .6rem;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.07);
+    white-space: nowrap;
+    max-width: 380px;
+    cursor: pointer;
+    transition: background .18s, border-color .18s;
+    text-decoration: none;
+    color: inherit;
+    flex-shrink: 0;
+}
+.news-ticker-item:hover {
+    background: rgba(67,97,238,.14);
+    border-color: rgba(67,97,238,.3);
+    color: inherit;
+}
+.news-article-card {
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+.news-article-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 1.25rem 2.5rem rgba(15,23,42,.2) !important;
+}
+</style>
+{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Retour au projet</a>
-        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-newspaper me-2"></i>Actualités du Secteur en Tunisie</h2>
-        <p class="text-muted mb-0">{{ projet.titre }} — <span class="badge bg-primary bg-opacity-10 text-primary">{{ projet.secteur ?? 'Général' }}</span></p>
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-newspaper nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> Back to Project
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="nj-ph-eyebrow">Projects · Tools</div>
+                <h1 class="nj-ph-title mb-1">Sector News</h1>
+                <p class="nj-ph-sub">{{ projet.titre }} &mdash; <strong>{{ projet.secteur ?? 'General' }}</strong> &middot; Live industry updates</p>
+            </div>
+        </div>
     </div>
 </div>
 
 {% if news|length > 0 %}
+
+{# ── Live Scrolling Ticker ── #}
+<div class="mb-4">
+    <div class="d-flex align-items-center gap-2 mb-2 px-1">
+        <span class="badge" style="background:rgba(239,71,111,.2);color:#ff6b9d;border:1px solid rgba(239,71,111,.3);font-size:.68rem;letter-spacing:.06em">
+            <i class="bi bi-broadcast me-1"></i>LIVE
+        </span>
+        <span class="small text-muted">Hover to pause &middot; Click to open article</span>
+    </div>
+    <div class="news-ticker-wrap">
+        <div class="news-ticker-track">
+            {% for pass in 0..1 %}
+            {% for article in news %}
+            <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="news-ticker-item">
+                <span class="badge bg-primary bg-opacity-10 text-primary flex-shrink-0" style="font-size:.65rem">{{ article.source }}</span>
+                <span class="small fw-semibold" style="overflow:hidden;text-overflow:ellipsis;max-width:270px">{{ article.title|length > 65 ? article.title|slice(0,65) ~ '…' : article.title }}</span>
+                {% if article.publishedAt %}
+                <span class="text-muted flex-shrink-0" style="font-size:.72rem">{{ article.publishedAt|date('d/m') }}</span>
+                {% endif %}
+            </a>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# ── Article Cards Grid ── #}
 <div class="row g-4">
     {% for article in news %}
-    <div class="col-md-6">
-        <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;overflow:hidden">
-            <div class="d-flex align-items-center justify-content-center" style="height:140px;background:linear-gradient(135deg,rgba(67,97,238,.08),rgba(114,9,183,.08))">
-                <i class="bi bi-newspaper display-3 text-muted"></i>
+    <div class="col-md-6 col-lg-4">
+        <div class="card border-0 shadow-sm h-100 news-article-card" style="border-radius:1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07) !important">
+            <div class="d-flex align-items-center justify-content-center" style="height:110px;background:linear-gradient(135deg,rgba(67,97,238,.1),rgba(114,9,183,.1));border-radius:1rem 1rem 0 0">
+                <i class="bi bi-newspaper" style="font-size:2.5rem;color:rgba(67,97,238,.45)"></i>
             </div>
-            <div class="card-body d-flex flex-column">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="badge bg-primary bg-opacity-10 text-primary small">
-                        {{ article.source }}
-                    </span>
+            <div class="card-body d-flex flex-column p-4">
+                <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                    <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size:.7rem">{{ article.source }}</span>
                     {% if article.publishedAt %}
                     <small class="text-muted">{{ article.publishedAt|date('d/m/Y') }}</small>
                     {% endif %}
                 </div>
-                <h6 class="fw-bold mb-2">{{ article.title }}</h6>
-                <p class="text-muted small mb-3 flex-grow-1">{{ article.description|length > 200 ? article.description|slice(0, 200) ~ '...' : article.description }}</p>
+                <h6 class="fw-bold mb-2 flex-grow-1" style="line-height:1.45">{{ article.title }}</h6>
+                <p class="text-muted small mb-3" style="line-height:1.5">{{ article.description|length > 160 ? article.description|slice(0,160) ~ '…' : article.description }}</p>
                 <a href="{{ article.url }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary mt-auto">
-                    <i class="bi bi-box-arrow-up-right me-1"></i>Lire l'article
+                    <i class="bi bi-box-arrow-up-right me-1"></i>Read Article
                 </a>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
 {% else %}
 <div class="card border-0 shadow-sm p-5 text-center" style="border-radius:1rem">
-    <i class="bi bi-newspaper display-3 text-muted mb-3"></i>
-    <h5 class="fw-bold text-muted">Aucune actualité disponible</h5>
-    <p class="text-muted">Vérifiez votre connexion internet et réessayez.</p>
+    <i class="bi bi-newspaper" style="font-size:3.5rem;color:var(--nj-primary);opacity:.35"></i>
+    <h5 class="fw-bold mt-3">No news available</h5>
+    <p class="text-muted">Check your internet connection and try again.</p>
 </div>
 {% endif %}
 {% endblock %}

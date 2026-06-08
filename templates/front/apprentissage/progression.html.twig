@@ -1,19 +1,24 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Ma Progression - Najahni{% endblock %}
+{% block title %}My Progress - Najahni{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-bar-chart me-2"></i>Ma Progression</h2>
-    <div class="d-flex gap-2">
-        {% if coursTermines > 0 %}
-        <a href="{{ path('app_apprentissage_progression_pdf') }}" class="btn btn-success">
-            <i class="bi bi-file-earmark-pdf me-1"></i>Exporter en PDF
-        </a>
-        {% endif %}
-        <a href="{{ path('app_apprentissage_cours') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>Cours
-        </a>
+<div class="nj-page-hero nj-hero-apprentissage mb-4">
+    <i class="bi bi-bar-chart nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Learning</div>
+            <h1 class="nj-ph-title mb-1">My Progress</h1>
+            <p class="nj-ph-sub">Track your learning journey and certifications</p>
+        </div>
+        <div class="nj-hero-actions">
+            {% if coursTermines > 0 %}
+            <div class="nj-action-group">
+                <a href="{{ path('app_apprentissage_progression_pdf') }}" class="nj-action-link"><i class="bi bi-file-earmark-pdf"></i>Export PDF</a>
+            </div>
+            {% endif %}
+            <a href="{{ path('app_apprentissage_cours') }}" class="nj-action-cta cta-apprentissage"><i class="bi bi-book"></i>Browse Courses</a>
+        </div>
     </div>
 </div>
 
@@ -21,27 +26,27 @@
 
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="fs-2 fw-bold" style="color:var(--nj-primary)">{{ totalCours }}</div>
-            <div class="small text-muted"><i class="bi bi-book me-1"></i>Cours suivis</div>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(217,119,6,.5)">
+            <div class="nj-num nj-num-amber" style="font-size:2rem">{{ totalCours }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">COURSES TAKEN</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="fs-2 fw-bold text-success">{{ coursTermines }}</div>
-            <div class="small text-muted"><i class="bi bi-patch-check me-1"></i>Terminés</div>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(5,150,105,.5)">
+            <div class="nj-num nj-num-good" style="font-size:2rem">{{ coursTermines }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">COMPLETED</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="fs-2 fw-bold text-primary">{{ coursEnCours }}</div>
-            <div class="small text-muted"><i class="bi bi-play-circle me-1"></i>En cours</div>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(67,97,238,.5)">
+            <div class="nj-num nj-num-blue" style="font-size:2rem">{{ coursEnCours }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">IN PROGRESS</div>
         </div>
     </div>
     <div class="col-6 col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="fs-2 fw-bold text-warning">{{ totalXp }}</div>
-            <div class="small text-muted"><i class="bi bi-star me-1"></i>XP total</div>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(103,232,249,.5)">
+            <div class="nj-num nj-num-cyan" style="font-size:2rem">{{ totalXp }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">TOTAL XP</div>
         </div>
     </div>
 </div>
@@ -49,8 +54,8 @@
 {% if totalCours > 0 %}
 <div class="card border-0 shadow-sm p-3 mb-4" style="border-radius:1rem">
     <div class="d-flex justify-content-between align-items-center mb-1">
-        <span class="small fw-semibold">Progression globale</span>
-        <span class="small text-muted">{{ moyennePct }}% en moyenne</span>
+        <span class="small fw-semibold">Overall progress</span>
+        <span class="small text-muted">{{ moyennePct }}% average</span>
     </div>
     <div class="progress" style="height:12px;border-radius:1rem">
         <div class="progress-bar" style="width:{{ moyennePct }}%;background:var(--nj-gradient);border-radius:1rem"></div>
@@ -75,12 +80,12 @@
                     <div class="progress-bar" style="width:{{ p.pourcentage }}%;background:var(--nj-gradient)"></div>
                 </div>
                 <div class="d-flex justify-content-between small text-muted">
-                    <span>{{ p.pourcentage }}% complété</span>
+                    <span>{{ p.pourcentage }}% completed</span>
                     <span>{{ p.pointsXp }} XP</span>
                 </div>
                 <div class="mt-2 small text-muted">
-                    <i class="bi bi-calendar me-1"></i>Début : {{ p.dateDebut|date('d/m/Y') }}
-                    {% if p.dateObtention %} · Terminé : {{ p.dateObtention|date('d/m/Y') }}{% endif %}
+                    <i class="bi bi-calendar me-1"></i>Started: {{ p.dateDebut|date('d/m/Y') }}
+                    {% if p.dateObtention %} · Completed: {{ p.dateObtention|date('d/m/Y') }}{% endif %}
                 </div>
             </div>
         </div>
@@ -90,9 +95,9 @@
 {% else %}
 <div class="text-center py-5">
     <div class="text-center"><i class="bi bi-graph-up" style="font-size:4rem;color:var(--nj-primary)"></i></div>
-    <h4 class="fw-bold mt-3">Aucune progression</h4>
-    <p class="text-muted">Inscrivez-vous à un cours pour commencer</p>
-    <a href="{{ path('app_apprentissage_cours') }}" class="btn btn-nj">Explorer les cours</a>
+    <h4 class="fw-bold mt-3">No progress yet</h4>
+    <p class="text-muted">Enroll in a course to get started</p>
+    <a href="{{ path('app_apprentissage_cours') }}" class="btn btn-nj">Explore courses</a>
 </div>
 {% endif %}
 {% endblock %}

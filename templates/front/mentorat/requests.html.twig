@@ -1,25 +1,55 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Demandes de mentorat - Najahni{% endblock %}
+{% block title %}Mentorship Requests - Najahni{% endblock %}
 
 {% block main %}
 {% set userRole = app.user.role %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-mortarboard me-2"></i>Mentorat</h2>
-    {% if userRole == 'ENTREPRENEUR' %}
-        <a href="{{ path('app_mentorat_mentors') }}" class="btn btn-nj"><i class="bi bi-search me-1"></i>Trouver un mentor</a>
-    {% endif %}
+{# ── Page Hero ── #}
+<div class="nj-page-hero nj-hero-mentorat mb-4">
+    <i class="bi bi-mortarboard nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Mentoring</div>
+            <h1 class="nj-ph-title mb-1">Mentorship Hub</h1>
+            <p class="nj-ph-sub">Manage your requests, sessions and connect with your mentor</p>
+        </div>
+        {% if userRole == 'ENTREPRENEUR' %}
+        <div class="nj-hero-actions">
+            <a href="{{ path('app_mentorat_mentors') }}" class="nj-action-cta cta-mentorat"><i class="bi bi-search"></i>Find a Mentor</a>
+        </div>
+        {% endif %}
+    </div>
 </div>
 
-{# ── 4-Tab Navigation ── #}
-<ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Demandes</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_sessions') }}"><i class="bi bi-camera-video me-1"></i>Sessions</a></li>
+{# ── Tab Navigation ── #}
+<ul class="nav mb-4" style="border-bottom:2px solid #e2e8f0;gap:.25rem">
+    <li class="nav-item">
+        <a class="nav-link active fw-semibold" href="{{ path('app_mentorat_requests') }}"
+            style="border-bottom:2.5px solid var(--nj-c-mentorat);color:#6d28d9;padding:.6rem 1rem">
+            <i class="bi bi-send me-1"></i>Requests
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-muted fw-medium" href="{{ path('app_mentorat_sessions') }}"
+            style="padding:.6rem 1rem">
+            <i class="bi bi-camera-video me-1"></i>Sessions
+        </a>
+    </li>
     {% if userRole == 'MENTOR' %}
-        <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Disponibilités</a></li>
+    <li class="nav-item">
+        <a class="nav-link text-muted fw-medium" href="{{ path('app_mentorat_availability') }}"
+            style="padding:.6rem 1rem">
+            <i class="bi bi-calendar-check me-1"></i>Availability
+        </a>
+    </li>
     {% endif %}
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_chatbot') }}"><i class="bi bi-robot me-1"></i>Chatbot</a></li>
+    <li class="nav-item">
+        <a class="nav-link text-muted fw-medium" href="{{ path('app_mentorat_chatbot') }}"
+            style="padding:.6rem 1rem">
+            <i class="bi bi-robot me-1"></i>AI Chatbot
+        </a>
+    </li>
 </ul>
 
 {% for message in app.flashes('success') %}
@@ -33,7 +63,7 @@
    🟣 VUE ENTREPRENEUR — Demandes envoyées (lecture seule, cartes)
    ═══════════════════════════════════════════ #}
 {% if userRole == 'ENTREPRENEUR' %}
-<h4 class="fw-bold mb-3"><i class="bi bi-arrow-up-right me-1"></i>Mes demandes envoyées</h4>
+<h4 class="fw-bold mb-3"><i class="bi bi-arrow-up-right me-1"></i>My sent requests</h4>
 {% if sentRequests|length > 0 %}
 <div class="row g-3 mb-4">
     {% for req in sentRequests %}
@@ -43,15 +73,15 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h6 class="fw-bold mb-0"><a href="{{ path('app_user_profile', {id: req.mentor.id}) }}" class="text-decoration-none text-dark">{{ req.mentor.firstname }} {{ req.mentor.lastname }}</a></h6>
                     {% if req.status == 'AUTO_ACCEPTED' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Auto-accepté</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Auto-accepted</span>
                     {% elseif req.status == 'ACCEPTED' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Accepté</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Accepted</span>
                     {% elseif req.status == 'PENDING' %}
-                        <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>En révision</span>
+                        <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>Under review</span>
                     {% elseif req.status == 'REJECTED' %}
-                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Refusé</span>
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Rejected</span>
                     {% elseif req.status == 'CANCELLED' %}
-                        <span class="badge bg-warning text-dark"><i class="bi bi-slash-circle me-1"></i>Annulé</span>
+                        <span class="badge bg-warning text-dark"><i class="bi bi-slash-circle me-1"></i>Cancelled</span>
                     {% else %}
                         <span class="badge bg-secondary">{{ req.status }}</span>
                     {% endif %}
@@ -59,10 +89,10 @@
                 {% if req.project %}
                     <p class="small text-muted mb-1"><i class="bi bi-rocket me-1"></i>{{ req.project.titre }}</p>
                 {% endif %}
-                <p class="small text-muted mb-1"><i class="bi bi-calendar me-1"></i>{{ req.date|date('d/m/Y') }} à {{ req.time }}</p>
+                <p class="small text-muted mb-1"><i class="bi bi-calendar me-1"></i>{{ req.date|date('d/m/Y') }} at {{ req.time }}</p>
                 {% if req.matchScore is not null %}
                     <p class="small mb-1">
-                        <i class="bi bi-bullseye me-1"></i>Match :
+                        <i class="bi bi-bullseye me-1"></i>Match:
                         <span class="badge bg-{{ req.matchScore >= 70 ? 'success' : (req.matchScore >= 40 ? 'warning text-dark' : 'secondary') }}">{{ req.matchScore }}%</span>
                     </p>
                 {% endif %}
@@ -77,7 +107,7 @@
 {% else %}
 <div class="text-center py-4 mb-4">
     <i class="bi bi-send" style="font-size:3rem;color:var(--nj-primary)"></i>
-    <p class="text-muted mt-2">Aucune demande envoyée. <a href="{{ path('app_mentorat_mentors') }}">Trouver un mentor</a></p>
+    <p class="text-muted mt-2">No requests sent. <a href="{{ path('app_mentorat_mentors') }}">Find a mentor</a></p>
 </div>
 {% endif %}
 {% endif %}
@@ -86,7 +116,7 @@
    🔵 VUE MENTOR — Demandes reçues (cartes avec Accept/Reject)
    ═══════════════════════════════════════════ #}
 {% if userRole == 'MENTOR' %}
-<h4 class="fw-bold mb-3"><i class="bi bi-inbox me-1"></i>Demandes reçues</h4>
+<h4 class="fw-bold mb-3"><i class="bi bi-inbox me-1"></i>Received requests</h4>
 {% if receivedRequests|length > 0 %}
 <div class="row g-3">
     {% for req in receivedRequests %}
@@ -96,15 +126,15 @@
                 <div class="d-flex justify-content-between align-items-start mb-2">
                     <h6 class="fw-bold mb-0"><a href="{{ path('app_user_profile', {id: req.entrepreneur.id}) }}" class="text-decoration-none text-dark">{{ req.entrepreneur.firstname }} {{ req.entrepreneur.lastname }}</a></h6>
                     {% if req.status == 'AUTO_ACCEPTED' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Auto-accepté</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Auto-accepted</span>
                     {% elseif req.status == 'ACCEPTED' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Accepté</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Accepted</span>
                     {% elseif req.status == 'PENDING' %}
-                        <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>En révision</span>
+                        <span class="badge bg-primary"><i class="bi bi-hourglass-split me-1"></i>Under review</span>
                     {% elseif req.status == 'REJECTED' %}
-                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Refusé</span>
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Rejected</span>
                     {% elseif req.status == 'CANCELLED' %}
-                        <span class="badge bg-warning text-dark"><i class="bi bi-slash-circle me-1"></i>Annulé</span>
+                        <span class="badge bg-warning text-dark"><i class="bi bi-slash-circle me-1"></i>Cancelled</span>
                     {% else %}
                         <span class="badge bg-secondary">{{ req.status }}</span>
                     {% endif %}
@@ -112,10 +142,10 @@
                 {% if req.project %}
                     <p class="small text-muted mb-1"><i class="bi bi-rocket me-1"></i>{{ req.project.titre }}</p>
                 {% endif %}
-                <p class="small text-muted mb-1"><i class="bi bi-calendar me-1"></i>{{ req.date|date('d/m/Y') }} à {{ req.time }}</p>
+                <p class="small text-muted mb-1"><i class="bi bi-calendar me-1"></i>{{ req.date|date('d/m/Y') }} at {{ req.time }}</p>
                 {% if req.matchScore is not null %}
                     <p class="small mb-1">
-                        <i class="bi bi-bullseye me-1"></i>Match :
+                        <i class="bi bi-bullseye me-1"></i>Match:
                         <span class="badge bg-{{ req.matchScore >= 70 ? 'success' : (req.matchScore >= 40 ? 'warning text-dark' : 'secondary') }}">{{ req.matchScore }}%</span>
                     </p>
                 {% endif %}
@@ -123,7 +153,7 @@
                     <p class="small text-muted mb-2">{{ req.motivation|length > 100 ? req.motivation|slice(0,100) ~ '...' : req.motivation }}</p>
                 {% endif %}
                 {% if req.goals %}
-                    <p class="small text-muted mb-2"><strong>Objectifs :</strong> {{ req.goals|length > 80 ? req.goals|slice(0,80) ~ '...' : req.goals }}</p>
+                    <p class="small text-muted mb-2"><strong>Goals:</strong> {{ req.goals|length > 80 ? req.goals|slice(0,80) ~ '...' : req.goals }}</p>
                 {% endif %}
 
                 {# Accept / Reject buttons (only for PENDING) #}
@@ -133,12 +163,12 @@
                     <form method="post" action="{{ path('app_mentorat_request_respond', {id: req.id}) }}" class="flex-fill">
                         <input type="hidden" name="_token" value="{{ csrf_token('mentorat_respond_' ~ req.id) }}">
                         <input type="hidden" name="action" value="accept">
-                        <button class="btn btn-sm btn-success w-100"><i class="bi bi-check-lg me-1"></i>Accepter</button>
+                        <button class="btn btn-sm btn-success w-100"><i class="bi bi-check-lg me-1"></i>Accept</button>
                     </form>
                     <form method="post" action="{{ path('app_mentorat_request_respond', {id: req.id}) }}" class="flex-fill">
                         <input type="hidden" name="_token" value="{{ csrf_token('mentorat_respond_' ~ req.id) }}">
                         <input type="hidden" name="action" value="reject">
-                        <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-x-lg me-1"></i>Rejeter</button>
+                        <button class="btn btn-sm btn-outline-danger w-100"><i class="bi bi-x-lg me-1"></i>Reject</button>
                     </form>
                 </div>
                 {% endif %}
@@ -150,7 +180,7 @@
 {% else %}
 <div class="text-center py-4">
     <i class="bi bi-inbox" style="font-size:3rem;color:var(--nj-primary)"></i>
-    <p class="text-muted mt-2">Aucune demande reçue pour le moment.</p>
+    <p class="text-muted mt-2">No requests received yet.</p>
 </div>
 {% endif %}
 {% endif %}
@@ -160,7 +190,7 @@
    ═══════════════════════════════════════════ #}
 {% if userRole != 'ENTREPRENEUR' and userRole != 'MENTOR' %}
     {% if sentRequests|length > 0 %}
-    <h4 class="fw-bold mb-3">Demandes envoyées</h4>
+    <h4 class="fw-bold mb-3">Sent requests</h4>
     <div class="row g-3 mb-4">
         {% for req in sentRequests %}
         <div class="col-md-6"><div class="card border-0 shadow-sm p-3" style="border-radius:1rem">
@@ -170,7 +200,7 @@
     </div>
     {% endif %}
     {% if receivedRequests|length > 0 %}
-    <h4 class="fw-bold mb-3">Demandes reçues</h4>
+    <h4 class="fw-bold mb-3">Received requests</h4>
     <div class="row g-3">
         {% for req in receivedRequests %}
         <div class="col-md-6"><div class="card border-0 shadow-sm p-3" style="border-radius:1rem">

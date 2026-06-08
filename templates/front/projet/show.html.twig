@@ -3,41 +3,70 @@
 {% block title %}{{ projet.titre }} - Najahni{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ path('app_projet_index') }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Mes Projets</a>
-        <h2 class="fw-bold mt-2 mb-0">{{ projet.titre }}</h2>
-    </div>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_projet_edit', {id: projet.id}) }}" class="btn btn-nj"><i class="bi bi-pencil me-1"></i>Modifier</a>
-        <form method="post" action="{{ path('app_projet_delete', {id: projet.id}) }}" onsubmit="return confirm('Supprimer ce projet ?')">
-            <button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>
-        </form>
+{# ── Project Hero ── #}
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-rocket-takeoff nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_index') }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> My Projects
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3">
+            <div>
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                    {% if projet.statutProjet == 'EVALUE' %}
+                        <span class="badge" style="background:rgba(6,214,160,.2);color:#a7f3d0;border:1px solid rgba(6,214,160,.3)"><i class="bi bi-check-circle me-1"></i>Evaluated</span>
+                    {% elseif projet.statutProjet == 'SOUMIS' %}
+                        <span class="badge" style="background:rgba(255,209,102,.2);color:#fef3c7;border:1px solid rgba(255,209,102,.3)"><i class="bi bi-clock me-1"></i>Submitted</span>
+                    {% else %}
+                        <span class="badge" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.8)"><i class="bi bi-pencil me-1"></i>Draft</span>
+                    {% endif %}
+                    {% if projet.secteur %}<span class="badge" style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.85)">{{ projet.secteur }}</span>{% endif %}
+                </div>
+                <h1 class="nj-ph-title">{{ projet.titre }}</h1>
+                {% if projet.scoreGlobal %}
+                <p class="nj-ph-sub">Global AI Score: <strong>{{ projet.scoreGlobal|round }}%</strong></p>
+                {% endif %}
+            </div>
+            <div class="nj-hero-actions">
+                <div class="nj-action-group">
+                    <a href="{{ path('app_projet_index') }}" class="nj-action-link"><i class="bi bi-grid-3x3-gap"></i>My Projects</a>
+                    <span class="nj-action-sep"></span>
+                    <form method="post" action="{{ path('app_projet_delete', {id: projet.id}) }}" onsubmit="return confirm('Delete this project?')" class="m-0 p-0">
+                        <button type="submit" class="nj-action-link" style="color:#f87171;background:rgba(239,68,68,.12);border-radius:.45rem;padding:.3rem .55rem" title="Delete project"><i class="bi bi-trash3-fill"></i></button>
+                    </form>
+                </div>
+                <a href="{{ path('app_projet_edit', {id: projet.id}) }}" class="nj-action-cta cta-projets"><i class="bi bi-pencil"></i>Edit</a>
+            </div>
+        </div>
     </div>
 </div>
 
-{# AI Action Buttons #}
-<div class="card border-0 shadow-sm p-3 mb-4" style="border-radius:1rem;background:linear-gradient(135deg,rgba(67,97,238,.04),rgba(114,9,183,.04))">
-    <div class="d-flex flex-wrap gap-2 align-items-center">
-        <span class="fw-bold small me-2"><i class="bi bi-robot me-1"></i>Actions IA :</span>
-        <form method="post" action="{{ path('app_projet_evaluate_ai', {id: projet.id}) }}" class="d-inline">
-            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-stars me-1"></i>Scoring IA</button>
-        </form>
-        <a href="{{ path('app_projet_business_plan', {id: projet.id}) }}" class="btn btn-sm btn-outline-success">
-            <i class="bi bi-file-earmark-text me-1"></i>Business Plan IA
-        </a>
-        <a href="{{ path('app_projet_recommendations', {id: projet.id}) }}" class="btn btn-sm btn-outline-info">
-            <i class="bi bi-lightbulb me-1"></i>Recommandations IA
-        </a>
-    </div>
-    <div class="d-flex flex-wrap gap-2 align-items-center mt-2">
-        <span class="fw-bold small me-2"><i class="bi bi-tools me-1"></i>Outils :</span>
-        <a href="{{ path('app_projet_exchange_rates', {id: projet.id}) }}" class="btn btn-sm btn-outline-success">
-            <i class="bi bi-currency-exchange me-1"></i>Taux de Change
-        </a>
-        <a href="{{ path('app_projet_news', {id: projet.id}) }}" class="btn btn-sm btn-outline-dark">
-            <i class="bi bi-newspaper me-1"></i>Actualités Secteur
-        </a>
+{# AI & Tools Action Bar #}
+<div class="card border-0 shadow-sm p-3 mb-4" style="border-radius:1rem;background:linear-gradient(135deg,rgba(67,97,238,.06),rgba(114,9,183,.06));border:1px solid rgba(67,97,238,.12) !important">
+    <div class="d-flex flex-wrap gap-3 align-items-center">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="fw-bold small me-1" style="color:rgba(255,255,255,.45);font-size:.75rem;letter-spacing:.04em"><i class="bi bi-robot me-1"></i>AI ACTIONS</span>
+            <form method="post" action="{{ path('app_projet_evaluate_ai', {id: projet.id}) }}" class="d-inline">
+                <button class="btn btn-sm btn-outline-primary"><i class="bi bi-stars me-1"></i>AI Scoring</button>
+            </form>
+            <a href="{{ path('app_projet_business_plan', {id: projet.id}) }}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-file-earmark-text me-1"></i>Business Plan
+            </a>
+            <a href="{{ path('app_projet_recommendations', {id: projet.id}) }}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-lightbulb me-1"></i>Recommendations
+            </a>
+        </div>
+        <div class="vr d-none d-md-block" style="opacity:.15"></div>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="fw-bold small me-1" style="color:rgba(255,255,255,.45);font-size:.75rem;letter-spacing:.04em"><i class="bi bi-tools me-1"></i>TOOLS</span>
+            <a href="{{ path('app_projet_exchange_rates', {id: projet.id}) }}" class="btn btn-sm btn-outline-success">
+                <i class="bi bi-currency-exchange me-1"></i>Exchange Rates
+            </a>
+            <a href="{{ path('app_projet_news', {id: projet.id}) }}" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-newspaper me-1"></i>Sector News
+            </a>
+        </div>
     </div>
 </div>
 
@@ -54,11 +83,11 @@
             <p>{{ projet.description }}</p>
         </div>
 
-        {# Diagnostic IA même style que Description #}
+        {# AI Diagnostic #}
         {% if projet.diagnosticIa %}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold">Diagnostic IA du projet</h5>
-            <p>{{ projet.diagnosticIa|replace({'**':''})|nl2br }}</p>
+        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem;border-left:3px solid rgba(67,97,238,.5) !important">
+            <h5 class="fw-bold mb-3"><i class="bi bi-cpu me-2" style="color:var(--nj-primary)"></i>AI Project Diagnostic</h5>
+            <p class="mb-0">{{ projet.diagnosticIa|replace({'**':'', '#### ':'', '### ':'', '## ':'', '# ':''})|nl2br }}</p>
         </div>
         {% endif %}
 
@@ -66,55 +95,55 @@
         {% if projet.donneesBusiness %}
         {% set db = projet.donneesBusiness %}
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>Données Business</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>Business Data</h5>
             <div class="row g-3">
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.05)">
-                        <p class="text-muted small mb-1">Taille du marché</p>
-                        <h5 class="fw-bold mb-0">{{ db.tailleMarche|number_format(0, ',', ' ') }} DT</h5>
+                    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.14);border:1px solid rgba(67,97,238,.2)">
+                        <p class="text-muted small mb-1">Market Size</p>
+                        <h5 class="fw-bold mb-0 text-white">{{ db.tailleMarche }}</h5>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(114,9,183,.05)">
-                        <p class="text-muted small mb-1">Coûts estimés</p>
-                        <h5 class="fw-bold mb-0">{{ db.coutsEstimes|number_format(0, ',', ' ') }} DT</h5>
+                    <div class="p-3 rounded-3" style="background:rgba(114,9,183,.14);border:1px solid rgba(114,9,183,.2)">
+                        <p class="text-muted small mb-1">Estimated Costs</p>
+                        <h5 class="fw-bold mb-0 text-white">{{ db.coutsEstimes|number_format(0, ',', ' ') }} TND</h5>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(247,37,133,.05)">
-                        <p class="text-muted small mb-1">Revenus attendus</p>
-                        <h5 class="fw-bold mb-0">{{ db.revenusAttendus|number_format(0, ',', ' ') }} DT</h5>
+                    <div class="p-3 rounded-3" style="background:rgba(219,39,119,.14);border:1px solid rgba(219,39,119,.2)">
+                        <p class="text-muted small mb-1">Expected Revenue</p>
+                        <h5 class="fw-bold mb-0 text-white">{{ db.revenusAttendus|number_format(0, ',', ' ') }} TND</h5>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.05)">
-                        <p class="text-muted small mb-1">Modèle de revenu</p>
-                        <h6 class="fw-semibold mb-0">{{ db.modeleRevenu }}</h6>
+                    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.14);border:1px solid rgba(67,97,238,.2)">
+                        <p class="text-muted small mb-1">Revenue Model</p>
+                        <h6 class="fw-semibold mb-0 text-white">{{ db.modeleRevenu }}</h6>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(114,9,183,.05)">
-                        <p class="text-muted small mb-1">Niveau de risque</p>
-                        <h6 class="fw-semibold mb-0">{{ db.niveauRisque }}</h6>
+                    <div class="p-3 rounded-3" style="background:rgba(114,9,183,.14);border:1px solid rgba(114,9,183,.2)">
+                        <p class="text-muted small mb-1">Risk Level</p>
+                        <h6 class="fw-semibold mb-0 text-white">{{ db.niveauRisque }}</h6>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="p-3 rounded-3" style="background:rgba(247,37,133,.05)">
-                        <p class="text-muted small mb-1">Force d'équipe</p>
-                        <h6 class="fw-semibold mb-0">{{ db.forceEquipe }}/10</h6>
+                    <div class="p-3 rounded-3" style="background:rgba(219,39,119,.14);border:1px solid rgba(219,39,119,.2)">
+                        <p class="text-muted small mb-1">Team Strength</p>
+                        <h6 class="fw-semibold mb-0 text-white">{{ db.forceEquipe }}/10</h6>
                     </div>
                 </div>
             </div>
 
-            {% if db.scoreFinancier %}
-            <hr>
-            <h6 class="fw-bold mb-3">Scores calculés</h6>
+            {% if db.scoreFinancier is not null %}
+            <hr style="border-color:rgba(255,255,255,.08);margin:1.5rem 0">
+            <h6 class="fw-bold mb-3">Calculated Scores</h6>
             <div class="row g-3">
                 {% for label, val in {
-                    'Score Financier': db.scoreFinancier,
-                    'Score Marché': db.scoreMarche,
-                    'Score Équipe': db.scoreEquipeCalcule,
-                    'Score Risque': db.scoreRisqueCalcule
+                    'Financial Score': db.scoreFinancier,
+                    'Market Score': db.scoreMarche,
+                    'Team Score': db.scoreEquipeCalcule,
+                    'Risk Score': db.scoreRisqueCalcule
                 } %}
                 <div class="col-md-3">
                     <p class="text-muted small mb-1">{{ label }}</p>
@@ -133,34 +162,23 @@
     {# Sidebar #}
     <div class="col-md-4">
         {% if projet.scoreGlobal %}
-        <div class="card border-0 shadow-sm p-4 text-center mb-4" style="border-radius:1rem">
-            <h6 class="fw-bold text-muted">Score Global</h6>
-            <div class="display-3 fw-bold" style="color:var(--nj-primary)">{{ projet.scoreGlobal|number_format(1) }}</div>
-            <div class="progress mt-2" style="height:10px">
-                <div class="progress-bar" style="width:{{ projet.scoreGlobal }}%;background:var(--nj-gradient)"></div>
+        <div class="nj-raised p-4 text-center mb-4" style="border-top:2px solid {{ projet.scoreGlobal >= 70 ? 'rgba(5,150,105,.6)' : (projet.scoreGlobal >= 40 ? 'rgba(217,119,6,.6)' : 'rgba(239,71,111,.6)') }}">
+            <div class="nj-section-label justify-content-center mb-2" style="--nj-section-color:none;font-size:.68rem"><i class="bi bi-cpu me-1"></i>Global AI Score</div>
+            <div class="nj-num {{ projet.scoreGlobal >= 70 ? 'nj-num-good' : (projet.scoreGlobal >= 40 ? 'nj-num-warn' : 'nj-num-danger') }}" style="font-size:3.5rem">{{ projet.scoreGlobal|number_format(1) }}</div>
+            <div class="small mt-1" style="color:rgba(255,255,255,.35)">/100</div>
+            <div class="progress mt-3" style="height:6px">
+                <div class="progress-bar" style="width:{{ projet.scoreGlobal }}%;background:{{ projet.scoreGlobal >= 70 ? 'linear-gradient(90deg,#059669,#06d6a0)' : (projet.scoreGlobal >= 40 ? 'linear-gradient(90deg,#d97706,#ffd166)' : 'linear-gradient(90deg,#ef476f,#ff6b9d)') }}"></div>
             </div>
         </div>
         {% endif %}
 
-        {# Radar Chart for Scores #}
-        {% if projet.donneesBusiness and projet.donneesBusiness.scoreFinancier %}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h6 class="fw-bold mb-3"><i class="bi bi-diagram-3 me-2"></i>Radar des Scores</h6>
-            <canvas id="scoreRadar" height="250"></canvas>
-        </div>
-        {% endif %}
-
-
-
-
-
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h6 class="fw-bold mb-3">Informations</h6>
+            <h6 class="fw-bold mb-3">Details</h6>
             <ul class="list-unstyled mb-0">
-                <li class="mb-2"><i class="bi bi-calendar text-muted me-2"></i>Créé le {{ projet.dateCreation|date('d/m/Y') }}</li>
-                {% if projet.dateSoumission %}<li class="mb-2"><i class="bi bi-send text-muted me-2"></i>Soumis le {{ projet.dateSoumission|date('d/m/Y') }}</li>{% endif %}
-                {% if projet.dateEvaluation %}<li class="mb-2"><i class="bi bi-check-circle text-muted me-2"></i>Évalué le {{ projet.dateEvaluation|date('d/m/Y') }}</li>{% endif %}
-                <li><i class="bi bi-person text-muted me-2"></i>{% if projet.user %}<a href="{{ path('app_user_profile', {id: projet.user.id}) }}" class="text-decoration-none">{{ projet.user.firstname }} {{ projet.user.lastname }}</a>{% else %}Non assigné{% endif %}</li>
+                <li class="mb-2"><i class="bi bi-calendar text-muted me-2"></i>Created {{ projet.dateCreation|date('d/m/Y') }}</li>
+                {% if projet.dateSoumission %}<li class="mb-2"><i class="bi bi-send text-muted me-2"></i>Submitted {{ projet.dateSoumission|date('d/m/Y') }}</li>{% endif %}
+                {% if projet.dateEvaluation %}<li class="mb-2"><i class="bi bi-check-circle text-muted me-2"></i>Evaluated {{ projet.dateEvaluation|date('d/m/Y') }}</li>{% endif %}
+                <li><i class="bi bi-person text-muted me-2"></i>{% if projet.user %}<a href="{{ path('app_user_profile', {id: projet.user.id}) }}" class="text-decoration-none">{{ projet.user.firstname }} {{ projet.user.lastname }}</a>{% else %}Unassigned{% endif %}</li>
             </ul>
         </div>
     </div>
@@ -168,50 +186,4 @@
 {% endblock %}
 
 {% block javascripts %}
-{% if projet.donneesBusiness and projet.donneesBusiness.scoreFinancier %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ctx = document.getElementById('scoreRadar');
-    if (!ctx) return;
-
-    new Chart(ctx, {
-        type: 'radar',
-        data: {
-            labels: ['Financier', 'Marché', 'Équipe', 'Risque'],
-            datasets: [{
-                label: 'Scores',
-                data: [
-                    {{ projet.donneesBusiness.scoreFinancier|default(0) }},
-                    {{ projet.donneesBusiness.scoreMarche|default(0) }},
-                    {{ projet.donneesBusiness.scoreEquipeCalcule|default(0) }},
-                    {{ projet.donneesBusiness.scoreRisqueCalcule|default(0) }}
-                ],
-                backgroundColor: 'rgba(67, 97, 238, 0.15)',
-                borderColor: '#4361ee',
-                borderWidth: 2,
-                pointBackgroundColor: '#4361ee',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 5
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                r: {
-                    beginAtZero: true,
-                    max: 100,
-                    ticks: { stepSize: 20, font: { size: 10 } },
-                    pointLabels: { font: { size: 12, weight: '600' } },
-                    grid: { color: 'rgba(0,0,0,.06)' }
-                }
-            },
-            plugins: {
-                legend: { display: false }
-            }
-        }
-    });
-});
-</script>
-{% endif %}
 {% endblock %}

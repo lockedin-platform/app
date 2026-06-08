@@ -16,28 +16,28 @@ class DonneesBusiness
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: 'La taille du marché est obligatoire.')]
+    #[Assert\NotBlank(message: 'Market size is required.')]
     private ?string $tailleMarche = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\NotBlank(message: 'Le modèle de revenu est obligatoire.')]
+    #[Assert\NotBlank(message: 'Revenue model is required.')]
     private ?string $modeleRevenu = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotNull(message: 'Les coûts estimés sont obligatoires.')]
+    #[Assert\NotNull(message: 'Estimated costs are required.')]
     private ?float $coutsEstimes = 0;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotNull(message: 'Les revenus attendus sont obligatoires.')]
+    #[Assert\NotNull(message: 'Expected revenue is required.')]
     private ?float $revenusAttendus = 0;
 
     #[ORM\Column(length: 50, nullable: true)]
-    #[Assert\NotBlank(message: 'Le niveau de risque est obligatoire.')]
+    #[Assert\NotBlank(message: 'Risk level is required.')]
     private ?string $niveauRisque = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\NotNull(message: "La force d'équipe est obligatoire.")]
-    #[Assert\Range(min: 1, max: 10, notInRangeMessage: "La force d'équipe doit être entre 1 et 10.")]
+    #[Assert\NotNull(message: 'Team strength is required.')]
+    #[Assert\Range(min: 1, max: 10, notInRangeMessage: 'Team strength must be between 1 and 10.')]
     private ?int $forceEquipe = 0;
 
     #[ORM\OneToOne(targetEntity: Projet::class, inversedBy: 'donneesBusiness')]

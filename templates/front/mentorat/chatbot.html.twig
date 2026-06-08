@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Chatbot Mentorat - Najahni{% endblock %}
+{% block title %}Mentoring Chatbot - Najahni{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -10,10 +10,10 @@
 {# ── 4-Tab Navigation (role-aware) ── #}
 {% set userRole = app.user.role %}
 <ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Demandes</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Requests</a></li>
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_sessions') }}"><i class="bi bi-camera-video me-1"></i>Sessions</a></li>
     {% if userRole == 'MENTOR' %}
-        <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Disponibilités</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Availability</a></li>
     {% endif %}
     <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_chatbot') }}"><i class="bi bi-robot me-1"></i>Chatbot</a></li>
 </ul>
@@ -22,28 +22,28 @@
     <div class="col-md-8">
         <div class="card border-0 shadow-sm" style="border-radius:1rem">
             <div class="card-header bg-white border-0 pt-4 px-4">
-                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>Assistant Najahni</h5>
-                <p class="text-muted small mb-0">Posez vos questions sur Najahni, le mentorat, les projets, l'investissement...</p>
+                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>Najahni Assistant</h5>
+                <p class="text-muted small mb-0">Ask your questions about Najahni, mentoring, projects, investment...</p>
             </div>
             <div class="card-body p-4">
                 <div id="chatMessages" style="height:400px;overflow-y:auto;border:1px solid #e9ecef;border-radius:0.75rem;padding:1rem;background:#f8f9fa;" class="mb-3">
                     <div class="d-flex mb-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;min-width:32px;background:var(--nj-gradient);color:#fff"><i class="bi bi-robot"></i></div>
                         <div class="bg-white p-2 px-3 rounded-3 shadow-sm" style="max-width:80%">
-                            <small>Bonjour {{ app.user.firstname }} ! 👋 Je suis l'assistant Najahni. Je connais tout sur la plateforme : mentorat, sessions, calendrier, projets, investissement, communauté et apprentissage. Comment puis-je vous aider ?</small>
+                            <small>Hello {{ app.user.firstname }}! 👋 I am the Najahni assistant. I know everything about the platform: mentoring, sessions, calendar, projects, investment, community and learning. How can I help you?</small>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="C'est quoi Najahni ?"><i class="bi bi-info-circle me-1"></i>C'est quoi Najahni ?</button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Comment trouver un mentor ?"><i class="bi bi-search me-1"></i>Trouver un mentor</button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Comment réserver une session ?"><i class="bi bi-calendar-check me-1"></i>Réserver une session</button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Qui sont les meilleurs mentors ?"><i class="bi bi-star me-1"></i>Meilleurs mentors</button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Comment fonctionne le matching ?"><i class="bi bi-lightning me-1"></i>Matching</button>
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Aide"><i class="bi bi-question-circle me-1"></i>Aide</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="What is Najahni?"><i class="bi bi-info-circle me-1"></i>What is Najahni?</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="How to find a mentor?"><i class="bi bi-search me-1"></i>Find a mentor</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="How to book a session?"><i class="bi bi-calendar-check me-1"></i>Book a session</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Who are the best mentors?"><i class="bi bi-star me-1"></i>Best mentors</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="How does matching work?"><i class="bi bi-lightning me-1"></i>Matching</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Help"><i class="bi bi-question-circle me-1"></i>Help</button>
                 </div>
                 <div class="input-group">
-                    <input type="text" id="chatInput" class="form-control" placeholder="Tapez votre message..." onkeypress="if(event.key==='Enter')sendMessage()">
+                    <input type="text" id="chatInput" class="form-control" placeholder="Type your message..." onkeypress="if(event.key==='Enter')sendMessage()">
                     <button class="btn btn-nj" onclick="sendMessage()"><i class="bi bi-send"></i></button>
                 </div>
             </div>
@@ -55,88 +55,88 @@
 const knowledgeBase = [
     // ── About Najahni ──
     { keywords: ['najahni', 'plateforme', 'platform', 'c\'est quoi', 'what is', 'à propos', 'about'],
-      answer: 'Najahni est une plateforme digitale conçue pour favoriser l\'entrepreneuriat et le mentorat en connectant des fondateurs dynamiques avec des mentors expérimentés, des investisseurs et des ressources essentielles pour construire et développer des projets innovants.' },
+      answer: 'Najahni is a digital platform designed to foster entrepreneurship and mentoring by connecting dynamic founders with experienced mentors, investors and essential resources to build and grow innovative projects.' },
 
     { keywords: ['qui a créé', 'qui a fait', 'créateur', 'origine', 'esprit'],
-      answer: 'Najahni est un projet PIDEV 3A réalisé par des étudiants d\'Esprit, Ariana, Tunisie. C\'est une plateforme tunisienne qui connecte entrepreneurs, mentors et investisseurs.' },
+      answer: 'Najahni is a PIDEV 3A project developed by students from Esprit, Ariana, Tunisia. It is a Tunisian platform connecting entrepreneurs, mentors and investors.' },
 
     // ── Mentors ──
     { keywords: ['meilleur mentor', 'best mentor', 'top mentor', 'recommand'],
-      answer: 'Les meilleurs mentors dépendent de vos besoins. Les super mentors actifs sur Najahni ont généralement de solides compétences en startups tech, gestion stratégique et levée de fonds. Consultez le tableau de bord pour voir les mentors "Top Rated" basés sur les retours de la communauté.' },
+      answer: 'The best mentors depend on your needs. The active super mentors on Najahni generally have strong skills in tech startups, strategic management and fundraising. Check the dashboard to see "Top Rated" mentors based on community feedback.' },
 
     { keywords: ['trouver mentor', 'find mentor', 'chercher mentor', 'mentor disponible', 'available mentor'],
-      answer: 'Vous pouvez naviguer vers l\'onglet "Trouver un mentor" pour voir les créneaux disponibles. Vous pouvez également consulter le Calendrier de disponibilité pour voir les dates colorées en vert où des mentors sont libres.' },
+      answer: 'You can navigate to the "Find a mentor" tab to see available slots. You can also check the Availability Calendar to see dates highlighted in green where mentors are free.' },
 
     { keywords: ['calendrier', 'calendar', 'disponibilité mentor', 'planning'],
-      answer: 'Le calendrier de disponibilité affiche les dates où les mentors sont disponibles avec des cases vertes. Cliquez sur une date verte pour voir les créneaux et envoyer directement une demande. Accédez-y via Mentorat → Trouver un mentor → Calendrier.' },
+      answer: 'The availability calendar displays dates where mentors are available with green cells. Click on a green date to see slots and send a request directly. Access it via Mentoring → Find a mentor → Calendar.' },
 
     // ── Booking / Requests ──
     { keywords: ['réserver', 'book', 'prendre rendez', 'demande mentorat', 'request'],
-      answer: 'Pour réserver une session : trouvez un créneau disponible dans l\'onglet "Trouver un mentor" ou le Calendrier, puis envoyez une demande de mentorat. Une fois approuvée par le mentor (ou auto-acceptée si le matching est ≥ 70%), la session apparaîtra dans votre onglet "Sessions".' },
+      answer: 'To book a session: find an available slot in the "Find a mentor" tab or the Calendar, then send a mentoring request. Once approved by the mentor (or auto-accepted if matching is ≥ 70%), the session will appear in your "Sessions" tab.' },
 
     { keywords: ['demande', 'envoyer demande', 'nouvelle demande', 'créer demande'],
-      answer: 'Pour créer une demande : allez dans "Trouver un mentor", choisissez un mentor et remplissez le formulaire avec votre motivation, vos objectifs et éventuellement un projet lié. Le score de matching sera calculé automatiquement.' },
+      answer: 'To create a request: go to "Find a mentor", choose a mentor and fill in the form with your motivation, goals and optionally a linked project. The matching score will be calculated automatically.' },
 
     { keywords: ['annuler', 'cancel', 'supprimer demande'],
-      answer: 'Vous pouvez annuler une demande en attente depuis l\'onglet "Demandes" en cliquant sur le bouton d\'annulation. Les demandes annulées peuvent aussi être modifiées et renvoyées.' },
+      answer: 'You can cancel a pending request from the "Requests" tab by clicking the cancel button. Cancelled requests can also be edited and resent.' },
 
     { keywords: ['modifier', 'edit', 'changer demande', 'mettre à jour'],
-      answer: 'Les demandes en attente ou annulées peuvent être modifiées. Cliquez sur l\'icône crayon (✏️) dans la colonne Actions de l\'onglet "Demandes".' },
+      answer: 'Pending or cancelled requests can be edited. Click the pencil icon (✏️) in the Actions column of the "Requests" tab.' },
 
     { keywords: ['statut', 'status', 'état'],
-      answer: 'Les statuts possibles pour une demande sont : En attente (PENDING), Accepté (ACCEPTED), Auto-accepté, Refusé (REJECTED), Annulé (CANCELLED). Pour les sessions : Planifiée, Terminée, Annulée, No-show.' },
+      answer: 'Possible statuses for a request are: Pending (PENDING), Accepted (ACCEPTED), Auto-accepted, Rejected (REJECTED), Cancelled (CANCELLED). For sessions: Scheduled, Completed, Cancelled, No-show.' },
 
     // ── Sessions ──
     { keywords: ['session', 'séance', 'rendez-vous', 'meeting'],
-      answer: 'Les sessions sont créées automatiquement lorsqu\'une demande est acceptée. Les mentors peuvent aussi en créer manuellement. Chaque session a une date, durée, lien de réunion et un système de feedback.' },
+      answer: 'Sessions are created automatically when a request is accepted. Mentors can also create them manually. Each session has a date, duration, meeting link and a feedback system.' },
 
     { keywords: ['feedback', 'avis', 'note', 'rating', 'évaluation'],
-      answer: 'Après qu\'une session est terminée, le mentor et l\'entrepreneur peuvent laisser un feedback et une note de 1 à 5 étoiles. Cela contribue au classement des mentors sur la plateforme.' },
+      answer: 'After a session is completed, the mentor and entrepreneur can leave feedback and a rating from 1 to 5 stars. This contributes to the mentor rankings on the platform.' },
 
     { keywords: ['export', 'pdf', 'excel', 'télécharger'],
-      answer: 'Vous pouvez exporter vos sessions en PDF ou Excel depuis l\'onglet "Sessions" en cliquant sur les boutons d\'export en haut de la page. Le PDF est au format A4 paysage.' },
+      answer: 'You can export your sessions as PDF or Excel from the "Sessions" tab by clicking the export buttons at the top of the page. The PDF is in A4 landscape format.' },
 
     // ── Matching ──
     { keywords: ['matching', 'score', 'auto-accept', 'compatibilité'],
-      answer: 'Le score de matching est calculé automatiquement en fonction de votre profil, secteur d\'activité, bio et vérification du compte. Un score ≥ 70% entraîne l\'auto-acceptation de la demande et la création automatique d\'une session.' },
+      answer: 'The matching score is calculated automatically based on your profile, industry, bio and account verification. A score ≥ 70% triggers auto-acceptance of the request and automatic session creation.' },
 
     // ── Availability ──
     { keywords: ['disponibilité', 'créneau', 'horaire', 'slot', 'availability'],
-      answer: 'En tant que mentor, gérez vos créneaux dans l\'onglet "Disponibilités" : ajoutez, modifiez ou supprimez vos horaires. Votre calendrier personnel ("Mon Calendrier") affiche toutes vos disponibilités publiées avec les dates en vert.' },
+      answer: 'As a mentor, manage your slots in the "Availability" tab: add, edit or delete your time slots. Your personal calendar ("My Calendar") displays all your published availabilities with green dates.' },
 
     // ── Real-time / Chat ──
     { keywords: ['chat en direct', 'real-time', 'messagerie', 'message direct', 'direct message'],
-      answer: 'Actuellement, l\'application supporte la planification et la gestion des sessions de mentorat. Vous pouvez aussi exporter les détails des sessions en PDF. La messagerie directe pourrait être disponible dans de futures versions.' },
+      answer: 'Currently, the application supports planning and managing mentoring sessions. You can also export session details as PDF. Direct messaging may be available in future versions.' },
 
     // ── Investment ──
     { keywords: ['investissement', 'investment', 'investisseur', 'investor', 'financement', 'funding'],
-      answer: 'Le module Investissement de Najahni permet aux entrepreneurs de publier des opportunités et aux investisseurs de faire des offres. Accédez-y via le menu "Investissement" dans la barre de navigation.' },
+      answer: 'The Investment module on Najahni allows entrepreneurs to publish opportunities and investors to make offers. Access it via the "Investment" menu in the navigation bar.' },
 
     // ── Projects ──
     { keywords: ['projet', 'project', 'startup'],
-      answer: 'Le module Projets vous permet de créer et gérer vos projets entrepreneuriaux. Vous pouvez lier un projet à une demande de mentorat pour que le mentor comprenne mieux vos besoins.' },
+      answer: 'The Projects module lets you create and manage your entrepreneurial projects. You can link a project to a mentoring request so the mentor better understands your needs.' },
 
     // ── Community ──
     { keywords: ['communauté', 'community', 'groupe', 'group', 'event', 'événement', 'post'],
-      answer: 'Le module Communauté comprend les posts, groupes et événements. Partagez vos idées, rejoignez des groupes thématiques et participez aux événements organisés par la communauté Najahni.' },
+      answer: 'The Community module includes posts, groups and events. Share your ideas, join themed groups and participate in events organized by the Najahni community.' },
 
     // ── Learning ──
     { keywords: ['apprentissage', 'cours', 'learning', 'formation', 'badge', 'xp'],
-      answer: 'Le module Apprentissage propose des cours classés par niveau (Débutant à Expert). Complétez des cours pour gagner des points XP et débloquer des badges (Commun, Rare, Épique, Légendaire).' },
+      answer: 'The Learning module offers courses classified by level (Beginner to Expert). Complete courses to earn XP points and unlock badges (Common, Rare, Epic, Legendary).' },
 
     // ── Account ──
     { keywords: ['profil', 'compte', 'profile', 'account', 'paramètre', 'settings'],
-      answer: 'Gérez votre profil depuis le menu en haut à droite → "Mon Profil". Vous pouvez modifier vos informations, votre photo, bio, entreprise, et préférences de langue/thème/devise.' },
+      answer: 'Manage your profile from the top-right menu → "My Profile". You can edit your information, photo, bio, company, and language/theme/currency preferences.' },
 
     // ── Greetings ──
     { keywords: ['bonjour', 'salut', 'hello', 'hi', 'bonsoir', 'hey', 'salam'],
-      answer: 'Bonjour ! 👋 Je suis l\'assistant Najahni. Comment puis-je vous aider aujourd\'hui ? Vous pouvez me poser des questions sur le mentorat, les sessions, le calendrier, les projets, l\'investissement et plus encore !' },
+      answer: 'Hello! 👋 I am the Najahni assistant. How can I help you today? You can ask me questions about mentoring, sessions, the calendar, projects, investment and more!' },
 
     { keywords: ['merci', 'thanks', 'thank you', 'شكرا'],
-      answer: 'Avec plaisir ! N\'hésitez pas si vous avez d\'autres questions. 😊' },
+      answer: 'You\'re welcome! Don\'t hesitate if you have any other questions. 😊' },
 
     { keywords: ['aide', 'help', 'comment', 'how'],
-      answer: 'Je peux vous aider avec : 🔹 Trouver un mentor et consulter le calendrier\n🔹 Créer, modifier ou annuler des demandes\n🔹 Gérer vos sessions et laisser un feedback\n🔹 Exporter vos données (PDF/Excel)\n🔹 Comprendre le matching et l\'auto-acceptation\n🔹 Naviguer dans les modules : Projets, Investissement, Communauté, Apprentissage\n\nPosez simplement votre question !' },
+      answer: 'I can help you with: 🔹 Finding a mentor and checking the calendar\n🔹 Creating, editing or cancelling requests\n🔹 Managing your sessions and leaving feedback\n🔹 Exporting your data (PDF/Excel)\n🔹 Understanding matching and auto-acceptance\n🔹 Navigating the modules: Projects, Investment, Community, Learning\n\nJust ask your question!' },
 ];
 
 function findBestAnswer(text) {
@@ -175,7 +175,7 @@ function sendMessage() {
     setTimeout(function() {
         removeTyping(typingId);
         const reply = findBestAnswer(text)
-            || 'Je ne dispose pas d\'information sur ce sujet pour le moment. Essayez de me poser des questions sur :\n🔹 Najahni et son fonctionnement\n🔹 Trouver un mentor / Calendrier\n🔹 Demandes et sessions de mentorat\n🔹 Matching et auto-acceptation\n🔹 Export PDF / Excel\n🔹 Projets, Investissement, Communauté, Apprentissage';
+            || 'I don\'t have information on this topic at the moment. Try asking me questions about:\n🔹 Najahni and how it works\n🔹 Finding a mentor / Calendar\n🔹 Mentoring requests and sessions\n🔹 Matching and auto-acceptance\n🔹 PDF / Excel export\n🔹 Projects, Investment, Community, Learning';
         appendMessage(reply, 'bot');
     }, 600 + Math.random() * 400);
 }

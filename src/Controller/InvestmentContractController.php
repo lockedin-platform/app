@@ -113,8 +113,8 @@ class InvestmentContractController extends AbstractController
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
 
-        $safeProject = preg_replace('/[^A-Za-z0-9_-]+/', '_', (string) ($offer->getOpportunity()?->getProject()?->getTitre() ?? 'contrat'));
-        $filename = 'contrat_investissement_' . trim((string) $safeProject, '_') . '_' . $offer->getId() . '.pdf';
+        $safeProject = preg_replace('/[^A-Za-z0-9_-]+/', '_', (string) ($offer->getOpportunity()?->getProject()?->getTitre() ?? 'contract'));
+        $filename = 'investment_contract_' . trim((string) $safeProject, '_') . '_' . $offer->getId() . '.pdf';
         $disposition = $request->query->getBoolean('download') ? 'attachment' : 'inline';
 
         return new Response($dompdf->output(), 200, [
@@ -156,7 +156,7 @@ class InvestmentContractController extends AbstractController
         $this->assertContractAccess($offer, $user);
 
         if (!$this->isCsrfTokenValid('contract_terms_' . $offer->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -168,19 +168,19 @@ class InvestmentContractController extends AbstractController
         $equityInput = trim((string) $request->request->get('equity_percentage', ''));
 
         if ($title === '' || mb_strlen($title) < 5) {
-            $this->addFlash('danger', 'Le titre du contrat doit contenir au moins 5 caracteres.');
+            $this->addFlash('danger', 'Contract title must be at least 5 characters.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if ($terms === '' || mb_strlen($terms) < 30) {
-            $this->addFlash('danger', 'Les termes du contrat doivent contenir au moins 30 caracteres.');
+            $this->addFlash('danger', 'Contract terms must be at least 30 characters.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $equity = null;
         if ($equityInput !== '') {
             if (!is_numeric($equityInput) || (float) $equityInput < 0 || (float) $equityInput > 100) {
-                $this->addFlash('danger', 'Le pourcentage de participation doit etre compris entre 0 et 100.');
+                $this->addFlash('danger', 'Equity percentage must be between 0 and 100.');
                 return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
             }
 
@@ -206,7 +206,7 @@ class InvestmentContractController extends AbstractController
             $message = new InvestmentContractMessage();
             $message->setContract($contract);
             $message->setSender($user);
-            $message->setBody($user->getFullName() . ' a mis a jour les termes du contrat.');
+            $message->setBody($user->getFullName() . ' updated the contract terms.');
             $message->setSystemMessage(true);
 
             $contract->setLastMessageAt(new \DateTime());
@@ -217,18 +217,18 @@ class InvestmentContractController extends AbstractController
                 $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
                 $notificationService->notify(
                     $otherParty,
-                    'Termes du contrat modifies',
-                    $user->getFullName() . ' a propose une nouvelle version du contrat pour ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . '.',
+                    'Contract terms updated',
+                    $user->getFullName() . ' proposed a new version of the contract for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . '.',
                     'CONTRACT',
                     $contractUrl,
-                    'Revoir le contrat'
+                    'Review contract'
                 );
             }
         }
 
         $em->flush();
 
-        $this->addFlash('success', 'Les termes du contrat ont ete enregistres.');
+        $this->addFlash('success', 'Contract terms saved.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
@@ -244,20 +244,20 @@ class InvestmentContractController extends AbstractController
         $this->assertContractAccess($offer, $user);
 
         if (!$this->isCsrfTokenValid('contract_sign_' . $offer->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
         $signatureName = trim((string) $request->request->get('signature_name', ''));
         if (mb_strlen($signatureName) < 3) {
-            $this->addFlash('danger', 'Saisissez un nom complet valide pour signer le contrat.');
+            $this->addFlash('danger', 'Please enter a valid full name to sign the contract.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $signatureImage = trim((string) $request->request->get('signature_image', ''));
         if ($signatureImage === '' || !str_starts_with($signatureImage, 'data:image/png;base64,')) {
-            $this->addFlash('danger', 'Veuillez dessiner votre signature avant de confirmer.');
+            $this->addFlash('danger', 'Please draw your signature before confirming.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -278,7 +278,7 @@ class InvestmentContractController extends AbstractController
         $message = new InvestmentContractMessage();
         $message->setContract($contract);
         $message->setSender($user);
-        $message->setBody($user->getFullName() . ' a signe numeriquement le contrat. Empreinte SHA-256: ' . substr($signatureHash, 0, 16) . '...');
+        $message->setBody($user->getFullName() . ' digitally signed the contract. SHA-256 fingerprint: ' . substr($signatureHash, 0, 16) . '...');
         $message->setSystemMessage(true);
 
         $contract->setLastMessageAt(new \DateTime());
@@ -289,21 +289,21 @@ class InvestmentContractController extends AbstractController
             $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
             $notificationService->notify(
                 $otherParty,
-                $contract->isFullySigned() ? 'Contrat entierement signe' : 'Signature recue',
+                $contract->isFullySigned() ? 'Contract fully signed' : 'Signature received',
                 $contract->isFullySigned()
-                    ? 'Le contrat pour ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . ' est maintenant signe par les deux parties.'
-                    : $user->getFullName() . ' a signe le contrat. Votre signature est requise.',
+                    ? 'The contract for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . ' is now signed by both parties.'
+                    : $user->getFullName() . ' signed the contract. Your signature is required.',
                 'CONTRACT',
                 $contractUrl,
-                'Ouvrir le contrat'
+                'Open contract'
             );
         }
 
         $em->flush();
 
         $this->addFlash('success', $contract->isFullySigned()
-            ? 'Contrat signe par les deux parties. Le paiement peut maintenant etre effectue.'
-            : 'Votre signature numerique a ete enregistree.');
+            ? 'Contract signed by both parties. Payment can now be processed.'
+            : 'Your digital signature has been recorded.');
 
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
@@ -343,16 +343,16 @@ class InvestmentContractController extends AbstractController
         $this->assertContractAccess($offer, $user);
 
         if (!$this->isCsrfTokenValid('contract_message_' . $offer->getId(), $request->request->get('_token'))) {
-            return $this->json(['error' => 'Jeton de securite invalide.'], 403);
+            return $this->json(['error' => 'Invalid security token.'], 403);
         }
 
         $body = trim((string) $request->request->get('message', ''));
         if ($body === '') {
-            return $this->json(['error' => 'Le message ne peut pas etre vide.'], 400);
+            return $this->json(['error' => 'Message cannot be empty.'], 400);
         }
 
         if (mb_strlen($body) > 2000) {
-            return $this->json(['error' => 'Le message depasse 2000 caracteres.'], 400);
+            return $this->json(['error' => 'Message exceeds 2000 characters.'], 400);
         }
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
@@ -369,11 +369,11 @@ class InvestmentContractController extends AbstractController
             $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
             $notificationService->notify(
                 $otherParty,
-                'Nouveau message de negociation',
-                $user->getFullName() . ' vous a envoye un message concernant le contrat de ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . '.',
+                'New negotiation message',
+                $user->getFullName() . ' sent you a message about the contract for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . '.',
                 'MESSAGE',
                 $contractUrl,
-                'Voir la discussion'
+                'View discussion'
             );
         }
 
@@ -402,18 +402,18 @@ class InvestmentContractController extends AbstractController
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
         if ($contract->getInvestor()?->getId() !== $user->getId()) {
-            return $this->json(['success' => false, 'message' => 'Seul l\'investisseur peut définir les jalons.'], 403);
+            return $this->json(['success' => false, 'message' => 'Only the investor can define funding milestones.'], 403);
         }
 
         if (!$this->isCsrfTokenValid('milestones_' . $offer->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         // Only allow milestone editing before any milestone is released
         foreach ($contract->getFundingMilestones() as $existing) {
             if ($existing->isReleased()) {
-                $this->addFlash('danger', 'Les jalons ne peuvent plus etre modifies une fois qu\'un paiement a ete libere.');
+                $this->addFlash('danger', 'Milestones cannot be changed once a payment has been released.');
                 return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
             }
         }
@@ -422,7 +422,7 @@ class InvestmentContractController extends AbstractController
         $percentages = $request->request->all('milestone_percentage');
 
         if (empty($labels) || count($labels) < 2 || count($labels) > 4) {
-            $this->addFlash('danger', 'Definissez entre 2 et 4 jalons de financement.');
+            $this->addFlash('danger', 'Define between 2 and 4 funding milestones.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -435,11 +435,11 @@ class InvestmentContractController extends AbstractController
             $pct = round((float) ($percentages[$i] ?? 0), 2);
 
             if ($lbl === '' || mb_strlen($lbl) < 3) {
-                $this->addFlash('danger', 'Chaque jalon doit avoir un libelle d\'au moins 3 caracteres.');
+                $this->addFlash('danger', 'Each milestone must have a label of at least 3 characters.');
                 return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
             }
             if ($pct < 5 || $pct > 80) {
-                $this->addFlash('danger', 'Chaque jalon doit representer entre 5% et 80% du montant.');
+                $this->addFlash('danger', 'Each milestone must represent between 5% and 80% of the total amount.');
                 return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
             }
 
@@ -448,7 +448,7 @@ class InvestmentContractController extends AbstractController
         }
 
         if (abs($totalPct - 100.0) > 0.01) {
-            $this->addFlash('danger', 'Le total des pourcentages doit etre exactement 100%. Actuellement : ' . number_format($totalPct, 2) . '%.');
+            $this->addFlash('danger', 'Percentages must total exactly 100%. Current total: ' . number_format($totalPct, 2) . '%.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -473,7 +473,7 @@ class InvestmentContractController extends AbstractController
         $msg = new InvestmentContractMessage();
         $msg->setContract($contract);
         $msg->setSender($user);
-        $msg->setBody($user->getFullName() . ' a defini ' . count($parsed) . ' jalons de financement.');
+        $msg->setBody($user->getFullName() . ' defined ' . count($parsed) . ' funding milestones.');
         $msg->setSystemMessage(true);
         $contract->setLastMessageAt(new \DateTime());
         $em->persist($msg);
@@ -483,17 +483,17 @@ class InvestmentContractController extends AbstractController
         if ($otherParty) {
             $notificationService->notify(
                 $otherParty,
-                'Jalons de financement definis',
-                $user->getFullName() . ' a configure les jalons de paiement (' . count($parsed) . ' etapes) pour ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . '.',
+                'Funding milestones defined',
+                $user->getFullName() . ' configured the payment milestones (' . count($parsed) . ' steps) for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . '.',
                 'CONTRACT',
                 $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]),
-                'Voir le contrat'
+                'View contract'
             );
         }
 
         $em->flush();
 
-        $this->addFlash('success', count($parsed) . ' jalons de financement enregistres.');
+        $this->addFlash('success', count($parsed) . ' funding milestones saved.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
@@ -512,23 +512,23 @@ class InvestmentContractController extends AbstractController
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
         if ($contract->getEntrepreneur()?->getId() !== $user->getId()) {
-            $this->addFlash('danger', 'Seul l\'entrepreneur peut marquer un jalon comme termine.');
+            $this->addFlash('danger', 'Only the entrepreneur can mark a milestone as complete.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$this->isCsrfTokenValid('milestone_action_' . $milestoneId, $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $milestone = $milestoneRepo->find($milestoneId);
         if (!$milestone || $milestone->getContract()->getId() !== $contract->getId()) {
-            $this->addFlash('danger', 'Jalon introuvable.');
+            $this->addFlash('danger', 'Milestone not found.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$milestone->canBeMarkedComplete()) {
-            $this->addFlash('danger', 'Ce jalon ne peut pas etre marque comme termine dans son etat actuel.');
+            $this->addFlash('danger', 'This milestone cannot be marked as complete in its current state.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -538,7 +538,7 @@ class InvestmentContractController extends AbstractController
         $msg = new InvestmentContractMessage();
         $msg->setContract($contract);
         $msg->setSender($user);
-        $msg->setBody('Jalon "' . $milestone->getLabel() . '" marque comme termine par l\'entrepreneur. En attente de confirmation de l\'investisseur.');
+        $msg->setBody('Milestone "' . $milestone->getLabel() . '" marked as complete by the entrepreneur. Awaiting investor confirmation.');
         $msg->setSystemMessage(true);
         $contract->setLastMessageAt(new \DateTime());
         $em->persist($msg);
@@ -547,16 +547,16 @@ class InvestmentContractController extends AbstractController
         if ($investor) {
             $notificationService->notify(
                 $investor,
-                'Jalon termine',
-                'L\'entrepreneur a marque le jalon "' . $milestone->getLabel() . '" comme termine. Confirmez pour liberer le paiement.',
+                'Milestone completed',
+                'The entrepreneur marked milestone "' . $milestone->getLabel() . '" as complete. Confirm to release payment.',
                 'CONTRACT',
                 $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]),
-                'Voir le contrat'
+                'View contract'
             );
         }
 
         $em->flush();
-        $this->addFlash('success', 'Jalon marque comme termine.');
+        $this->addFlash('success', 'Milestone marked as complete.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
@@ -575,23 +575,23 @@ class InvestmentContractController extends AbstractController
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
         if ($contract->getInvestor()?->getId() !== $user->getId()) {
-            $this->addFlash('danger', 'Seul l\'investisseur peut confirmer un jalon.');
+            $this->addFlash('danger', 'Only the investor can confirm a milestone.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$this->isCsrfTokenValid('milestone_action_' . $milestoneId, $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $milestone = $milestoneRepo->find($milestoneId);
         if (!$milestone || $milestone->getContract()->getId() !== $contract->getId()) {
-            $this->addFlash('danger', 'Jalon introuvable.');
+            $this->addFlash('danger', 'Milestone not found.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$milestone->canBeConfirmed()) {
-            $this->addFlash('danger', 'Ce jalon ne peut pas etre confirme dans son etat actuel.');
+            $this->addFlash('danger', 'This milestone cannot be confirmed in its current state.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -601,7 +601,7 @@ class InvestmentContractController extends AbstractController
         $msg = new InvestmentContractMessage();
         $msg->setContract($contract);
         $msg->setSender($user);
-        $msg->setBody('Jalon "' . $milestone->getLabel() . '" confirme par l\'investisseur. Paiement partiel pret a etre libere.');
+        $msg->setBody('Milestone "' . $milestone->getLabel() . '" confirmed by the investor. Partial payment ready to be released.');
         $msg->setSystemMessage(true);
         $contract->setLastMessageAt(new \DateTime());
         $em->persist($msg);
@@ -610,16 +610,16 @@ class InvestmentContractController extends AbstractController
         if ($entrepreneur) {
             $notificationService->notify(
                 $entrepreneur,
-                'Jalon confirme',
-                'L\'investisseur a confirme le jalon "' . $milestone->getLabel() . '". Le paiement partiel de ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' DT peut maintenant etre libere.',
+                'Milestone confirmed',
+                'The investor confirmed milestone "' . $milestone->getLabel() . '". The partial payment of ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' TND can now be released.',
                 'CONTRACT',
                 $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]),
-                'Voir le contrat'
+                'View contract'
             );
         }
 
         $em->flush();
-        $this->addFlash('success', 'Jalon confirme. Le paiement partiel peut etre libere.');
+        $this->addFlash('success', 'Milestone confirmed. Partial payment can now be released.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
@@ -641,28 +641,28 @@ class InvestmentContractController extends AbstractController
 
         $contract = $this->getOrCreateContract($offer, $em, $signatureService);
         if ($contract->getInvestor()?->getId() !== $user->getId()) {
-            $this->addFlash('danger', 'Seul l\'investisseur peut liberer un paiement.');
+            $this->addFlash('danger', 'Only the investor can release a payment.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$contract->isFullySigned()) {
-            $this->addFlash('danger', 'Le contrat doit etre signe par les deux parties.');
+            $this->addFlash('danger', 'The contract must be signed by both parties.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$this->isCsrfTokenValid('milestone_action_' . $milestoneId, $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         $milestone = $milestoneRepo->find($milestoneId);
         if (!$milestone || $milestone->getContract()->getId() !== $contract->getId()) {
-            $this->addFlash('danger', 'Jalon introuvable.');
+            $this->addFlash('danger', 'Milestone not found.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
         if (!$milestone->canBeReleased()) {
-            $this->addFlash('danger', 'Ce jalon doit etre confirme avant de pouvoir liberer le paiement.');
+            $this->addFlash('danger', 'This milestone must be confirmed before releasing payment.');
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -672,7 +672,7 @@ class InvestmentContractController extends AbstractController
 
         $result = $paymentService->payAcceptedOffer($partialOffer);
         if (!($result['success'] ?? false)) {
-            $this->addFlash('danger', 'Paiement Stripe echoue : ' . ($result['error'] ?? 'Erreur inconnue.'));
+            $this->addFlash('danger', 'Stripe payment failed: ' . ($result['error'] ?? 'Unknown error.'));
             return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
         }
 
@@ -698,7 +698,7 @@ class InvestmentContractController extends AbstractController
         $msg = new InvestmentContractMessage();
         $msg->setContract($contract);
         $msg->setSender($user);
-        $msg->setBody('Paiement de ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' DT libere pour le jalon "' . $milestone->getLabel() . '".' . ($allReleased ? ' Tous les jalons sont finances.' : ''));
+        $msg->setBody('Payment of ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' TND released for milestone "' . $milestone->getLabel() . '".' . ($allReleased ? ' All milestones are funded.' : ''));
         $msg->setSystemMessage(true);
         $contract->setLastMessageAt(new \DateTime());
         $em->persist($msg);
@@ -707,24 +707,24 @@ class InvestmentContractController extends AbstractController
         if ($entrepreneur) {
             $notificationService->notify(
                 $entrepreneur,
-                $allReleased ? 'Financement complet' : 'Paiement partiel recu',
+                $allReleased ? 'Fully funded' : 'Partial payment received',
                 $allReleased
-                    ? 'Tous les jalons pour ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . ' sont finances.'
-                    : 'L\'investisseur a libere ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' DT pour le jalon "' . $milestone->getLabel() . '".',
+                    ? 'All milestones for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . ' are funded.'
+                    : 'The investor released ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' TND for milestone "' . $milestone->getLabel() . '".',
                 'SUCCESS',
                 $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]),
-                'Voir le contrat'
+                'View contract'
             );
         }
 
         if ($allReleased) {
             $notificationService->notify(
                 $user,
-                'Financement complet',
-                'Tous les jalons pour ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'ce projet') . ' ont ete finances avec succes.',
+                'Fully funded',
+                'All milestones for ' . ($offer->getOpportunity()->getProject()?->getTitre() ?? 'this project') . ' have been successfully funded.',
                 'SUCCESS',
                 $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]),
-                'Voir le contrat'
+                'View contract'
             );
         }
 
@@ -741,8 +741,8 @@ class InvestmentContractController extends AbstractController
                     $milestone->getPaymentIntentId(),
                     $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()], UrlGeneratorInterface::ABSOLUTE_URL),
                     $allReleased
-                        ? 'Dernier paiement de jalon - contrat entierement finance'
-                        : 'Paiement de jalon confirme - ' . $milestone->getLabel()
+                        ? 'Final milestone payment — contract fully funded'
+                        : 'Milestone payment confirmed — ' . $milestone->getLabel()
                 );
             }
         } catch (\Throwable $exception) {
@@ -754,7 +754,7 @@ class InvestmentContractController extends AbstractController
             ]);
         }
 
-        $this->addFlash('success', 'Paiement de ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' DT libere.');
+        $this->addFlash('success', 'Payment of ' . number_format((float) $milestone->getAmount(), 0, ',', ' ') . ' TND released.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
@@ -780,11 +780,11 @@ class InvestmentContractController extends AbstractController
 
         $message = trim($request->request->get('message', ''));
         if ($message === '') {
-            return $this->json(['response' => null, 'error' => 'Message vide.'], 400);
+            return $this->json(['response' => null, 'error' => 'Empty message.'], 400);
         }
 
         if (mb_strlen($message) > 2000) {
-            return $this->json(['response' => null, 'error' => 'Message trop long (max 2000 caracteres).'], 400);
+            return $this->json(['response' => null, 'error' => 'Message too long (max 2000 characters).'], 400);
         }
 
         $historyRaw = $request->request->get('conversationHistory', '[]');
@@ -813,7 +813,7 @@ class InvestmentContractController extends AbstractController
             $response = $chatbot->chatWithContext($message, $context, $conversationHistory);
             return $this->json(['response' => $response, 'error' => null]);
         } catch (\Throwable $e) {
-            return $this->json(['response' => null, 'error' => 'Erreur du service IA.'], 500);
+            return $this->json(['response' => null, 'error' => 'AI service error.'], 500);
         }
     }
 
@@ -857,21 +857,21 @@ class InvestmentContractController extends AbstractController
     {
         return match ($field) {
             'equity' => sprintf(
-                'Pour un investissement de %.0f DT dans le secteur "%s" (projet: %s), quelle fourchette de participation au capital (equity) est typique ? '
-                . 'Reponds en 2-3 phrases concises avec un pourcentage suggeré.',
+                'For an investment of %.0f TND in the "%s" sector (project: %s), what equity percentage range is typical? '
+                . 'Answer in 2-3 concise sentences with a suggested percentage.',
                 $amount, $sector, $projectTitle
             ),
             'milestones' => sprintf(
-                'Suggere une structure de jalons de financement pour un projet de %s dans le secteur "%s" avec un investissement de %.0f DT. '
-                . 'Propose 3 etapes avec une repartition en pourcentage. Reponds en 3-4 phrases.',
+                'Suggest a funding milestone structure for the project "%s" in the "%s" sector with an investment of %.0f TND. '
+                . 'Propose 3 stages with percentage breakdown. Answer in 3-4 sentences.',
                 $projectTitle, $sector, $amount
             ),
             'terms' => sprintf(
-                'Quelles clauses cles devraient figurer dans un contrat d\'investissement de %.0f DT pour le projet "%s" (secteur: %s) ? '
-                . 'Liste les 4-5 clauses les plus importantes en une phrase chacune.',
+                'What key clauses should appear in a %.0f TND investment contract for project "%s" (sector: %s)? '
+                . 'List the 4-5 most important clauses in one sentence each.',
                 $amount, $projectTitle, $sector
             ),
-            default => 'Fournis un conseil general d\'investissement pour ce contrat.',
+            default => 'Provide a general investment recommendation for this contract.',
         };
     }
 
@@ -881,15 +881,15 @@ class InvestmentContractController extends AbstractController
 
         return match ($field) {
             'equity' => $amount < 50000
-                ? 'Pour un investissement inferieur a 50 000 DT dans une petite structure (1-10 employes), une participation de 5% a 15% est courante. Ajustez selon la maturite du projet et les revenus existants.'
-                : 'Pour un investissement de cette taille, une participation de 10% a 25% est generalement negociee. Tenez compte de la valorisation pre-money et du potentiel de croissance.',
+                ? 'For an investment under 50,000 TND in a small structure (1-10 employees), an equity stake of 5% to 15% is typical. Adjust based on project maturity and existing revenue.'
+                : 'For an investment of this size, an equity stake of 10% to 25% is typically negotiated. Factor in the pre-money valuation and growth potential.',
             'milestones' => $amount < 50000
-                ? 'Structure suggeree : (1) 40% au demarrage apres signature, (2) 30% a la livraison du prototype ou premiere version, (3) 30% au lancement commercial. Adaptez selon la complexite du projet.'
-                : 'Structure suggeree : (1) 30% au demarrage, (2) 25% au premier jalon technique, (3) 25% a la validation marche, (4) 20% au deploiement final. Chaque etape doit avoir des criteres de validation clairs.',
+                ? 'Suggested structure: (1) 40% at kickoff after signing, (2) 30% on prototype or first version delivery, (3) 30% at commercial launch. Adapt based on project complexity.'
+                : 'Suggested structure: (1) 30% at kickoff, (2) 25% at first technical milestone, (3) 25% at market validation, (4) 20% at final deployment. Each stage should have clear validation criteria.',
             'terms' => $amount < 50000
-                ? 'Clauses recommandees : (1) Droit de regard sur les decisions strategiques, (2) Reporting trimestriel obligatoire, (3) Clause de sortie avec droit de preemption, (4) Protection anti-dilution, (5) Clause de non-concurrence du fondateur.'
-                : 'Clauses recommandees : (1) Siege au conseil d\'administration, (2) Reporting mensuel financier et operationnel, (3) Droit de sortie conjointe (tag-along), (4) Protection anti-dilution renforcee, (5) Clause de liquidation preferentielle.',
-            default => 'Consultez un conseiller juridique pour adapter les termes a votre situation specifique.',
+                ? 'Recommended clauses: (1) Right of oversight on strategic decisions, (2) Mandatory quarterly reporting, (3) Exit clause with right of first refusal, (4) Anti-dilution protection, (5) Founder non-compete clause.'
+                : 'Recommended clauses: (1) Board seat, (2) Monthly financial and operational reporting, (3) Tag-along right, (4) Enhanced anti-dilution protection, (5) Liquidation preference clause.',
+            default => 'Consult a legal advisor to tailor the terms to your specific situation.',
         };
     }
 
@@ -905,21 +905,21 @@ class InvestmentContractController extends AbstractController
 
         [$investor, $entrepreneur] = $this->resolveParties($offer, $em, null);
         if (!$entrepreneur) {
-            throw $this->createNotFoundException('Projet introuvable pour ce contrat.');
+            throw $this->createNotFoundException('Project not found for this contract.');
         }
 
         if (!$investor) {
-            throw $this->createNotFoundException('Investisseur introuvable pour ce contrat.');
+            throw $this->createNotFoundException('Investor not found for this contract.');
         }
 
         $contract = new InvestmentContract();
         $contract->setOffer($offer);
         $contract->setInvestor($investor);
         $contract->setEntrepreneur($entrepreneur);
-        $contract->setTitle('Accord d\'investissement - ' . ($offer->getOpportunity()?->getProject()?->getTitre() ?? 'Projet'));
+        $contract->setTitle('Investment Agreement — ' . ($offer->getOpportunity()?->getProject()?->getTitre() ?? 'Project'));
         $contract->setTerms($signatureService->createDefaultTerms($offer));
-        $contract->setConsideration('A definir: participation, acces anticipe au produit, droits de distribution ou autre contrepartie negociee.');
-        $contract->setMilestones('A definir: calendrier de livraison, etapes de validation et obligations respectives des parties.');
+        $contract->setConsideration('To be defined: equity stake, early product access, distribution rights, or other negotiated consideration.');
+        $contract->setMilestones('To be defined: delivery schedule, validation checkpoints, and respective obligations of each party.');
         $signatureService->refreshDigest($contract);
 
         $em->persist($contract);
@@ -931,7 +931,7 @@ class InvestmentContractController extends AbstractController
     private function assertContractAccess(InvestmentOffer $offer, User $user): void
     {
         if ($offer->getStatus() !== InvestmentOffer::STATUS_ACCEPTED) {
-            throw $this->createNotFoundException('Le contrat est disponible uniquement pour une offre acceptee.');
+            throw $this->createNotFoundException('The contract is only available for an accepted offer.');
         }
 
         $contract = $offer->getContract();
@@ -940,7 +940,7 @@ class InvestmentContractController extends AbstractController
         $isEntrepreneur = $entrepreneur?->getId() === $user->getId();
 
         if (!$isInvestor && !$isEntrepreneur) {
-            throw $this->createAccessDeniedException('Vous n\'avez pas acces a ce contrat.');
+            throw $this->createAccessDeniedException('You do not have access to this contract.');
         }
     }
 
@@ -948,7 +948,7 @@ class InvestmentContractController extends AbstractController
     {
         $user = $this->getUser();
         if (!$user instanceof User) {
-            throw $this->createAccessDeniedException('Authentification requise.');
+            throw $this->createAccessDeniedException('Authentication required.');
         }
 
         return $user;
@@ -962,7 +962,7 @@ class InvestmentContractController extends AbstractController
             'createdAt' => $message->getCreatedAt()?->format('d/m/Y H:i'),
             'system' => $message->isSystemMessage(),
             'mine' => $message->getSender()?->getId() === $currentUser->getId(),
-            'senderName' => $message->getSender()?->getFullName() ?? 'Utilisateur',
+            'senderName' => $message->getSender()?->getFullName() ?? 'User',
         ];
     }
 
@@ -983,7 +983,7 @@ class InvestmentContractController extends AbstractController
     private function assertContractReadyForDocument(InvestmentContract $contract): void
     {
         if (!$contract->isFullySigned()) {
-            throw $this->createAccessDeniedException('Le PDF n\'est disponible qu\'une fois le contrat signe par les deux parties.');
+            throw $this->createAccessDeniedException('The PDF is only available once the contract is signed by both parties.');
         }
     }
 

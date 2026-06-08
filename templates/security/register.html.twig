@@ -2,74 +2,67 @@
 
 {% set recaptcha_enabled = recaptcha_site_key is not empty and recaptcha_site_key not in ['your_recaptcha_site_key', 'your_recaptcha_secret_key'] %}
 
-{% block title %}Inscription - Najahni{% endblock %}
+{% block title %}Sign Up - Najahni{% endblock %}
 
 {% block body %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center py-4" style="background:var(--nj-gradient)">
-    <div class="card shadow-lg border-0 overflow-hidden" style="max-width:980px;width:95%;border-radius:1.5rem">
+<div class="min-vh-100 d-flex align-items-center justify-content-center py-4" style="background:var(--nj-dark,#040816)">
+    <div class="card border-0 overflow-hidden shadow-lg" style="max-width:1100px;width:95%;border-radius:1.5rem">
         <div class="row g-0">
-            {# LEFT — Branding Panel #}
-            <div class="col-lg-5 d-none d-lg-flex flex-column justify-content-center align-items-center text-white p-5 position-relative" style="background:linear-gradient(160deg,var(--nj-accent),var(--nj-secondary));min-height:640px">
-                <div class="position-absolute top-0 start-0 w-100 h-100" style="background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 200%22><circle cx=%2230%22 cy=%2240%22 r=%2260%22 fill=%22rgba(255,255,255,0.04)%22/><circle cx=%22170%22 cy=%22160%22 r=%2280%22 fill=%22rgba(255,255,255,0.03)%22/><circle cx=%22140%22 cy=%2230%22 r=%2240%22 fill=%22rgba(255,255,255,0.05)%22/></svg>');background-size:cover"></div>
-                <div class="text-center position-relative" style="z-index:1">
-                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-4" style="width:80px;height:80px;background:rgba(255,255,255,.15);backdrop-filter:blur(10px)">
-                        <i class="bi bi-stars" style="font-size:2.5rem"></i>
-                    </div>
-                    <h2 class="fw-bold mb-3" style="font-size:1.8rem">Rejoignez Najahni</h2>
-                    <p class="mb-4 opacity-90" style="font-size:.95rem;line-height:1.6">Faites partie de la communauté d'innovation tunisienne. Construisez l'avenir ensemble.</p>
-                    <div class="d-flex flex-column gap-3 text-start mx-auto" style="max-width:260px">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;min-width:32px;background:rgba(255,255,255,.15)">
-                                <i class="bi bi-shield-check" style="font-size:.85rem"></i>
-                            </div>
-                            <small class="opacity-90">Inscription rapide & sécurisée</small>
+
+            {# LEFT — Image panel (mirrors the registerModal exactly) #}
+            <div class="col-lg-5 d-none d-lg-block position-relative" style="min-height:750px">
+                <img src="{{ asset('uploads/auth-banner.avif') }}" alt="" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit:cover">
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4"
+                     style="background:linear-gradient(0deg,rgba(114,9,183,.85) 0%,rgba(67,97,238,.4) 50%,transparent 100%)">
+                    <h4 class="text-white fw-bold mb-2">Join Najahni</h4>
+                    <p class="text-white small opacity-90 mb-3">Be part of the Tunisian innovation community.</p>
+                    <div class="d-flex flex-column gap-2">
+                        <div class="d-flex align-items-center gap-2 text-white">
+                            <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
+                            <small class="opacity-90">Launch your innovative projects</small>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;min-width:32px;background:rgba(255,255,255,.15)">
-                                <i class="bi bi-mortarboard" style="font-size:.85rem"></i>
-                            </div>
-                            <small class="opacity-90">Accédez au mentorat d'experts</small>
+                        <div class="d-flex align-items-center gap-2 text-white">
+                            <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
+                            <small class="opacity-90">Find mentors &amp; investors</small>
                         </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;min-width:32px;background:rgba(255,255,255,.15)">
-                                <i class="bi bi-cash-stack" style="font-size:.85rem"></i>
-                            </div>
-                            <small class="opacity-90">Trouvez des opportunités d'investissement</small>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;min-width:32px;background:rgba(255,255,255,.15)">
-                                <i class="bi bi-globe2" style="font-size:.85rem"></i>
-                            </div>
-                            <small class="opacity-90">Rejoignez +500 entrepreneurs</small>
+                        <div class="d-flex align-items-center gap-2 text-white">
+                            <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
+                            <small class="opacity-90">Grow your business</small>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {# RIGHT — Register Form #}
+            {# RIGHT — Form #}
             <div class="col-lg-7">
-                <div class="p-4 p-lg-5">
+                <div class="p-4 p-lg-4">
                     <div class="text-center mb-3">
-                        <h3 class="fw-bold" style="font-size:1.65rem">Créer un compte</h3>
-                        <p class="text-muted small">Remplissez vos informations pour commencer</p>
+                        <h3 class="fw-bold" style="font-size:1.5rem">Create Account</h3>
+                        <p class="text-muted small mb-0">Fill in your information to get started</p>
                     </div>
+
+                    {% if errors is defined and errors|length %}
+                        <div class="alert alert-danger rounded-3 py-2 small">
+                            {% for err in errors %}<div><i class="bi bi-exclamation-triangle-fill me-1"></i>{{ err }}</div>{% endfor %}
+                        </div>
+                    {% endif %}
 
                     <form method="post" id="registerForm" novalidate>
                         {% set e = fieldErrors|default({}) %}
                         <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Prénom</label>
+                                <label class="form-label fw-semibold small mb-1">First name</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
-                                    <input type="text" name="firstname" class="form-control border-start-0 ps-0 {{ e.firstname is defined ? 'is-invalid' }}" value="{{ user.firstname }}" placeholder="Votre prénom" required minlength="2" maxlength="100">
+                                    <input type="text" name="firstname" class="form-control border-start-0 ps-0 {{ e.firstname is defined ? 'is-invalid' }}" value="{{ user.firstname }}" placeholder="Your first name" required minlength="2" maxlength="100">
                                 </div>
                                 {% if e.firstname is defined %}<div class="text-danger small mt-1">{{ e.firstname }}</div>{% endif %}
                             </div>
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Nom</label>
+                                <label class="form-label fw-semibold small mb-1">Last name</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-person-fill"></i></span>
-                                    <input type="text" name="lastname" class="form-control border-start-0 ps-0 {{ e.lastname is defined ? 'is-invalid' }}" value="{{ user.lastname }}" placeholder="Votre nom" required minlength="2" maxlength="100">
+                                    <input type="text" name="lastname" class="form-control border-start-0 ps-0 {{ e.lastname is defined ? 'is-invalid' }}" value="{{ user.lastname }}" placeholder="Your last name" required minlength="2" maxlength="100">
                                 </div>
                                 {% if e.lastname is defined %}<div class="text-danger small mt-1">{{ e.lastname }}</div>{% endif %}
                             </div>
@@ -78,33 +71,33 @@
                             <label class="form-label fw-semibold small mb-1">Email</label>
                             <div class="input-group input-group-sm">
                                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                <input type="email" name="email" class="form-control border-start-0 ps-0 {{ e.email is defined ? 'is-invalid' }}" value="{{ user.email }}" placeholder="votre@email.com" required>
+                                <input type="email" name="email" class="form-control border-start-0 ps-0 {{ e.email is defined ? 'is-invalid' }}" value="{{ user.email }}" placeholder="your@email.com" required>
                             </div>
                             {% if e.email is defined %}<div class="text-danger small mt-1">{{ e.email }}</div>{% endif %}
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Téléphone</label>
+                                <label class="form-label fw-semibold small mb-1">Phone</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-phone"></i></span>
-                                    <input type="tel" name="phone" class="form-control border-start-0 ps-0 {{ e.phone is defined ? 'is-invalid' }}" value="{{ user.phone }}" placeholder="+216 XX XXX XXX" pattern="^\+?[0-9\s\-]{7,20}$" maxlength="20" title="Numéro de téléphone valide (7-20 chiffres, + optionnel)">
+                                    <input type="tel" name="phone" class="form-control border-start-0 ps-0 {{ e.phone is defined ? 'is-invalid' }}" value="{{ user.phone }}" placeholder="+216 XX XXX XXX" pattern="^\+?[0-9\s\-]{7,20}$" maxlength="20">
                                 </div>
                                 {% if e.phone is defined %}<div class="text-danger small mt-1">{{ e.phone }}</div>{% endif %}
                             </div>
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Rôle</label>
+                                <label class="form-label fw-semibold small mb-1">Role</label>
                                 <select name="role" class="form-select form-select-sm" required>
                                     <option value="ENTREPRENEUR" {{ user.role == 'ENTREPRENEUR' ? 'selected' }}>Entrepreneur</option>
                                     <option value="MENTOR" {{ user.role == 'MENTOR' ? 'selected' }}>Mentor</option>
-                                    <option value="INVESTISSEUR" {{ user.role == 'INVESTISSEUR' ? 'selected' }}>Investisseur</option>
+                                    <option value="INVESTISSEUR" {{ user.role == 'INVESTISSEUR' ? 'selected' }}>Investor</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row g-2 mb-2">
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Mot de passe</label>
+                                <label class="form-label fw-semibold small mb-1">Password</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="password" name="password" id="regPassword" class="form-control border-end-0 {{ e.password is defined ? 'is-invalid' }}" placeholder="Min. 6 caractères" required minlength="6" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}" title="6 caractères minimum : 1 majuscule, 1 minuscule, 1 chiffre">
+                                    <input type="password" name="password" id="regPassword" class="form-control border-end-0 {{ e.password is defined ? 'is-invalid' }}" placeholder="Min. 6 characters" required minlength="6" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}" title="Min 6 characters: 1 uppercase, 1 lowercase, 1 digit">
                                     <button class="btn btn-outline-secondary border-start-0 btn-sm" type="button" onclick="togglePassword('regPassword', this)">
                                         <i class="bi bi-eye"></i>
                                     </button>
@@ -112,9 +105,9 @@
                                 {% if e.password is defined %}<div class="text-danger small mt-1">{{ e.password }}</div>{% endif %}
                             </div>
                             <div class="col-6">
-                                <label class="form-label fw-semibold small mb-1">Confirmer</label>
+                                <label class="form-label fw-semibold small mb-1">Confirm</label>
                                 <div class="input-group input-group-sm">
-                                    <input type="password" name="confirm_password" id="regConfirm" class="form-control border-end-0 {{ e.confirm_password is defined ? 'is-invalid' }}" placeholder="Confirmer" required minlength="6">
+                                    <input type="password" name="confirm_password" id="regConfirm" class="form-control border-end-0 {{ e.confirm_password is defined ? 'is-invalid' }}" placeholder="Confirm password" required minlength="6">
                                     <button class="btn btn-outline-secondary border-start-0 btn-sm" type="button" onclick="togglePassword('regConfirm', this)">
                                         <i class="bi bi-eye"></i>
                                     </button>
@@ -123,16 +116,16 @@
                             </div>
                         </div>
 
-                        {# Password strength indicator #}
+                        {# Password strength #}
                         <div class="mb-3">
                             <div class="progress mb-1" style="height:3px">
                                 <div class="progress-bar" id="pwStrength" role="progressbar" style="width:0%"></div>
                             </div>
                             <div class="d-flex flex-wrap gap-2">
-                                <small id="rLen" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> 6+ car.</small>
-                                <small id="rUp" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Majuscule</small>
-                                <small id="rLow" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Minuscule</small>
-                                <small id="rDig" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Chiffre</small>
+                                <small id="rLen" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> 6+ chars</small>
+                                <small id="rUp" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Uppercase</small>
+                                <small id="rLow" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Lowercase</small>
+                                <small id="rDig" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Digit</small>
                             </div>
                         </div>
 
@@ -142,18 +135,18 @@
                         </div>
                         {% endif %}
                         <button type="submit" class="btn btn-nj w-100 py-2 mb-2">
-                            <i class="bi bi-person-plus me-2"></i>Créer mon compte
+                            <i class="bi bi-person-plus me-2"></i>Create My Account
                         </button>
                     </form>
 
                     {% if recaptcha_enabled %}
                     <div class="text-center mb-2">
-                        <small class="text-muted"><i class="bi bi-shield-check text-success"></i> Protégé par reCAPTCHA</small>
+                        <small class="text-muted"><i class="bi bi-shield-check text-success"></i> Protected by reCAPTCHA</small>
                     </div>
                     {% endif %}
 
                     <div class="d-flex align-items-center my-2">
-                        <hr class="flex-grow-1"><span class="px-3 text-muted small">ou</span><hr class="flex-grow-1">
+                        <hr class="flex-grow-1"><span class="px-3 text-muted small">or</span><hr class="flex-grow-1">
                     </div>
 
                     <div class="d-grid mb-2">
@@ -164,15 +157,16 @@
                                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
                                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                             </svg>
-                            S'inscrire avec Google
+                            Sign up with Google
                         </a>
                     </div>
 
-                    <p class="text-center text-muted small mb-0">Déjà un compte ?
-                        <a href="{{ path('app_login') }}" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)">Se connecter</a>
+                    <p class="text-center text-muted small mb-0">Already have an account?
+                        <a href="{{ path('app_login') }}" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)">Sign in</a>
                     </p>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -190,7 +184,7 @@ function togglePassword(id, btn) {
 document.addEventListener('DOMContentLoaded', () => {
     const pw = document.getElementById('regPassword');
     const bar = document.getElementById('pwStrength');
-
+    if (!pw) return;
     pw.addEventListener('input', () => {
         const v = pw.value;
         let score = 0;

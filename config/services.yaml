@@ -42,6 +42,7 @@ services:
     App\Service\Investment\InvestmentChatbotService:
         arguments:
             $hfToken: '%env(HF_TOKEN)%'
+            $groqApiKey: '%env(GROQ_API_KEY)%'
 
     App\Service\Investment\StripePaymentService:
         arguments:

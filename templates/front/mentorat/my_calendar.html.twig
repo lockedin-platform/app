@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Mon calendrier - Najahni{% endblock %}
+{% block title %}My Calendar - Najahni{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -9,19 +9,19 @@
 
 {# ── Tab Navigation ── #}
 <ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Demandes</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Requests</a></li>
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_sessions') }}"><i class="bi bi-camera-video me-1"></i>Sessions</a></li>
-    <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_my_calendar') }}"><i class="bi bi-calendar2-week me-1"></i>Mon Calendrier</a></li>
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Disponibilités</a></li>
+    <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_my_calendar') }}"><i class="bi bi-calendar2-week me-1"></i>My Calendar</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Availability</a></li>
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_chatbot') }}"><i class="bi bi-robot me-1"></i>Chatbot</a></li>
 </ul>
 
 <div class="mb-3">
-    <p class="text-muted mb-0"><i class="bi bi-info-circle me-1"></i>Les jours en <span class="badge bg-success bg-opacity-75">vert</span> correspondent aux dates où vous avez publié vos disponibilités.</p>
+    <p class="text-muted mb-0"><i class="bi bi-info-circle me-1"></i>Days in <span class="badge bg-success bg-opacity-75">green</span> correspond to dates where you have published your availability.</p>
 </div>
 
-{% set months = ['', 'Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'] %}
-{% set days = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'] %}
+{% set months = ['', 'January','February','March','April','May','June','July','August','September','October','November','December'] %}
+{% set days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'] %}
 
 {% set prevMonth = month - 1 %}
 {% set prevYear = year %}
@@ -95,11 +95,11 @@
 <div class="d-flex gap-4 mb-4 flex-wrap">
     <div class="d-flex align-items-center gap-2">
         <div style="width:18px;height:18px;border-radius:4px;background:rgba(25,135,84,.15);border:2px solid #198754"></div>
-        <span class="small text-muted">Jour avec disponibilité publiée</span>
+        <span class="small text-muted">Day with published availability</span>
     </div>
     <div class="d-flex align-items-center gap-2">
         <div style="width:18px;height:18px;border-radius:4px;background:rgba(67,97,238,.12);border:2px solid var(--nj-primary)"></div>
-        <span class="small text-muted">Aujourd'hui</span>
+        <span class="small text-muted">Today</span>
     </div>
 </div>
 
@@ -110,7 +110,7 @@
         <div class="modal-content" style="border-radius:1rem;border:none">
             <div class="modal-header" style="background:var(--nj-gradient);border-radius:1rem 1rem 0 0">
                 <h5 class="modal-title text-white fw-bold">
-                    <i class="bi bi-calendar-check me-2"></i>Mes créneaux — {{ dateStr|date('d/m/Y') }}
+                    <i class="bi bi-calendar-check me-2"></i>My slots — {{ dateStr|date('d/m/Y') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
@@ -119,20 +119,20 @@
                 <div class="d-flex align-items-center justify-content-between p-3 mb-2 rounded-3" style="background:rgba(25,135,84,.06);border:1px solid rgba(25,135,84,.15)">
                     <div>
                         <div class="fw-semibold"><i class="bi bi-clock text-success me-1"></i>{{ avail.startTime|date('H:i') }} → {{ avail.endTime|date('H:i') }}</div>
-                        <small class="text-muted">Ajouté le {{ avail.createdAt|date('d/m/Y à H:i') }}</small>
+                        <small class="text-muted">Added on {{ avail.createdAt|date('d/m/Y at H:i') }}</small>
                     </div>
                     <div class="d-flex gap-1">
-                        <a href="{{ path('app_mentorat_availability') }}" class="btn btn-sm btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
-                        <form method="post" action="{{ path('app_mentorat_availability_delete', {id: avail.id}) }}" onsubmit="return confirm('Supprimer ce créneau ?')">
+                        <a href="{{ path('app_mentorat_availability') }}" class="btn btn-sm btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('app_mentorat_availability_delete', {id: avail.id}) }}" onsubmit="return confirm('Delete this slot?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('mentorat_avail_del_' ~ avail.id) }}">
-                            <button class="btn btn-sm btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-sm btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
                         </form>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             <div class="modal-footer border-0 pt-0">
-                <a href="{{ path('app_mentorat_availability') }}" class="btn btn-nj w-100"><i class="bi bi-plus-lg me-1"></i>Gérer mes disponibilités</a>
+                <a href="{{ path('app_mentorat_availability') }}" class="btn btn-nj w-100"><i class="bi bi-plus-lg me-1"></i>Manage my availability</a>
             </div>
         </div>
     </div>

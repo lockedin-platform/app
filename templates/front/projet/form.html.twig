@@ -1,11 +1,23 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}{{ projet ? 'Modifier' : 'Nouveau' }} Projet - Najahni{% endblock %}
+{% block title %}{{ projet ? 'Edit' : 'New' }} Project - Najahni{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-{{ projet ? 'pencil-square' : 'plus-circle' }} me-2"></i>{{ projet ? 'Modifier le projet' : 'Nouveau Projet' }}</h2>
-    <a href="{{ path('app_projet_index') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Retour</a>
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-{{ projet ? 'pencil-square' : 'plus-circle' }} nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_index') }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> My Projects
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="nj-ph-eyebrow">Projects</div>
+                <h1 class="nj-ph-title mb-1">{{ projet ? 'Edit Project' : 'New Project' }}</h1>
+                <p class="nj-ph-sub">{{ projet ? 'Update your project details and business data' : 'Fill in the details to launch your new project' }}</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 <form method="post" novalidate>
@@ -13,41 +25,41 @@
 <div class="row g-4">
     <div class="col-md-7">
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4">Informations du projet</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-info-circle me-2"></i>Project Details</h5>
             <div class="mb-3">
-                <label class="form-label fw-semibold">Titre</label>
-                <input type="text" name="titre" class="form-control {{ e.titre is defined ? 'is-invalid' }}" value="{{ projet ? projet.titre }}" required minlength="3" maxlength="255">
+                <label class="form-label fw-semibold">Title</label>
+                <input type="text" name="titre" class="form-control {{ e.titre is defined ? 'is-invalid' }}" value="{{ projet ? projet.titre }}" required minlength="3" maxlength="255" placeholder="Your project title...">
                 {% if e.titre is defined %}<div class="invalid-feedback d-block">{{ e.titre }}</div>{% endif %}
             </div>
             <div class="mb-3">
                 <label class="form-label fw-semibold">Description</label>
-                <textarea name="description" class="form-control {{ e.description is defined ? 'is-invalid' }}" rows="5" required minlength="10" maxlength="5000">{{ projet ? projet.description }}</textarea>
+                <textarea name="description" class="form-control {{ e.description is defined ? 'is-invalid' }}" rows="5" required minlength="10" maxlength="5000" placeholder="Describe your project, its goals, and vision...">{{ projet ? projet.description }}</textarea>
                 {% if e.description is defined %}<div class="invalid-feedback d-block">{{ e.description }}</div>{% endif %}
             </div>
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Secteur</label>
+                    <label class="form-label fw-semibold">Sector</label>
                     <select name="secteur" class="form-select {{ e.secteur is defined ? 'is-invalid' }}" required>
-                        <option value="">-- Choisir un secteur --</option>
-                        {% for s in ['Technologie', 'Santé', 'Éducation', 'Finance', 'Commerce', 'Agriculture', 'Tourisme', 'Immobilier', 'Transport', 'Énergie', 'Alimentation', 'Mode & Textile', 'Industrie', 'Services', 'Artisanat'] %}
+                        <option value="">-- Choose a sector --</option>
+                        {% for s in ['Technology', 'Health', 'Education', 'Finance', 'Commerce', 'Agriculture', 'Tourism', 'Real Estate', 'Transport', 'Energy', 'Food & Beverage', 'Fashion & Textile', 'Industry', 'Services', 'Crafts'] %}
                             <option value="{{ s }}" {{ projet and projet.secteur == s ? 'selected' }}>{{ s }}</option>
                         {% endfor %}
                     </select>
                     {% if e.secteur is defined %}<div class="invalid-feedback d-block">{{ e.secteur }}</div>{% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Étape</label>
+                    <label class="form-label fw-semibold">Stage</label>
                     <select name="etape" class="form-select {{ e.etape is defined ? 'is-invalid' }}">
-                        {% for e_val in ['Idéation', 'MVP', 'Lancement', 'Croissance', 'Maturité'] %}
+                        {% for e_val in ['Ideation', 'MVP', 'Launch', 'Growth', 'Maturity'] %}
                             <option value="{{ e_val }}" {{ projet and projet.etape == e_val ? 'selected' }}>{{ e_val }}</option>
                         {% endfor %}
                     </select>
                     {% if e.etape is defined %}<div class="invalid-feedback d-block">{{ e.etape }}</div>{% endif %}
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label fw-semibold">Statut</label>
+                    <label class="form-label fw-semibold">Status</label>
                     <select name="statut" class="form-select {{ e.statut is defined ? 'is-invalid' }}">
-                        {% for s in ['En cours', 'En pause', 'Terminé'] %}
+                        {% for s in ['In Progress', 'On Hold', 'Completed'] %}
                             <option value="{{ s }}" {{ projet and projet.statut == s ? 'selected' }}>{{ s }}</option>
                         {% endfor %}
                     </select>
@@ -59,43 +71,44 @@
 
     <div class="col-md-5">
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>Données Business</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>Business Data</h5>
             {% set db = projet ? projet.donneesBusiness : null %}
             <div class="mb-3">
-                <label class="form-label fw-semibold">Taille du marché (DT)</label>
-                <input type="number" step="0.01" name="taille_marche" class="form-control {{ e.tailleMarche is defined ? 'is-invalid' }}" value="{{ db ? db.tailleMarche }}" required min="0">
+                <label class="form-label fw-semibold">Market Size</label>
+                <input type="text" name="taille_marche" class="form-control {{ e.tailleMarche is defined ? 'is-invalid' }}" value="{{ db ? db.tailleMarche }}" required placeholder="e.g. 500 000 TND or approx. 1M USD">
+                <div class="form-text">You can type a number or a description like "approx. 500k TND"</div>
                 {% if e.tailleMarche is defined %}<div class="invalid-feedback d-block">{{ e.tailleMarche }}</div>{% endif %}
             </div>
             <div class="mb-3">
-                <label class="form-label fw-semibold">Modèle de revenu</label>
-                <input type="text" name="modele_revenu" class="form-control {{ e.modeleRevenu is defined ? 'is-invalid' }}" value="{{ db ? db.modeleRevenu }}" required maxlength="255">
+                <label class="form-label fw-semibold">Revenue Model</label>
+                <input type="text" name="modele_revenu" class="form-control {{ e.modeleRevenu is defined ? 'is-invalid' }}" value="{{ db ? db.modeleRevenu }}" required maxlength="255" placeholder="e.g. SaaS, Freemium, B2B, marketplace commission...">
                 {% if e.modeleRevenu is defined %}<div class="invalid-feedback d-block">{{ e.modeleRevenu }}</div>{% endif %}
             </div>
             <div class="row g-3">
                 <div class="col-6">
-                    <label class="form-label fw-semibold">Coûts estimés (DT)</label>
-                    <input type="number" step="0.01" name="couts_estimes" class="form-control {{ e.coutsEstimes is defined ? 'is-invalid' }}" value="{{ db ? db.coutsEstimes }}" required min="0">
+                    <label class="form-label fw-semibold">Estimated Costs (TND)</label>
+                    <input type="text" name="couts_estimes" class="form-control {{ e.coutsEstimes is defined ? 'is-invalid' }}" value="{{ db ? db.coutsEstimes }}" required placeholder="e.g. 80 000 or ~100k">
                     {% if e.coutsEstimes is defined %}<div class="invalid-feedback d-block">{{ e.coutsEstimes }}</div>{% endif %}
                 </div>
                 <div class="col-6">
-                    <label class="form-label fw-semibold">Revenus attendus (DT)</label>
-                    <input type="number" step="0.01" name="revenus_attendus" class="form-control {{ e.revenusAttendus is defined ? 'is-invalid' }}" value="{{ db ? db.revenusAttendus }}" required min="0">
+                    <label class="form-label fw-semibold">Expected Revenue (TND)</label>
+                    <input type="text" name="revenus_attendus" class="form-control {{ e.revenusAttendus is defined ? 'is-invalid' }}" value="{{ db ? db.revenusAttendus }}" required placeholder="e.g. 200 000 or ~500k">
                     {% if e.revenusAttendus is defined %}<div class="invalid-feedback d-block">{{ e.revenusAttendus }}</div>{% endif %}
                 </div>
             </div>
             <div class="row g-3 mt-1">
                 <div class="col-6">
-                    <label class="form-label fw-semibold">Niveau de risque</label>
+                    <label class="form-label fw-semibold">Risk Level</label>
                     <select name="niveau_risque" class="form-select {{ e.niveauRisque is defined ? 'is-invalid' }}">
-                        {% for n in ['Faible', 'Modéré', 'Élevé', 'Très élevé'] %}
+                        {% for n in ['Low', 'Moderate', 'High', 'Very High'] %}
                             <option value="{{ n }}" {{ db and db.niveauRisque == n ? 'selected' }}>{{ n }}</option>
                         {% endfor %}
                     </select>
                     {% if e.niveauRisque is defined %}<div class="invalid-feedback d-block">{{ e.niveauRisque }}</div>{% endif %}
                 </div>
                 <div class="col-6">
-                    <label class="form-label fw-semibold">Force d'équipe (1-10)</label>
-                    <input type="number" min="1" max="10" name="force_equipe" class="form-control {{ e.forceEquipe is defined ? 'is-invalid' }}" value="{{ db ? db.forceEquipe }}" required>
+                    <label class="form-label fw-semibold">Team Strength (1–10)</label>
+                    <input type="text" name="force_equipe" class="form-control {{ e.forceEquipe is defined ? 'is-invalid' }}" value="{{ db ? db.forceEquipe }}" required placeholder="e.g. 7 or 8/10">
                     {% if e.forceEquipe is defined %}<div class="invalid-feedback d-block">{{ e.forceEquipe }}</div>{% endif %}
                 </div>
             </div>
@@ -103,8 +116,9 @@
     </div>
 </div>
 
-<div class="mt-4">
-    <button type="submit" class="btn btn-nj btn-lg"><i class="bi bi-check-lg me-2"></i>{{ projet ? 'Enregistrer' : 'Créer le projet' }}</button>
+<div class="mt-4 d-flex gap-3 align-items-center">
+    <button type="submit" class="btn btn-nj btn-lg"><i class="bi bi-check-lg me-2"></i>{{ projet ? 'Save Changes' : 'Create Project' }}</button>
+    <a href="{{ path('app_projet_index') }}" class="btn btn-outline-secondary">Cancel</a>
 </div>
 </form>
 {% endblock %}

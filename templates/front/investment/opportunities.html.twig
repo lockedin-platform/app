@@ -1,416 +1,208 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Opportunités d'investissement - Najahni{% endblock %}
+{% block title %}Investment Opportunities — Najahni{% endblock %}
 
 {% block main %}
-{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Opportunites', activeStep: 1} %}
-<style>
-.eco-badge { display: inline-flex; align-items: center; gap: .3rem; font-size: .68rem; font-weight: 500; color: #64748b; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10rem; padding: .2rem .65rem; margin-top: .5rem; }
-.eco-badge i { font-size: .72rem; color: #94a3b8; }
-.deal-feed { background: #0f172a; border-radius: .75rem; padding: .6rem 1rem; margin-bottom: 1rem; }
-.deal-feed-item { display: flex; align-items: center; gap: .5rem; padding: .35rem 0; font-size: .78rem; color: #cbd5e1; border-left: 2px solid transparent; padding-left: .6rem; }
-.deal-feed-item.type-opportunity { border-left-color: #22c55e; }
-.deal-feed-item.type-offer { border-left-color: #3b82f6; }
-.deal-feed-item.type-accepted { border-left-color: #f59e0b; }
-.deal-feed-item.type-signed { border-left-color: #a855f7; }
-.deal-feed-item.type-funded { border-left-color: #06b6d4; }
-.deal-feed-item i { font-size: .72rem; opacity: .7; }
-.deal-feed-item .deal-feed-ago { margin-left: auto; font-size: .7rem; color: #64748b; white-space: nowrap; }
-@media (max-width: 767.98px) {
-    .deal-feed-item.deal-feed-collapse { display: none; }
-}
+<div class="row g-4">
 
-/* ── 3D Card Tilt ── */
-.opp-tilt-card {
-    transform-style: preserve-3d;
-    transition: transform 400ms ease-out, box-shadow 400ms ease-out;
-    will-change: transform, box-shadow;
-    position: relative;
-    overflow: hidden;
-}
-.opp-tilt-glare {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    opacity: 0;
-    transition: opacity 300ms ease-out;
-    z-index: 2;
-}
-.welcome-strip { border-left: 3px solid #3b82f6; background: #f8fafc; border-radius: .5rem; padding: .7rem 1rem; margin-bottom: 1rem; }
-.welcome-strip p { margin: 0; font-size: .85rem; color: #475569; line-height: 1.5; }
-.welcome-strip a { color: #2563eb; font-weight: 600; text-decoration: none; }
-.welcome-strip a:hover { text-decoration: underline; }
-@media (max-width: 480px) { .welcome-strip { display: none; } }
-/* ── Activity Ticker ── */
-.activity-ticker { background: #0f172a; border-radius: .5rem; height: 36px; overflow: hidden; margin-bottom: 1rem; display: flex; align-items: center; position: relative; }
-.activity-ticker-track { display: flex; align-items: center; gap: 2.5rem; white-space: nowrap; animation: tickerScroll 40s linear infinite; }
-.activity-ticker:hover .activity-ticker-track { animation-play-state: paused; }
-.activity-ticker-pill { display: inline-flex; align-items: center; gap: .4rem; font-size: .75rem; color: #e2e8f0; }
-.activity-ticker-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.activity-ticker-ago { color: #64748b; font-size: .68rem; margin-left: .25rem; }
-@keyframes tickerScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-</style>
-
-{% if welcomeData is defined and welcomeData is not null %}
-<div class="welcome-strip">
-    {% if welcomeData.pendingActionCount > 0 %}
-        <p>Vous avez une offre acceptee en attente d'action.
-            <a href="{{ path('app_invest_contract_show', {id: welcomeData.pendingOfferId}) }}">Continuer vers le contrat</a>
-        </p>
-    {% elseif welcomeData.returning %}
-        <p>Bienvenue. {{ welcomeData.newCount }} nouvelle{{ welcomeData.newCount > 1 ? 's' : '' }} opportunite{{ welcomeData.newCount > 1 ? 's' : '' }} depuis votre derniere activite{% if welcomeData.hasProfile and welcomeData.matchCount > 0 %} — {{ welcomeData.matchCount }} correspond{{ welcomeData.matchCount > 1 ? 'ent' : '' }} a votre profil investisseur{% endif %}.</p>
-    {% else %}
-        <p>{{ welcomeData.newCount }} projet{{ welcomeData.newCount > 1 ? 's' : '' }} actif{{ welcomeData.newCount > 1 ? 's' : '' }} recherch{{ welcomeData.newCount > 1 ? 'ent' : 'e' }} un financement aujourd'hui.
-            {% if not welcomeData.hasProfile %}
-            Completez votre profil de matching pour voir les meilleures opportunites.
-            <a href="{{ path('app_invest_matching') }}">Configurer le profil</a>
-            {% endif %}
-        </p>
-    {% endif %}
-</div>
-{% endif %}
-
-{% if activityFeed is defined and activityFeed|length > 0 %}
-<div class="activity-ticker">
-    <div class="activity-ticker-track">
-        {% for ev in activityFeed %}
-        <span class="activity-ticker-pill"><span class="activity-ticker-dot" style="background:{{ ev.dot }}"></span>{{ ev.text }}<span class="activity-ticker-ago">{{ ev.ago }}</span></span>
-        {% endfor %}
-        {% for ev in activityFeed %}
-        <span class="activity-ticker-pill"><span class="activity-ticker-dot" style="background:{{ ev.dot }}"></span>{{ ev.text }}<span class="activity-ticker-ago">{{ ev.ago }}</span></span>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-cash-stack me-2"></i>Opportunités d'investissement</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_invest_economic_dashboard') }}" class="btn btn-outline-secondary"><i class="bi bi-graph-up me-1"></i>Dashboard Economique</a>
-        <a href="{{ path('app_invest_my_contracts') }}" class="btn btn-outline-dark"><i class="bi bi-file-earmark-text me-1"></i>Mes Contrats</a>
-        {% if is_granted('ROLE_INVESTISSEUR') %}
-        <a href="{{ path('app_invest_matching') }}" class="btn btn-outline-info">Matching IA</a>
-        <a href="{{ path('app_invest_my_offers') }}" class="btn btn-outline-primary"><i class="bi bi-list-check me-1"></i>Mes Offres</a>
-        {% endif %}
-        {% if is_granted('ROLE_ENTREPRENEUR') %}
-        <a href="{{ path('app_invest_entrepreneur_inbox') }}" class="btn btn-outline-primary"><i class="bi bi-inbox me-1"></i>Boite d'offres{% if entrepreneurInboxCount|default(0) > 0 %} <span class="badge bg-danger ms-1">{{ entrepreneurInboxCount }}</span>{% endif %}</a>
-        <a href="{{ path('app_invest_create_opportunity') }}" class="btn btn-nj"><i class="bi bi-plus-lg me-1"></i>Créer une opportunité</a>
-        {% endif %}
-    </div>
-</div>
-
-{# Live deal feed #}
-{% if dealFeed is defined and dealFeed|length > 0 %}
-<div class="deal-feed" id="dealFeedStrip">
-    {% for i, event in dealFeed %}
-    <div class="deal-feed-item type-{{ event.type }}{{ i >= 3 ? ' deal-feed-collapse' : '' }}">
-        <i class="bi {{ event.icon }}"></i>
-        <span>{{ event.message }}</span>
-        <span class="deal-feed-ago">{{ event.ago }}</span>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-
-{# Search & Sort bar #}
-<div class="card border-0 shadow-sm mb-4" style="border-radius:1rem">
-    <div class="card-body p-3">
-        <div class="row g-2 align-items-end">
-            <div class="col-md-6">
-                <label class="form-label fw-semibold small mb-1">Rechercher</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="text" id="oppSearch" class="form-control" placeholder="Nom du projet, description..." value="{{ search|default('') }}">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label fw-semibold small mb-1">Trier par</label>
-                <select id="oppSort" class="form-select">
-                    <option value="recent" {{ sort|default('recent') == 'recent' ? 'selected' }}>Plus récentes</option>
-                    <option value="amount_asc" {{ sort|default('') == 'amount_asc' ? 'selected' }}>Montant croissant</option>
-                    <option value="amount_desc" {{ sort|default('') == 'amount_desc' ? 'selected' }}>Montant décroissant</option>
-                    <option value="deadline" {{ sort|default('') == 'deadline' ? 'selected' }}>Deadline proche</option>
-                </select>
-            </div>
-            <div class="col-md-2 d-flex align-items-center">
-                <div id="oppSpinner" class="spinner-border spinner-border-sm text-primary d-none" role="status"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-{% for message in app.flashes('success') %}
-    <div class="alert alert-success alert-dismissible fade show">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-{% endfor %}
-{% for message in app.flashes('danger') %}
-    <div class="alert alert-danger alert-dismissible fade show">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-{% endfor %}
-
-{% set _from = pagination.totalItemCount > 0 ? ((pagination.currentPageNumber - 1) * 9 + 1) : 0 %}
-{% set _to = pagination.totalItemCount < (_from + 9 - 1) ? pagination.totalItemCount : (_from + 9 - 1) %}
-<p class="text-muted mb-3" id="oppCount">{% if pagination.totalItemCount > 0 %}Affichage de {{ _from }} à {{ _to }} sur {{ pagination.totalItemCount }} opportunité{{ pagination.totalItemCount > 1 ? 's' : '' }}{% else %}0 opportunité trouvée{% endif %}</p>
-<div class="row g-4" id="oppResults">
-    {% for opp in opportunities %}
-    <div class="col-md-6 col-lg-4">
-        <div class="card border-0 shadow-sm h-100 opp-tilt-card" style="border-radius:1rem">
-            <div class="opp-tilt-glare"></div>
-            <div class="card-body p-4">
-                {% if pitchLines is defined and pitchLines[opp.id] is defined %}
-                <p class="mb-3" style="font-size:.92rem;color:#475569;line-height:1.5;font-weight:400">{{ pitchLines[opp.id] }}</p>
-                {% endif %}
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h5 class="fw-bold mb-0">{{ opp.project ? opp.project.titre : 'Projet' }}</h5>
-                    <span class="badge bg-{{ opp.status == 'OPEN' ? 'success' : (opp.status == 'FUNDED' ? 'primary' : 'secondary') }}">{{ opp.status }}</span>
-                </div>
-                <p class="text-muted small mb-3">{{ opp.description|length > 100 ? opp.description|slice(0,100) ~ '...' : opp.description }}</p>
-
-                <div class="mb-3">
-                    <div class="d-flex justify-content-between small mb-1">
-                        <span>{{ opp.totalFunded|number_format(0, ',', ' ') }} DT</span>
-                        <span class="fw-semibold">{{ opp.targetAmount|number_format(0, ',', ' ') }} DT</span>
-                    </div>
-                    <div class="progress" style="height:8px">
-                        <div class="progress-bar" style="width:{{ opp.fundingPercentage }}%;background:var(--nj-gradient)"></div>
-                    </div>
-                    <small class="text-muted">{{ opp.fundingPercentage|number_format(1) }}% financé</small>
-                </div>
-
-                {% if opp.deadline %}
-                <p class="text-muted small mb-3"><i class="bi bi-clock me-1"></i>Deadline : {{ opp.deadline|date('d/m/Y') }}</p>
-                {% endif %}
-
-                <a href="{{ path('app_invest_opportunity_show', {id: opp.id}) }}" class="btn btn-sm btn-outline-primary w-100">
-                    <i class="bi bi-eye me-1"></i>Voir les détails
-                </a>
-                {% if ecoData is defined and ecoData is not empty %}
-                {% set _inflation = ecoData.inflationRate|default(5.0) %}
-                {% set _monthsLeft = opp.deadline ? max(0, ((date().diff(opp.deadline).days) / 30)|round(0, 'ceil')) : null %}
-                {% set _ecoParts = [] %}
-                {% if _inflation >= 6.0 %}
-                    {% set _ecoParts = _ecoParts|merge(['Inflation elevee']) %}
-                {% elseif _inflation <= 3.0 %}
-                    {% set _ecoParts = _ecoParts|merge(['Conditions stables']) %}
-                {% else %}
-                    {% set _ecoParts = _ecoParts|merge(['Inflation moderee']) %}
-                {% endif %}
-                {% if _monthsLeft is not null %}
-                    {% if _monthsLeft <= 6 %}
-                        {% set _ecoParts = _ecoParts|merge(['Echeance courte']) %}
-                    {% elseif _monthsLeft <= 12 %}
-                        {% set _ecoParts = _ecoParts|merge(['Horizon modere']) %}
+    {# ── Page Header ── #}
+    <div class="col-12">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <div>
+                <h2 class="fw-bold mb-1" style="font-size:1.8rem">
+                    <i class="bi bi-lightning-charge-fill me-2" style="color:var(--nj-primary)"></i>
+                    {% if is_granted('ROLE_INVESTISSEUR') %}
+                        My Investment Hub
                     {% else %}
-                        {% set _ecoParts = _ecoParts|merge(['Horizon long']) %}
+                        Investment Opportunities
                     {% endif %}
+                </h2>
+                <p class="text-muted mb-0">
+                    {% if is_granted('ROLE_INVESTISSEUR') %}
+                        Manage your postings and review entrepreneur applications
+                    {% else %}
+                        Browse investor postings and apply with your project
+                    {% endif %}
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                {% if is_granted('ROLE_INVESTISSEUR') %}
+                    {% if pendingInboxCount > 0 %}
+                        <a href="{{ path('app_invest_my_postings') }}" class="btn btn-warning btn-sm fw-semibold">
+                            <i class="bi bi-inbox-fill me-1"></i>{{ pendingInboxCount }} New Application{{ pendingInboxCount > 1 ? 's' }}
+                        </a>
+                    {% endif %}
+                    <a href="{{ path('app_invest_create_posting') }}" class="btn btn-sm fw-semibold" style="background:var(--nj-gradient);color:#fff">
+                        <i class="bi bi-plus-lg me-1"></i>Post Investment
+                    </a>
+                    <a href="{{ path('app_invest_my_postings') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-list-ul me-1"></i>My Postings
+                    </a>
+                    <a href="{{ path('app_invest_my_offers') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-send me-1"></i>My Offers
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_invest_my_applications') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-file-earmark-check me-1"></i>My Applications
+                    </a>
                 {% endif %}
-                <div class="eco-badge"><i class="bi bi-globe2"></i>{{ _ecoParts|join(' \u00b7 ') }}</div>
-                {% endif %}
+                <a href="{{ path('app_invest_my_contracts') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-file-earmark-text me-1"></i>My Contracts
+                </a>
             </div>
         </div>
     </div>
-    {% endfor %}
-</div>
-{% if pagination.pageCount > 1 %}
-<nav aria-label="Pagination des opportunités" class="mt-4" id="oppPagination">
-    <ul class="pagination justify-content-center">
-        <li class="page-item {{ pagination.currentPageNumber <= 1 ? 'disabled' : '' }}">
-            <a class="page-link" href="{{ path('app_invest_opportunities', {page: pagination.currentPageNumber - 1, q: search, sort: sort}) }}">Précédent</a>
-        </li>
-        {% for p in 1..pagination.pageCount %}
-        <li class="page-item {{ p == pagination.currentPageNumber ? 'active' : '' }}">
-            <a class="page-link" href="{{ path('app_invest_opportunities', {page: p, q: search, sort: sort}) }}">{{ p }}</a>
-        </li>
+
+    {# ── Flash messages ── #}
+    {% for type, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="col-12">
+                <div class="alert alert-{{ type == 'danger' ? 'danger' : (type == 'warning' ? 'warning' : (type == 'success' ? 'success' : 'info')) }} alert-dismissible fade show" role="alert">
+                    {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
         {% endfor %}
-        <li class="page-item {{ pagination.currentPageNumber >= pagination.pageCount ? 'disabled' : '' }}">
-            <a class="page-link" href="{{ path('app_invest_opportunities', {page: pagination.currentPageNumber + 1, q: search, sort: sort}) }}">Suivant</a>
-        </li>
-    </ul>
-</nav>
-{% endif %}
-<div class="text-center py-5 d-none" id="oppEmpty">
-    <i class="bi bi-search" style="font-size:4rem;color:var(--nj-accent)"></i>
-    <h4 class="fw-bold mt-3" id="oppEmptyTitle">Aucune opportunité disponible</h4>
-    <p class="text-muted" id="oppEmptyText">Les opportunités d'investissement apparaitront ici</p>
+    {% endfor %}
+
+    {# ── Search & Sort Bar ── #}
+    <div class="col-12">
+        <form method="GET" class="d-flex gap-2 flex-wrap">
+            <input type="text" name="q" value="{{ search }}" class="form-control form-control-sm flex-grow-1" placeholder="Search by sector or description…" style="max-width:320px">
+            <select name="sort" class="form-select form-select-sm" style="max-width:180px" onchange="this.form.submit()">
+                <option value="recent" {{ sort == 'recent' ? 'selected' }}>Most Recent</option>
+                <option value="budget_desc" {{ sort == 'budget_desc' ? 'selected' }}>Budget: High → Low</option>
+                <option value="budget_asc" {{ sort == 'budget_asc' ? 'selected' }}>Budget: Low → High</option>
+                <option value="deadline" {{ sort == 'deadline' ? 'selected' }}>Deadline Soon</option>
+            </select>
+            <button type="submit" class="btn btn-sm btn-primary"><i class="bi bi-search me-1"></i>Search</button>
+            {% if search %}<a href="{{ path('app_invest_opportunities') }}" class="btn btn-sm btn-outline-secondary">Clear</a>{% endif %}
+        </form>
+    </div>
+
+    {# ── Posting Cards ── #}
+    {% if postings is empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-inbox display-4 text-muted"></i>
+            <p class="text-muted mt-3">No open investment postings found.</p>
+            {% if is_granted('ROLE_INVESTISSEUR') %}
+                <a href="{{ path('app_invest_create_posting') }}" class="btn btn-primary mt-2">
+                    <i class="bi bi-plus-lg me-1"></i>Post your first investment interest
+                </a>
+            {% endif %}
+        </div>
+    {% else %}
+        {% for posting in postings %}
+            {% set applied = posting.id in myApplicationPostingIds %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="card h-100 shadow-sm border-0 position-relative" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    {# Sector badge #}
+                    <div class="position-absolute top-0 end-0 m-3">
+                        <span class="badge rounded-pill px-3 py-2 fw-semibold" style="background:var(--nj-gradient);font-size:.75rem">
+                            <i class="bi bi-tag me-1"></i>{{ posting.sector }}
+                        </span>
+                    </div>
+
+                    <div class="card-body p-4">
+                        {# Investor info #}
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:38px;height:38px;background:var(--nj-gradient);font-size:.9rem;flex-shrink:0">
+                                {{ posting.postedBy.firstname|slice(0,1)|upper }}{{ posting.postedBy.lastname|slice(0,1)|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-semibold" style="font-size:.9rem">{{ posting.postedBy.firstname }} {{ posting.postedBy.lastname }}</div>
+                                <div class="text-muted" style="font-size:.75rem">Investor · {{ posting.createdAt|date('M d, Y') }}</div>
+                            </div>
+                        </div>
+
+                        {# Budget range #}
+                        <div class="mb-3">
+                            <div class="d-flex align-items-baseline gap-2">
+                                <span class="fw-bold" style="font-size:1.3rem;color:var(--nj-primary)">
+                                    {{ posting.budgetMin|number_format(0, ',', ' ') }}
+                                </span>
+                                <span class="text-muted fw-semibold">–</span>
+                                <span class="fw-bold" style="font-size:1.3rem;color:var(--nj-primary)">
+                                    {{ posting.budgetMax|number_format(0, ',', ' ') }} TND
+                                </span>
+                            </div>
+                            <div class="text-muted" style="font-size:.78rem">Investment budget range</div>
+                        </div>
+
+                        {# Description #}
+                        <p class="text-muted mb-3" style="font-size:.87rem;line-height:1.5">
+                            {{ posting.description|length > 150 ? posting.description|slice(0,150) ~ '…' : posting.description }}
+                        </p>
+
+                        {# Deadline #}
+                        {% if posting.deadline %}
+                            {% set daysLeft = ((posting.deadline.timestamp - ("now"|date('U')))|abs // 86400) %}
+                            {% if posting.deadline.timestamp > "now"|date('U') %}
+                                <div class="mb-3 d-flex align-items-center gap-2 text-muted" style="font-size:.8rem">
+                                    <i class="bi bi-calendar-event"></i>
+                                    Deadline: <strong>{{ posting.deadline|date('M d, Y') }}</strong>
+                                    {% if daysLeft <= 14 %}
+                                        <span class="badge bg-danger" style="font-size:.7rem">{{ daysLeft }}d left</span>
+                                    {% elseif daysLeft <= 60 %}
+                                        <span class="badge bg-warning text-dark" style="font-size:.7rem">{{ (daysLeft / 7)|round }}w left</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        {# Applications count (for investor's own postings) #}
+                        {% if is_granted('ROLE_INVESTISSEUR') and app.user and posting.postedBy.id == app.user.id %}
+                            <div class="mb-2 text-muted" style="font-size:.8rem">
+                                <i class="bi bi-people me-1"></i>
+                                {{ posting.applications|length }} application{{ posting.applications|length != 1 ? 's' }}
+                                {% if posting.pendingApplicationCount > 0 %}
+                                    · <span class="text-warning fw-semibold">{{ posting.pendingApplicationCount }} pending</span>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 px-4 pb-4 pt-0">
+                        {% if is_granted('ROLE_ENTREPRENEUR') %}
+                            {% if applied %}
+                                <button class="btn btn-success btn-sm w-100 fw-semibold" disabled>
+                                    <i class="bi bi-check-circle me-1"></i>Applied
+                                </button>
+                            {% else %}
+                                <a href="{{ path('app_invest_posting_apply', {id: posting.id}) }}" class="btn btn-sm w-100 fw-semibold" style="background:var(--nj-gradient);color:#fff">
+                                    <i class="bi bi-send-fill me-1"></i>Apply Now
+                                </a>
+                            {% endif %}
+                        {% elseif is_granted('ROLE_INVESTISSEUR') and app.user and posting.postedBy.id == app.user.id %}
+                            <a href="{{ path('app_invest_my_postings') }}" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="bi bi-eye me-1"></i>View Applications
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {# ── Pagination ── #}
+    {% if pagination.pageCount is defined and pagination.pageCount > 1 %}
+        <div class="col-12 d-flex justify-content-center mt-2">
+            <nav>
+                <ul class="pagination pagination-sm mb-0">
+                    {% if pagination.currentPageNumber > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ pagination.currentPageNumber - 1 }}&q={{ search }}&sort={{ sort }}">‹</a></li>
+                    {% endif %}
+                    {% for p in 1..pagination.pageCount %}
+                        <li class="page-item {{ p == pagination.currentPageNumber ? 'active' }}">
+                            <a class="page-link" href="?page={{ p }}&q={{ search }}&sort={{ sort }}">{{ p }}</a>
+                        </li>
+                    {% endfor %}
+                    {% if pagination.currentPageNumber < pagination.pageCount %}
+                        <li class="page-item"><a class="page-link" href="?page={{ pagination.currentPageNumber + 1 }}&q={{ search }}&sort={{ sort }}">›</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+
 </div>
-
-<script>
-(function() {
-    var searchInput = document.getElementById('oppSearch');
-    var sortSelect = document.getElementById('oppSort');
-    var resultsContainer = document.getElementById('oppResults');
-    var countEl = document.getElementById('oppCount');
-    var emptyEl = document.getElementById('oppEmpty');
-    var emptyTitle = document.getElementById('oppEmptyTitle');
-    var emptyText = document.getElementById('oppEmptyText');
-    var spinner = document.getElementById('oppSpinner');
-    var timer = null;
-    var ajaxUrl = '{{ path("app_invest_opportunities_ajax") }}';
-    var feedStrip = document.getElementById('dealFeedStrip');
-    var paginationNav = document.getElementById('oppPagination');
-    var currentPage = 1;
-
-    function renderFeed(feed) {
-        if (!feed || !feed.length) return;
-        var typeColors = {opportunity:'#22c55e',offer:'#3b82f6',accepted:'#f59e0b',signed:'#a855f7',funded:'#06b6d4'};
-        var html = '';
-        feed.forEach(function(ev, i) {
-            html += '<div class="deal-feed-item type-' + ev.type + (i >= 3 ? ' deal-feed-collapse' : '') + '">' +
-                '<i class="bi ' + ev.icon + '"></i>' +
-                '<span>' + ev.message + '</span>' +
-                '<span class="deal-feed-ago">' + ev.ago + '</span>' +
-                '</div>';
-        });
-        if (feedStrip) {
-            feedStrip.innerHTML = html;
-        }
-    }
-
-    function doSearch(page) {
-        if (typeof page === 'number') currentPage = page;
-        var q = searchInput.value.trim();
-        var sort = sortSelect.value;
-        spinner.classList.remove('d-none');
-
-        fetch(ajaxUrl + '?q=' + encodeURIComponent(q) + '&sort=' + encodeURIComponent(sort) + '&page=' + currentPage, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            spinner.classList.add('d-none');
-            var opps = data.opportunities;
-            if (data.dealFeed) renderFeed(data.dealFeed);
-
-            var total = data.count;
-            var perPage = data.perPage || 9;
-            var pg = data.page || 1;
-            var totalPages = data.totalPages || 1;
-            var from = total > 0 ? (pg - 1) * perPage + 1 : 0;
-            var to = Math.min(from + perPage - 1, total);
-            countEl.textContent = total > 0
-                ? 'Affichage de ' + from + ' à ' + to + ' sur ' + total + ' opportunité' + (total > 1 ? 's' : '')
-                : '0 opportunité trouvée';
-
-            if (opps.length === 0) {
-                resultsContainer.innerHTML = '';
-                if (paginationNav) paginationNav.innerHTML = '';
-                emptyEl.classList.remove('d-none');
-                if (q !== '') {
-                    emptyTitle.textContent = 'Aucun résultat pour "' + q + '"';
-                    emptyText.textContent = 'Essayez avec d\'autres mots-clés';
-                } else {
-                    emptyTitle.textContent = 'Aucune opportunité disponible';
-                    emptyText.textContent = 'Les opportunités d\'investissement apparaitront ici';
-                }
-                return;
-            }
-
-            emptyEl.classList.add('d-none');
-            var html = '';
-            opps.forEach(function(opp) {
-                var statusClass = opp.status === 'OPEN' ? 'success' : (opp.status === 'FUNDED' ? 'primary' : 'secondary');
-                html += '<div class="col-md-6 col-lg-4">' +
-                    '<div class="card border-0 shadow-sm h-100 opp-tilt-card" style="border-radius:1rem">' +
-                    '<div class="opp-tilt-glare"></div>' +
-                    '<div class="card-body p-4">' +
-                    (opp.pitchLine ? '<p class="mb-3" style="font-size:.92rem;color:#475569;line-height:1.5;font-weight:400">' + opp.pitchLine + '</p>' : '') +
-                    '<div class="d-flex justify-content-between align-items-start mb-3">' +
-                    '<h5 class="fw-bold mb-0">' + opp.projectTitle + '</h5>' +
-                    '<span class="badge bg-' + statusClass + '">' + opp.status + '</span>' +
-                    '</div>' +
-                    '<p class="text-muted small mb-3">' + opp.description + '</p>' +
-                    '<div class="mb-3">' +
-                    '<div class="d-flex justify-content-between small mb-1">' +
-                    '<span>' + opp.totalFunded + ' DT</span>' +
-                    '<span class="fw-semibold">' + opp.targetAmount + ' DT</span>' +
-                    '</div>' +
-                    '<div class="progress" style="height:8px">' +
-                    '<div class="progress-bar" style="width:' + opp.fundingPercentage + '%;background:var(--nj-gradient)"></div>' +
-                    '</div>' +
-                    '<small class="text-muted">' + opp.fundingPercentage + '% financé</small>' +
-                    '</div>' +
-                    (opp.deadline ? '<p class="text-muted small mb-3"><i class="bi bi-clock me-1"></i>Deadline : ' + opp.deadline + '</p>' : '') +
-                    '<a href="' + opp.showUrl + '" class="btn btn-sm btn-outline-primary w-100">' +
-                    '<i class="bi bi-eye me-1"></i>Voir les détails</a>' +
-                    (opp.ecoBadge ? '<div class="eco-badge"><i class="bi bi-globe2"></i>' + opp.ecoBadge + '</div>' : '') +
-                    '</div></div></div>';
-            });
-            resultsContainer.innerHTML = html;
-            initTiltCards();
-
-            // Render pagination
-            if (totalPages > 1) {
-                var pHtml = '<ul class="pagination justify-content-center">';
-                pHtml += '<li class="page-item ' + (pg <= 1 ? 'disabled' : '') + '"><a class="page-link" href="#" data-page="' + (pg - 1) + '">Précédent</a></li>';
-                for (var i = 1; i <= totalPages; i++) {
-                    pHtml += '<li class="page-item ' + (i === pg ? 'active' : '') + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>';
-                }
-                pHtml += '<li class="page-item ' + (pg >= totalPages ? 'disabled' : '') + '"><a class="page-link" href="#" data-page="' + (pg + 1) + '">Suivant</a></li>';
-                pHtml += '</ul>';
-                if (!paginationNav) {
-                    paginationNav = document.createElement('nav');
-                    paginationNav.id = 'oppPagination';
-                    paginationNav.className = 'mt-4';
-                    resultsContainer.parentNode.insertBefore(paginationNav, resultsContainer.nextSibling);
-                }
-                paginationNav.innerHTML = pHtml;
-                paginationNav.querySelectorAll('a[data-page]').forEach(function(a) {
-                    a.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        if (!this.closest('.page-item').classList.contains('disabled') && !this.closest('.page-item').classList.contains('active')) {
-                            doSearch(parseInt(this.getAttribute('data-page')));
-                        }
-                    });
-                });
-            } else if (paginationNav) {
-                paginationNav.innerHTML = '';
-            }
-        })
-        .catch(function() { spinner.classList.add('d-none'); });
-    }
-
-    function initTiltCards() {
-        document.querySelectorAll('.opp-tilt-card').forEach(function(card) {
-            if (card._tiltBound) return;
-            card._tiltBound = true;
-            var glare = card.querySelector('.opp-tilt-glare');
-            var maxTilt = 6;
-
-            card.addEventListener('mousemove', function(e) {
-                var rect = card.getBoundingClientRect();
-                var x = e.clientX - rect.left;
-                var y = e.clientY - rect.top;
-                var halfW = rect.width / 2;
-                var halfH = rect.height / 2;
-                var rotateY = ((x - halfW) / halfW) * maxTilt;
-                var rotateX = ((halfH - y) / halfH) * maxTilt;
-
-                card.style.transition = 'none';
-                card.style.transform = 'perspective(800px) rotateX(' + rotateX.toFixed(2) + 'deg) rotateY(' + rotateY.toFixed(2) + 'deg)';
-                card.style.boxShadow = '0 ' + Math.round(18 - rotateX * 1.2) + 'px ' + Math.round(45 + Math.abs(rotateY)) + 'px rgba(15,23,42,' + (0.08 + Math.abs(rotateX + rotateY) * 0.003).toFixed(3) + ')';
-
-                if (glare) {
-                    glare.style.opacity = '1';
-                    glare.style.background = 'radial-gradient(circle at ' + ((x / rect.width) * 100).toFixed(1) + '% ' + ((y / rect.height) * 100).toFixed(1) + '%, rgba(255,255,255,0.08), transparent 60%)';
-                }
-            });
-
-            card.addEventListener('mouseleave', function() {
-                card.style.transition = 'transform 400ms ease-out, box-shadow 400ms ease-out';
-                card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
-                card.style.boxShadow = '';
-                if (glare) { glare.style.opacity = '0'; }
-            });
-        });
-    }
-
-    initTiltCards();
-
-    searchInput.addEventListener('input', function() {
-        clearTimeout(timer);
-        currentPage = 1;
-        timer = setTimeout(function() { doSearch(1); }, 300);
-    });
-    sortSelect.addEventListener('change', function() { doSearch(1); });
-})();
-</script>
 {% endblock %}

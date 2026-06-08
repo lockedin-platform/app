@@ -140,55 +140,56 @@ class ProfileController extends AbstractController
 
     private function buildProfileBioPrompt(User $user): string
     {
-        $bio = $user->getBio() ? "Bio actuelle : {$user->getBio()}" : 'Bio actuelle : aucune bio disponible.';
-        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}" : '';
-        $linkedin = $user->getLinkedinUrl() ? "LinkedIn : {$user->getLinkedinUrl()}" : '';
+        $name = $user->getFullName();
         $role = $user->getRole();
-        $context = "Name: {$user->getFullName()}\nRole: {$role}\n{$company}\n{$linkedin}\n{$bio}";
+        $bio = $user->getBio() ? 'Current bio: ' . $user->getBio() : 'Current bio: none.';
+        $company = $user->getCompanyName() ? 'Company: ' . $user->getCompanyName() : '';
+        $linkedin = $user->getLinkedinUrl() ? 'LinkedIn: ' . $user->getLinkedinUrl() : '';
+        $context = "Name: $name\nRole: $role\n$company\n$linkedin\n$bio";
 
-        return <<<PROMPT
-Tu es un assistant IA de profil pour Najahni. En te basant sur le profil utilisateur suivant, rédige une bio professionnelle en français en 2 à 3 phrases. Le ton doit être clair, engageant et orienté vers l’action, en mettant en avant le rôle et la valeur apportée.
-
-{$context}
-
-Réponds uniquement avec le texte final de la bio, sans explications.
-PROMPT;
+        return 'You are a profile AI assistant for Najahni. Based on the following user profile, write a professional bio in English in 2 to 3 sentences. The tone should be clear, engaging and action-oriented, highlighting the role and value delivered.' . "\n\n"
+            . $context . "\n\n"
+            . 'Reply with the final bio text only, no explanations.';
     }
 
     private function buildProfileChatPrompt(User $user, string $question): string
     {
-        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}\n" : '';
-        $bio = $user->getBio() ? "Bio : {$user->getBio()}\n" : '';
-        return <<<PROMPT
-Tu es un assistant personnel pour un utilisateur de Najahni.
-Fais des réponses utiles, concises et adaptées à un profil d'entrepreneur ou mentor en Tunisie.
-Voici le contexte du profil:
-- Nom: {$user->getFullName()}
-- Rôle: {$user->getRole()}
-{$company}{$bio}
-Question: {$question}
-PROMPT;
+        $name = $user->getFullName();
+        $role = $user->getRole();
+        $company = $user->getCompanyName() ? 'Company: ' . $user->getCompanyName() . "\n" : '';
+        $bio = $user->getBio() ? 'Bio: ' . $user->getBio() . "\n" : '';
+
+        return "You are a personal assistant for a Najahni user. Give helpful, concise answers suited to an entrepreneur or mentor profile in Tunisia. Always reply in English.\n"
+            . "Profile context:\n"
+            . "- Name: $name\n"
+            . "- Role: $role\n"
+            . $company . $bio
+            . "Question: $question";
     }
 
     /** @param array<string, int> $stats */
     private function buildProfileRecommendationPrompt(User $user, array $stats): string
     {
-        $bio = $user->getBio() ? "Bio actuelle : {$user->getBio()}" : 'Aucune bio fournie.';
-        $company = $user->getCompanyName() ? "Entreprise : {$user->getCompanyName()}" : 'Entreprise non précisée.';
-        return <<<PROMPT
-Tu es un coach IA de carrière pour Najahni. Donne quatre recommandations pratiques à cet utilisateur afin d'améliorer son profil, augmenter sa visibilité et mieux tirer parti de la plateforme.
-Informations du profil :
-- Nom: {$user->getFullName()}
-- Rôle: {$user->getRole()}
-- {$company}
-- {$bio}
-- Publications: {$stats['posts']}
-- Commentaires: {$stats['comments']}
-- Groupes: {$stats['groups']}
-- Projets: {$stats['projets']}
+        $name = $user->getFullName();
+        $role = $user->getRole();
+        $bio = $user->getBio() ? 'Current bio: ' . $user->getBio() : 'No bio provided.';
+        $company = $user->getCompanyName() ? 'Company: ' . $user->getCompanyName() : 'Company not specified.';
+        $posts    = $stats['posts'];
+        $comments = $stats['comments'];
+        $groups   = $stats['groups'];
+        $projets  = $stats['projets'];
 
-Réponds en français avec un paragraphe clair pour chaque recommandation. Ne renvoie pas de JSON.
-PROMPT;
+        return "You are an AI career coach for Najahni. Give four practical recommendations to this user to improve their profile, increase their visibility, and make better use of the platform. Always reply in English.\n"
+            . "Profile information:\n"
+            . "- Name: $name\n"
+            . "- Role: $role\n"
+            . "- $company\n"
+            . "- $bio\n"
+            . "- Posts: $posts\n"
+            . "- Comments: $comments\n"
+            . "- Groups: $groups\n"
+            . "- Projects: $projets\n\n"
+            . 'Reply with a clear paragraph for each recommendation. Do not return JSON.';
     }
 
     /** @return array<string, int> */
@@ -206,6 +207,29 @@ PROMPT;
             'projets' => $projets,
             'comments' => $comments,
         ];
+    }
+
+    #[Route('/profile/picture/delete', name: 'app_profile_picture_delete', methods: ['POST'])]
+    public function deleteProfilePicture(Request $request, EntityManagerInterface $em): Response
+    {
+        if (!$this->isCsrfTokenValid('delete_picture', $request->request->get('_token'))) {
+            $this->addFlash('danger', 'Invalid security token.');
+            return $this->redirectToRoute('app_profile_edit');
+        }
+        /** @var User $user */
+        $user = $this->getUser();
+        $picture = $user->getProfilePicture();
+        if ($picture) {
+            $path = $this->getParameter('kernel.project_dir') . '/public' . $picture;
+            if (file_exists($path)) {
+                unlink($path);
+            }
+            $user->setProfilePicture(null);
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success', 'Profile picture removed.');
+        }
+        return $this->redirectToRoute('app_profile_edit');
     }
 
     #[Route('/profile/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]

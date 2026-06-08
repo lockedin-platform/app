@@ -1,0 +1,99 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block title %}My Applications — Najahni{% endblock %}
+
+{% block main %}
+<div class="row g-4">
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold mb-1" style="font-size:1.8rem">
+                    <i class="bi bi-file-earmark-check me-2" style="color:var(--nj-primary)"></i>My Applications
+                </h2>
+                <p class="text-muted mb-0">Track your applications to investor postings</p>
+            </div>
+            <a href="{{ path('app_invest_opportunities') }}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Browse Opportunities
+            </a>
+        </div>
+    </div>
+
+    {% for type, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="col-12">
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if applications is empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-file-earmark-plus display-4 text-muted"></i>
+            <p class="text-muted mt-3 mb-4">You haven't applied to any investment postings yet.</p>
+            <a href="{{ path('app_invest_opportunities') }}" class="btn btn-primary">
+                <i class="bi bi-search me-1"></i>Browse Investment Opportunities
+            </a>
+        </div>
+    {% else %}
+        {% for app_item in applications %}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    <div class="card-body p-4">
+
+                        {# Status badge #}
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge rounded-pill px-3 py-2 fw-semibold" style="background:var(--nj-gradient);font-size:.75rem">
+                                {{ app_item.posting.sector }}
+                            </span>
+                            <span class="badge {{ app_item.status == 'PENDING' ? 'bg-warning text-dark' : (app_item.status == 'OFFER_MADE' ? 'bg-success' : (app_item.status == 'REJECTED' ? 'bg-danger' : 'bg-info')) }} rounded-pill" style="font-size:.75rem">
+                                {% if app_item.status == 'PENDING' %}
+                                    <i class="bi bi-hourglass-split me-1"></i>Pending Review
+                                {% elseif app_item.status == 'REVIEWED' %}
+                                    <i class="bi bi-eye me-1"></i>Under Review
+                                {% elseif app_item.status == 'OFFER_MADE' %}
+                                    <i class="bi bi-check-circle me-1"></i>Offer Received!
+                                {% elseif app_item.status == 'REJECTED' %}
+                                    <i class="bi bi-x-circle me-1"></i>Not Selected
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {# Investor info #}
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:34px;height:34px;background:var(--nj-gradient);font-size:.8rem;flex-shrink:0">
+                                {{ app_item.posting.postedBy.firstname|slice(0,1)|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-semibold" style="font-size:.9rem">{{ app_item.posting.postedBy.firstname }} {{ app_item.posting.postedBy.lastname }}</div>
+                                <div class="text-muted" style="font-size:.75rem">Investor</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-2 fw-semibold" style="font-size:.9rem">
+                            <i class="bi bi-kanban me-1 text-muted"></i>{{ app_item.project.titre }}
+                        </div>
+
+                        <div class="text-muted mb-3" style="font-size:.82rem">
+                            Budget: {{ app_item.posting.budgetMin|number_format(0, ',', ' ') }} – {{ app_item.posting.budgetMax|number_format(0, ',', ' ') }} TND
+                        </div>
+
+                        <div class="text-muted" style="font-size:.78rem">
+                            <i class="bi bi-calendar3 me-1"></i>Applied {{ app_item.createdAt|date('M d, Y') }}
+                        </div>
+
+                        {% if app_item.status == 'OFFER_MADE' %}
+                            <div class="mt-3 p-2 rounded text-center" style="background:rgba(34,197,94,.1);font-size:.83rem">
+                                <i class="bi bi-star-fill text-success me-1"></i>
+                                <strong>Great news!</strong> The investor made you an offer.
+                                <br><a href="{{ path('app_invest_my_contracts') }}" class="fw-semibold">View contract & negotiate →</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

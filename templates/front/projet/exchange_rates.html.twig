@@ -1,31 +1,40 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Taux de Change - {{ projet.titre }} - Najahni{% endblock %}
+{% block title %}Exchange Rates - {{ projet.titre }} - Najahni{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Retour au projet</a>
-        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-currency-exchange me-2"></i>Conversions Devises</h2>
-        <p class="text-muted mb-0">{{ projet.titre }}</p>
-    </div>
-    <div>
-        <span class="badge bg-secondary bg-opacity-10 text-secondary"><i class="bi bi-clock me-1"></i>Taux du {{ rates.date }}</span>
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-currency-exchange nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> Back to Project
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="nj-ph-eyebrow">Projects · Tools</div>
+                <h1 class="nj-ph-title mb-1">Exchange Rates</h1>
+                <p class="nj-ph-sub">{{ projet.titre }} &mdash; Financial data converted to major currencies</p>
+            </div>
+            <div class="nj-hero-actions">
+                <span class="badge px-3 py-2" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.7);font-size:.78rem;border:1px solid rgba(255,255,255,.1)">
+                    <i class="bi bi-clock me-1"></i>Rates of {{ rates.date }}
+                </span>
+            </div>
+        </div>
     </div>
 </div>
 
-{# Exchange Rates Cards #}
+{# Rate Cards #}
 <div class="row g-3 mb-4">
     {% for currency, rate in {'EUR': rates.EUR, 'USD': rates.USD, 'GBP': rates.GBP} %}
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm text-center p-4" style="border-radius:1rem">
-            <div class="mb-2">
-                <span class="display-6">
-                    {% if currency == 'EUR' %}🇪🇺{% elseif currency == 'USD' %}🇺🇸{% else %}🇬🇧{% endif %}
-                </span>
+        <div class="card border-0 shadow-sm text-center p-4" style="border-radius:1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07) !important">
+            <div class="mb-2" style="font-size:2.5rem">
+                {% if currency == 'EUR' %}🇪🇺{% elseif currency == 'USD' %}🇺🇸{% else %}🇬🇧{% endif %}
             </div>
             <h3 class="fw-bold mb-1" style="color:var(--nj-primary)">1 TND = {{ rate ? rate|number_format(4) : 'N/A' }} {{ currency }}</h3>
-            <p class="text-muted small mb-0">Dinar Tunisien → {{ currency }}</p>
+            <p class="text-muted small mb-0">Tunisian Dinar &rarr; {{ currency }}</p>
         </div>
     </div>
     {% endfor %}
@@ -34,13 +43,13 @@
 {# Conversion Table #}
 {% if conversions|length > 0 and projet.donneesBusiness %}
 <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-    <h5 class="fw-bold mb-4"><i class="bi bi-table me-2"></i>Données Financières Converties</h5>
+    <h5 class="fw-bold mb-4"><i class="bi bi-table me-2"></i>Converted Financial Data</h5>
     <div class="table-responsive">
         <table class="table table-hover align-middle">
-            <thead class="table-light">
+            <thead>
                 <tr>
-                    <th>Indicateur</th>
-                    <th class="text-end">DT (Dinar)</th>
+                    <th>Indicator</th>
+                    <th class="text-end">TND (Dinar)</th>
                     <th class="text-end">🇪🇺 EUR</th>
                     <th class="text-end">🇺🇸 USD</th>
                     <th class="text-end">🇬🇧 GBP</th>
@@ -49,29 +58,29 @@
             <tbody>
                 {% set db = projet.donneesBusiness %}
                 <tr>
-                    <td><i class="bi bi-globe text-primary me-2"></i>Taille du Marché</td>
-                    <td class="text-end fw-semibold">{{ db.tailleMarche|number_format(0, ',', ' ') }} DT</td>
+                    <td><i class="bi bi-globe text-primary me-2"></i>Market Size</td>
+                    <td class="text-end fw-semibold">{{ db.tailleMarche|number_format(0, ',', ' ') }} TND</td>
                     {% for cur in ['EUR', 'USD', 'GBP'] %}
                     <td class="text-end">{{ conversions[cur].taille_marche is not null ? conversions[cur].taille_marche|number_format(0, ',', ' ') ~ ' ' ~ cur : 'N/A' }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
-                    <td><i class="bi bi-arrow-down-circle text-danger me-2"></i>Coûts Estimés</td>
-                    <td class="text-end fw-semibold">{{ db.coutsEstimes|number_format(0, ',', ' ') }} DT</td>
+                    <td><i class="bi bi-arrow-down-circle text-danger me-2"></i>Estimated Costs</td>
+                    <td class="text-end fw-semibold">{{ db.coutsEstimes|number_format(0, ',', ' ') }} TND</td>
                     {% for cur in ['EUR', 'USD', 'GBP'] %}
                     <td class="text-end">{{ conversions[cur].couts_estimes is not null ? conversions[cur].couts_estimes|number_format(0, ',', ' ') ~ ' ' ~ cur : 'N/A' }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
-                    <td><i class="bi bi-arrow-up-circle text-success me-2"></i>Revenus Attendus</td>
-                    <td class="text-end fw-semibold">{{ db.revenusAttendus|number_format(0, ',', ' ') }} DT</td>
+                    <td><i class="bi bi-arrow-up-circle text-success me-2"></i>Expected Revenue</td>
+                    <td class="text-end fw-semibold">{{ db.revenusAttendus|number_format(0, ',', ' ') }} TND</td>
                     {% for cur in ['EUR', 'USD', 'GBP'] %}
                     <td class="text-end">{{ conversions[cur].revenus_attendus is not null ? conversions[cur].revenus_attendus|number_format(0, ',', ' ') ~ ' ' ~ cur : 'N/A' }}</td>
                     {% endfor %}
                 </tr>
-                <tr class="table-light">
-                    <td><i class="bi bi-cash-stack text-warning me-2"></i><strong>Marge Estimée</strong></td>
-                    <td class="text-end fw-bold" style="color:{{ db.margeEstimee >= 0 ? '#10b981' : '#ef4444' }}">{{ db.margeEstimee|number_format(0, ',', ' ') }} DT</td>
+                <tr>
+                    <td><i class="bi bi-cash-stack text-warning me-2"></i><strong>Estimated Margin</strong></td>
+                    <td class="text-end fw-bold" style="color:{{ db.margeEstimee >= 0 ? '#10b981' : '#ef4444' }}">{{ db.margeEstimee|number_format(0, ',', ' ') }} TND</td>
                     {% for cur in ['EUR', 'USD', 'GBP'] %}
                     <td class="text-end fw-bold" style="color:{{ conversions[cur].marge >= 0 ? '#10b981' : '#ef4444' }}">{{ conversions[cur].marge is not null ? conversions[cur].marge|number_format(0, ',', ' ') ~ ' ' ~ cur : 'N/A' }}</td>
                     {% endfor %}
@@ -81,9 +90,9 @@
     </div>
 </div>
 {% else %}
-<div class="card border-0 shadow-sm p-4 text-center" style="border-radius:1rem">
-    <i class="bi bi-info-circle display-4 text-muted"></i>
-    <p class="text-muted mt-2">Ajoutez des données business à votre projet pour voir les conversions.</p>
+<div class="card border-0 shadow-sm p-5 text-center" style="border-radius:1rem">
+    <i class="bi bi-info-circle" style="font-size:3rem;color:var(--nj-primary);opacity:.4"></i>
+    <p class="text-muted mt-3 mb-0">Add business data to your project to see the currency conversions.</p>
 </div>
 {% endif %}
 {% endblock %}

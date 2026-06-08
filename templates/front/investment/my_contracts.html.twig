@@ -1,9 +1,9 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Mes contrats - Najahni{% endblock %}
+{% block title %}My Contracts - Najahni{% endblock %}
 
 {% block main %}
-{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Mes contrats', activeStep: 3} %}
+{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'My Contracts', activeStep: 3} %}
 
 <style>
 .contract-index-grid {
@@ -13,11 +13,13 @@
 }
 
 .contract-index-card {
-    border: 0;
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 1.1rem;
     overflow: hidden;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    background: rgba(255,255,255,.04);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.25);
+    color: rgba(226,232,240,.9);
 }
 
 .contract-index-band {
@@ -26,10 +28,11 @@
 }
 
 .contract-index-kpi {
-    border: 0;
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: 1rem;
     padding: 1rem 1.1rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, .08), rgba(14, 165, 233, .12));
+    background: rgba(255,255,255,.05);
+    backdrop-filter: blur(14px);
 }
 
 .contract-role-pill,
@@ -44,28 +47,29 @@
 }
 
 .contract-counterparty {
-    color: #475569;
+    color: rgba(255,255,255,.5);
     font-size: .88rem;
 }
 
 .contract-empty {
-    border: 1px dashed #cbd5e1;
+    border: 1px dashed rgba(255,255,255,.12);
     border-radius: 1.1rem;
     padding: 3rem 1.5rem;
     text-align: center;
-    background: #f8fafc;
+    background: rgba(255,255,255,.03);
+    backdrop-filter: blur(14px);
 }
 </style>
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
     <div>
-        <h2 class="fw-bold mb-1"><i class="bi bi-file-earmark-text me-2"></i>Mes contrats</h2>
-        <div class="text-muted">Retrouvez tous vos contrats d'investissement en cours, qu'ils soient cote investisseur ou cote entrepreneur.</div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-file-earmark-text me-2"></i>My Contracts</h2>
+        <div class="text-muted">All your active investment contracts, whether as investor or entrepreneur.</div>
     </div>
     <div class="d-flex gap-2 flex-wrap">
-        <a href="{{ path('app_invest_opportunities') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Opportunites</a>
+        <a href="{{ path('app_invest_opportunities') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Opportunities</a>
         {% if is_granted('ROLE_INVESTISSEUR') %}
-        <a href="{{ path('app_invest_my_offers') }}" class="btn btn-outline-primary"><i class="bi bi-list-check me-1"></i>Mes Offres</a>
+        <a href="{{ path('app_invest_my_offers') }}" class="btn btn-outline-primary"><i class="bi bi-list-check me-1"></i>My Offers</a>
         {% endif %}
     </div>
 </div>
@@ -86,19 +90,19 @@
     </div>
     <div class="col-md-3">
         <div class="contract-index-kpi h-100">
-            <div class="small text-muted">Ma signature attendue</div>
+            <div class="small text-muted">Awaiting my signature</div>
             <div class="display-6 fw-bold">{{ summary.awaitingMySignature }}</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="contract-index-kpi h-100">
-            <div class="small text-muted">Cosignature attendue</div>
+            <div class="small text-muted">Awaiting co-signature</div>
             <div class="display-6 fw-bold">{{ summary.awaitingOtherSignature }}</div>
         </div>
     </div>
     <div class="col-md-3">
         <div class="contract-index-kpi h-100">
-            <div class="small text-muted">Complets ou finances</div>
+            <div class="small text-muted">Completed or funded</div>
             <div class="display-6 fw-bold">{{ summary.fullySigned + summary.funded }}</div>
         </div>
     </div>
@@ -110,22 +114,22 @@
         {% set offer = contract.offer %}
         {% set isFunded = contract.status == constant('App\\Entity\\InvestmentContract::STATUS_FUNDED') %}
         {% set isInvestorParty = contract.investor and currentUser and contract.investor.id == currentUser.id %}
-        {% set roleLabel = isInvestorParty ? 'Investisseur' : 'Entrepreneur' %}
-        {% set roleBg = isInvestorParty ? '#dbeafe' : '#dcfce7' %}
-        {% set roleColor = isInvestorParty ? '#1d4ed8' : '#15803d' %}
+        {% set roleLabel = isInvestorParty ? 'Investor' : 'Entrepreneur' %}
+        {% set roleBg = isInvestorParty ? 'rgba(37,99,235,.2)' : 'rgba(5,150,105,.2)' %}
+        {% set roleColor = isInvestorParty ? '#93c5fd' : '#6ee7b7' %}
         {% set bandColor = isFunded ? '#16a34a' : (contract.fullySigned ? '#2563eb' : (contract.hasSigned(currentUser) ? '#f59e0b' : '#dc2626')) %}
-        {% set statusLabel = isFunded ? 'Finance' : (contract.fullySigned ? 'Signe par les deux parties' : (contract.hasSigned(currentUser) ? 'En attente de cosignature' : 'Votre signature est requise')) %}
-        {% set statusBg = isFunded ? '#dcfce7' : (contract.fullySigned ? '#dbeafe' : (contract.hasSigned(currentUser) ? '#fef3c7' : '#fee2e2')) %}
-        {% set statusColor = isFunded ? '#166534' : (contract.fullySigned ? '#1d4ed8' : (contract.hasSigned(currentUser) ? '#92400e' : '#b91c1c')) %}
+        {% set statusLabel = isFunded ? 'Funded' : (contract.fullySigned ? 'Signed by both parties' : (contract.hasSigned(currentUser) ? 'Awaiting co-signature' : 'Your signature required')) %}
+        {% set statusBg = isFunded ? 'rgba(5,150,105,.15)' : (contract.fullySigned ? 'rgba(37,99,235,.15)' : (contract.hasSigned(currentUser) ? 'rgba(217,119,6,.15)' : 'rgba(220,38,38,.15)')) %}
+        {% set statusColor = isFunded ? '#6ee7b7' : (contract.fullySigned ? '#93c5fd' : (contract.hasSigned(currentUser) ? '#fde68a' : '#fca5a5')) %}
         {% set counterparty = isInvestorParty ? contract.entrepreneur : contract.investor %}
         <div class="contract-index-card">
             <div class="contract-index-band" style="background:{{ bandColor }}"></div>
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start gap-2 mb-3">
                     <div>
-                        <div class="small text-muted mb-1">Projet</div>
+                        <div class="small text-muted mb-1">Project</div>
                         <h5 class="fw-bold mb-1">{{ offer and offer.opportunity and offer.opportunity.project ? offer.opportunity.project.titre : contract.title }}</h5>
-                        <div class="contract-counterparty">Avec {{ counterparty ? counterparty.fullName : 'partie introuvable' }}</div>
+                        <div class="contract-counterparty">With {{ counterparty ? counterparty.fullName : 'party not found' }}</div>
                     </div>
                     <span class="contract-role-pill" style="background:{{ roleBg }};color:{{ roleColor }};">{{ roleLabel }}</span>
                 </div>
@@ -136,26 +140,26 @@
 
                 <div class="row g-2 small mb-3">
                     <div class="col-6">
-                        <div class="text-muted">Montant</div>
+                        <div class="text-muted">Amount</div>
                         <div class="fw-semibold">{{ offer ? offer.proposedAmount|number_format(0, ',', ' ') ~ ' DT' : 'N/A' }}</div>
                     </div>
                     <div class="col-6">
-                        <div class="text-muted">Participation</div>
-                        <div class="fw-semibold">{{ contract.equityPercentage ? contract.equityPercentage|number_format(2, ',', ' ') ~ ' %' : 'A definir' }}</div>
+                        <div class="text-muted">Equity</div>
+                        <div class="fw-semibold">{{ contract.equityPercentage ? contract.equityPercentage|number_format(2, ',', ' ') ~ ' %' : 'To be defined' }}</div>
                     </div>
                     <div class="col-6">
-                        <div class="text-muted">Derniere activite</div>
+                        <div class="text-muted">Last activity</div>
                         <div class="fw-semibold">{{ (contract.lastMessageAt ?: contract.updatedAt)|date('d/m/Y H:i') }}</div>
                     </div>
                     <div class="col-6">
                         <div class="text-muted">Signatures</div>
-                        <div class="fw-semibold">{{ contract.investorSignedAt ? 'Investisseur' : '...' }} / {{ contract.entrepreneurSignedAt ? 'Entrepreneur' : '...' }}</div>
+                        <div class="fw-semibold">{{ contract.investorSignedAt ? 'Investor' : '...' }} / {{ contract.entrepreneurSignedAt ? 'Entrepreneur' : '...' }}</div>
                     </div>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <a href="{{ path('app_invest_contract_show', {id: offer.id}) }}" class="btn btn-outline-primary flex-fill">Ouvrir le contrat</a>
-                    <a href="{{ path('app_invest_opportunity_show', {id: offer.opportunity.id}) }}" class="btn btn-outline-secondary flex-fill">Voir l'opportunite</a>
+                    <a href="{{ path('app_invest_contract_show', {id: offer.id}) }}" class="btn btn-outline-primary flex-fill">Open contract</a>
+                    <a href="{{ path('app_invest_opportunity_show', {id: offer.opportunity.id}) }}" class="btn btn-outline-secondary flex-fill">View opportunity</a>
                 </div>
             </div>
         </div>
@@ -163,10 +167,10 @@
 </div>
 {% else %}
 <div class="contract-empty">
-    <div class="mb-3"><i class="bi bi-file-earmark-text" style="font-size:3rem;color:#94a3b8"></i></div>
-    <h4 class="fw-bold mb-2">Aucun contrat pour le moment</h4>
-    <p class="text-muted mb-3">Les contrats acceptes apparaitront ici des qu'une negociation sera ouverte.</p>
-    <a href="{{ path('app_invest_opportunities') }}" class="btn btn-nj">Explorer les opportunites</a>
+    <div class="mb-3"><i class="bi bi-file-earmark-text" style="font-size:3rem;color:rgba(255,255,255,.25)"></i></div>
+    <h4 class="fw-bold mb-2">No contracts yet</h4>
+    <p class="text-muted mb-3">Accepted contracts will appear here once a negotiation is opened.</p>
+    <a href="{{ path('app_invest_opportunities') }}" class="btn btn-nj">Explore opportunities</a>
 </div>
 {% endif %}
 {% endblock %}

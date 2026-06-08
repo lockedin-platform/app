@@ -1,5 +1,4 @@
 import { animate, createTimeline, stagger } from 'animejs';
-import * as THREE from 'three';
 
 const homeState = {
     reducedMotion: false,
@@ -319,9 +318,9 @@ function initHeroScene(reducedMotion) {
         dispose() {},
     };
 
-    if (!canvas || !stageShell) {
-        return sceneController;
-    }
+    // Remove canvas — CSS-only hero, Three.js not needed
+    if (canvas) canvas.remove();
+    return sceneController;
 
     if (reducedMotion || window.innerWidth < 820 || !supportsWebGL()) {
         canvas.remove();

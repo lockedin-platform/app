@@ -14,7 +14,10 @@ use App\Repository\MentorshipSessionRepository;
 use App\Repository\PostRepository;
 use App\Repository\ProjetRepository;
 use App\Repository\UserRepository;
+use App\Service\GeminiService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -231,5 +234,37 @@ class HomeController extends AbstractController
         if ($days === 1) return 'hier';
         if ($days < 30) return 'il y a ' . $days . ' jours';
         return 'il y a ' . (int) ($days / 30) . ' mois';
+    }
+
+    #[Route('/ai/chat', name: 'app_global_ai_chat', methods: ['POST'])]
+    public function globalAiChat(Request $request, GeminiService $ai): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $message = trim($data['message'] ?? '');
+
+        if (empty($message)) {
+            return $this->json(['error' => 'Message vide'], 400);
+        }
+
+        $user = $this->getUser();
+        $userName = $user ? $user->getFirstname() : 'visiteur';
+        $userRole = $user ? $user->getRole() : 'non connecté';
+
+        $prompt = <<<PROMPT
+Tu es "Najahni AI", l'assistant de la plateforme Najahni — plateforme tunisienne pour entrepreneurs, investisseurs et mentors.
+
+Tu aides avec : gestion de projets, investissement, mentorat, apprentissage, et la communauté entrepreneuriale tunisienne.
+Utilisateur : {$userName} (rôle : {$userRole}).
+
+Message : {$message}
+
+Réponds en français, de façon utile et concise (max 3 paragraphes). Si pertinent, oriente vers les fonctionnalités Najahni.
+PROMPT;
+
+        $response = $ai->generate($prompt, 0.7);
+
+        return $this->json([
+            'response' => $response ?? "Je suis désolé, je ne suis pas disponible pour le moment. Réessayez dans quelques instants.",
+        ]);
     }
 }

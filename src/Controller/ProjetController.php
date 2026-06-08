@@ -480,13 +480,33 @@ PROMPT;
         $p->setStatut($r->request->get('statut'));
     }
 
+    private function extractNumeric(string $raw): float
+    {
+        $raw = trim($raw);
+        // Collapse digit-space-digit pairs (space-separated thousands like "500 000")
+        $noSpaces = (string) preg_replace('/(\d)\s+(\d)/', '$1$2', $raw);
+        // Apply again in case of triple-space groups ("1 000 000")
+        $noSpaces = (string) preg_replace('/(\d)\s+(\d)/', '$1$2', $noSpaces);
+        // Remove thousand-separator commas: "1,000,000" → "1000000"
+        if (preg_match('/\d,\d{3}/', $noSpaces)) {
+            $noSpaces = str_replace(',', '', $noSpaces);
+        }
+        // Extract first number (integer or decimal)
+        if (preg_match('/(\d+(?:[.,]\d+)?)/', $noSpaces, $m)) {
+            return (float) str_replace(',', '.', $m[1]);
+        }
+        return 0.0;
+    }
+
     private function hydrateDonnees(DonneesBusiness $d, Request $r): void
     {
-        $d->setTailleMarche((string) (float) $r->request->get('taille_marche', 0));
+        // tailleMarche is a string field — store as-is so descriptions are preserved
+        $d->setTailleMarche((string) $r->request->get('taille_marche', ''));
         $d->setModeleRevenu($r->request->get('modele_revenu'));
-        $d->setCoutsEstimes((float) $r->request->get('couts_estimes', 0));
-        $d->setRevenusAttendus((float) $r->request->get('revenus_attendus', 0));
+        $d->setCoutsEstimes($this->extractNumeric((string) $r->request->get('couts_estimes', '0')));
+        $d->setRevenusAttendus($this->extractNumeric((string) $r->request->get('revenus_attendus', '0')));
         $d->setNiveauRisque($r->request->get('niveau_risque'));
-        $d->setForceEquipe((int) $r->request->get('force_equipe', 0));
+        $force = (int) $this->extractNumeric((string) $r->request->get('force_equipe', '5'));
+        $d->setForceEquipe(max(1, min(10, $force ?: 5)));
     }
 }

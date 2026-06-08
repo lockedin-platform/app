@@ -31,7 +31,4 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
-    'three' => [
-        'path' => './assets/vendor/three/three.index.js',
-    ],
 ];

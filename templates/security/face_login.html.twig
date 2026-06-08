@@ -3,33 +3,33 @@
 {% block title %}Face ID - Najahni{% endblock %}
 
 {% block body %}
-<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background:var(--nj-gradient)">
-    <div class="card shadow-lg border-0" style="width:500px;border-radius:1.5rem">
+<div class="min-vh-100 d-flex align-items-center justify-content-center" style="background:var(--nj-bg,#040816)">
+    <div class="card shadow-lg border-0" style="width:520px;max-width:95%;border-radius:1.5rem">
         <div class="card-body p-5">
             <div class="text-center mb-4">
                 <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3" style="width:80px;height:80px;background:rgba(114,9,183,.1)">
                     <i class="bi bi-person-bounding-box" style="font-size:2.5rem;color:var(--nj-accent)"></i>
                 </div>
-                <h3 class="fw-bold">Connexion Face ID</h3>
-                <p class="text-muted">Placez votre visage devant la caméra pour vous connecter.</p>
+                <h3 class="fw-bold">Face ID Sign In</h3>
+                <p class="text-muted">Position your face in front of the camera to sign in.</p>
             </div>
 
             {# Camera Preview #}
-            <div class="position-relative mb-4" id="cameraContainer">
+            <div class="position-relative mb-4">
                 <div class="rounded-4 overflow-hidden bg-dark d-flex align-items-center justify-content-center" style="height:300px" id="videoContainer">
                     <video id="video" autoplay playsinline muted class="w-100 h-100 d-none" style="object-fit:cover;transform:scaleX(-1)"></video>
-                    <div id="cameraPlaceholder" class="text-center text-white">
+                    <canvas id="overlay" class="position-absolute top-0 start-0 w-100 h-100 d-none" style="pointer-events:none;transform:scaleX(-1)"></canvas>
+                    <div id="cameraPlaceholder" class="text-center text-white p-3">
                         <i class="bi bi-camera-video" style="font-size:4rem;opacity:.5"></i>
-                        <p class="mt-2 mb-0 opacity-75">Cliquez pour activer la caméra</p>
+                        <p class="mt-2 mb-0 opacity-75">Click the button below to activate camera</p>
                     </div>
                 </div>
-                <canvas id="overlay" class="position-absolute top-0 start-0 w-100 h-100 d-none" style="pointer-events:none;transform:scaleX(-1)"></canvas>
             </div>
 
-            {# Loading indicator for models #}
+            {# Loading indicator #}
             <div class="text-center mb-3 d-none" id="modelLoading">
                 <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                <small class="text-muted">Chargement des modèles de reconnaissance faciale...</small>
+                <small class="text-muted">Loading face recognition models...</small>
             </div>
 
             {# Status #}
@@ -40,10 +40,10 @@
             {# Controls #}
             <div class="d-grid gap-2">
                 <button class="btn btn-nj py-2" id="startBtn">
-                    <i class="bi bi-camera-video me-2"></i>Activer la caméra
+                    <i class="bi bi-camera-video me-2"></i>Activate Camera
                 </button>
                 <button class="btn btn-outline-nj py-2 d-none" id="captureBtn">
-                    <i class="bi bi-person-check me-2"></i>Scanner mon visage
+                    <i class="bi bi-person-check me-2"></i>Scan My Face
                 </button>
             </div>
 
@@ -51,7 +51,7 @@
 
             <p class="text-center mb-0">
                 <a href="{{ path('app_login') }}" class="text-decoration-none" style="color:var(--nj-primary)">
-                    <i class="bi bi-arrow-left me-1"></i>Connexion classique
+                    <i class="bi bi-arrow-left me-1"></i>Back to sign in
                 </a>
             </p>
         </div>
@@ -63,16 +63,16 @@
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 <script>
 (function () {
-    const MODEL_URL = '/models';
-    const video       = document.getElementById('video');
-    const placeholder  = document.getElementById('cameraPlaceholder');
-    const overlay      = document.getElementById('overlay');
-    const startBtn     = document.getElementById('startBtn');
-    const captureBtn   = document.getElementById('captureBtn');
-    const statusMsg    = document.getElementById('statusMsg');
-    const modelLoading = document.getElementById('modelLoading');
-    let stream = null;
-    let modelsLoaded = false;
+    var MODEL_URL    = '/models';
+    var video        = document.getElementById('video');
+    var placeholder  = document.getElementById('cameraPlaceholder');
+    var overlay      = document.getElementById('overlay');
+    var startBtn     = document.getElementById('startBtn');
+    var captureBtn   = document.getElementById('captureBtn');
+    var statusMsg    = document.getElementById('statusMsg');
+    var modelLoading = document.getElementById('modelLoading');
+    var stream       = null;
+    var modelsLoaded = false;
 
     function showStatus(msg, type) {
         statusMsg.className = 'alert alert-' + type;
@@ -91,96 +91,125 @@
             ]);
             modelsLoaded = true;
         } catch (err) {
-            showStatus('<i class="bi bi-exclamation-triangle me-2"></i>Impossible de charger les modèles. Vérifiez votre connexion.', 'danger');
+            showStatus('<i class="bi bi-exclamation-triangle me-2"></i>Failed to load face recognition models. Check your connection.', 'danger');
             throw err;
         } finally {
             modelLoading.classList.add('d-none');
         }
     }
 
-    startBtn.addEventListener('click', async function () {
-        try {
-            startBtn.disabled = true;
-            startBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Initialisation...';
+    // Warn immediately if camera API is unavailable (HTTP on 127.0.0.1, not localhost)
+    if (!window.isSecureContext || !navigator.mediaDevices) {
+        var hint = '';
+        if (location.hostname === '127.0.0.1') {
+            hint = ' Try opening <a href="' + location.href.replace('127.0.0.1', 'localhost') + '" class="alert-link">localhost' + (location.port ? ':' + location.port : '') + '</a> instead — browsers only allow camera access on <code>localhost</code>, not <code>127.0.0.1</code>.';
+        }
+        showStatus('<i class="bi bi-shield-exclamation me-2"></i>Camera access requires a secure context (HTTPS or localhost).' + hint, 'warning');
+        startBtn.disabled = true;
+    }
 
-            // Load models and camera in parallel
-            const [, mediaStream] = await Promise.all([
+    startBtn.addEventListener('click', async function () {
+        startBtn.disabled = true;
+        startBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Initializing...';
+
+        try {
+            var results = await Promise.all([
                 loadModels(),
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 640, height: 480 } })
             ]);
 
-            stream = mediaStream;
+            stream = results[1];
             video.srcObject = stream;
+            await new Promise(function(resolve) {
+                video.onloadedmetadata = function() { video.play().then(resolve).catch(resolve); };
+                setTimeout(resolve, 3000);
+            });
             video.classList.remove('d-none');
             placeholder.classList.add('d-none');
             startBtn.classList.add('d-none');
             captureBtn.classList.remove('d-none');
-            showStatus('<i class="bi bi-camera-video-fill me-2"></i>Caméra activée. Cliquez sur "Scanner mon visage".', 'info');
+            showStatus('<i class="bi bi-camera-video-fill me-2"></i>Camera active. Click "Scan My Face" to continue.', 'info');
         } catch (err) {
             startBtn.disabled = false;
-            startBtn.innerHTML = '<i class="bi bi-camera-video me-2"></i>Activer la caméra';
-            if (!modelsLoaded) return; // model error already shown
-            var msg = 'Impossible d\'accéder à la caméra.';
-            if (err.name === 'NotAllowedError') msg += ' Autorisez l\'accès dans votre navigateur.';
-            else if (err.name === 'NotFoundError') msg += ' Aucune caméra détectée.';
-            else if (err.name === 'NotReadableError') msg += ' La caméra est utilisée par une autre application.';
+            startBtn.innerHTML = '<i class="bi bi-camera-video me-2"></i>Activate Camera';
+            if (!modelsLoaded) return;
+            var msg = 'Cannot access camera.';
+            if (err.name === 'NotAllowedError') {
+                msg += ' Camera permission denied.';
+                if (location.hostname === '127.0.0.1') msg += ' Also try <a href="' + location.href.replace('127.0.0.1', 'localhost') + '" class="alert-link">localhost:' + (location.port || '80') + '</a> — some browsers block camera on <code>127.0.0.1</code>.';
+            } else if (err.name === 'NotFoundError') { msg += ' No camera detected.';
+            } else if (err.name === 'NotReadableError') { msg += ' Camera is in use by another app.'; }
             showStatus('<i class="bi bi-exclamation-triangle me-2"></i>' + msg, 'danger');
         }
     });
 
+    // Capture a canvas snapshot from video and detect on it
+    async function captureAndDetect(threshold) {
+        var w = video.videoWidth || 640;
+        var h = video.videoHeight || 480;
+        var snap = document.createElement('canvas');
+        snap.width = w;
+        snap.height = h;
+        snap.getContext('2d').drawImage(video, 0, 0, w, h);
+        return await faceapi
+            .detectSingleFace(snap, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: threshold }))
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+    }
+
     captureBtn.addEventListener('click', async function () {
         captureBtn.disabled = true;
-        captureBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyse en cours...';
-        showStatus('<i class="bi bi-hourglass-split me-2"></i>Détection du visage...', 'warning');
+        captureBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
+        showStatus('<i class="bi bi-hourglass-split me-2"></i>Detecting face...', 'warning');
 
         try {
-            // Detect face and extract descriptor
-            const detection = await faceapi
-                .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 }))
-                .withFaceLandmarks()
-                .withFaceDescriptor();
+            var detection = null;
+            var thresholds = [0.5, 0.4, 0.3, 0.25, 0.2];
+            for (var ti = 0; ti < thresholds.length && !detection; ti++) {
+                showStatus('<i class="bi bi-hourglass-split me-2"></i>Detecting face (attempt ' + (ti+1) + '/' + thresholds.length + ')...', 'warning');
+                detection = await captureAndDetect(thresholds[ti]);
+                if (!detection) await new Promise(function(r){ setTimeout(r, 400); });
+            }
 
             if (!detection) {
-                showStatus('<i class="bi bi-x-circle me-2"></i>Aucun visage détecté. Placez votre visage bien en face de la caméra.', 'danger');
+                showStatus('<i class="bi bi-x-circle me-2"></i>No face detected. Make sure you are well lit and facing the camera directly.', 'danger');
                 resetCapture();
                 return;
             }
 
-            // Draw detection on overlay
-            const dims = faceapi.matchDimensions(overlay, video, true);
+            // Draw detection overlay
+            var dims = faceapi.matchDimensions(overlay, video, true);
             overlay.classList.remove('d-none');
-            const resized = faceapi.resizeResults(detection, dims);
-            faceapi.draw.drawDetections(overlay, resized);
-            faceapi.draw.drawFaceLandmarks(overlay, resized);
+            faceapi.draw.drawDetections(overlay, faceapi.resizeResults(detection, dims));
+            faceapi.draw.drawFaceLandmarks(overlay, faceapi.resizeResults(detection, dims));
 
-            showStatus('<i class="bi bi-hourglass-split me-2"></i>Vérification de l\'identité...', 'warning');
+            showStatus('<i class="bi bi-hourglass-split me-2"></i>Verifying identity...', 'warning');
 
-            // Send descriptor to server
-            const descriptor = Array.from(detection.descriptor);
-            const response = await fetch('/api/face-login', {
+            var descriptor = Array.from(detection.descriptor);
+            var response = await fetch('/api/face-login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ descriptor: descriptor })
             });
 
-            const data = await response.json();
+            var data = await response.json();
 
             if (data.success) {
-                showStatus('<i class="bi bi-check-circle me-2"></i>' + data.message + ' Redirection...', 'success');
+                showStatus('<i class="bi bi-check-circle me-2"></i>' + data.message + ' Redirecting...', 'success');
                 setTimeout(function () { window.location.href = data.redirect || '/'; }, 1200);
             } else {
-                showStatus('<i class="bi bi-x-circle me-2"></i>' + (data.message || 'Visage non reconnu.'), 'danger');
+                showStatus('<i class="bi bi-x-circle me-2"></i>' + (data.message || 'Face not recognized.'), 'danger');
                 resetCapture();
             }
         } catch (err) {
-            showStatus('<i class="bi bi-x-circle me-2"></i>Erreur lors de l\'analyse. Réessayez.', 'danger');
+            showStatus('<i class="bi bi-x-circle me-2"></i>Analysis failed. Please try again.', 'danger');
             resetCapture();
         }
     });
 
     function resetCapture() {
         captureBtn.disabled = false;
-        captureBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scanner mon visage';
+        captureBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scan My Face';
         setTimeout(function () { overlay.classList.add('d-none'); }, 2000);
     }
 

@@ -1,0 +1,242 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block title %}Co-founders & Partners — Najahni{% endblock %}
+
+{% block main %}
+<style>
+.tm-card { border-radius: 1rem; background: var(--nj-card-bg); border: 1px solid rgba(255,255,255,.07); }
+.score-ring { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.score-ring svg { transform: rotate(-90deg); }
+.score-ring-label { position: absolute; text-align: center; }
+.match-card { border-radius: .85rem; background: var(--nj-card-bg); border: 1px solid rgba(255,255,255,.06); transition: .15s; }
+.match-card:hover { border-color: var(--nj-primary); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(99,102,241,.15); }
+.chat-bubble { padding: .7rem 1rem; border-radius: 1rem; max-width: 80%; font-size: .9rem; line-height: 1.5; }
+.chat-bubble.user { background: var(--nj-gradient); color: #fff; border-bottom-right-radius: .25rem; align-self: flex-end; }
+.chat-bubble.assistant { background: rgba(99,102,241,.1); border: 1px solid rgba(99,102,241,.2); border-bottom-left-radius: .25rem; }
+.chat-typing { display: flex; gap: 4px; align-items: center; padding: .5rem; }
+.chat-typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--nj-primary); animation: blink 1s infinite; }
+.chat-typing span:nth-child(2) { animation-delay: .2s; }
+.chat-typing span:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%,80%,100% { opacity:.2 } 40% { opacity:1 } }
+</style>
+
+<div class="row g-4">
+
+    {# Header #}
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold mb-1" style="font-size:1.8rem">
+                    <i class="bi bi-people-fill me-2" style="color:var(--nj-primary)"></i>Co-founders & Partners
+                </h2>
+                <p class="text-muted mb-0">Find co-founders, partners, and collaborators with AI guidance</p>
+            </div>
+        </div>
+    </div>
+
+    {# Team Readiness Score + Potential Matches #}
+    <div class="col-12 col-lg-4">
+
+        {# Score ring #}
+        <div class="tm-card p-4 mb-4 text-center">
+            <div class="fw-semibold mb-3" style="font-size:.85rem;text-transform:uppercase;letter-spacing:.06em;color:var(--nj-primary)">Team Profile Score</div>
+            <div class="score-ring mb-3">
+                <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(99,102,241,.15)" stroke-width="10"/>
+                    <circle cx="60" cy="60" r="50" fill="none"
+                        stroke="{{ teamScore >= 70 ? '#4ade80' : (teamScore >= 45 ? '#60a5fa' : '#fbbf24') }}"
+                        stroke-width="10"
+                        stroke-dasharray="{{ (teamScore / 100 * 314.16)|round }} 314.16"
+                        stroke-linecap="round"/>
+                </svg>
+                <div class="score-ring-label">
+                    <div class="fw-bold" style="font-size:1.6rem;color:{{ teamScore >= 70 ? '#4ade80' : (teamScore >= 45 ? '#60a5fa' : '#fbbf24') }}">{{ teamScore }}%</div>
+                    <div class="text-muted" style="font-size:.7rem">
+                        {% if teamScore >= 70 %}Strong Profile{% elseif teamScore >= 45 %}Good Start{% else %}Build Profile{% endif %}
+                    </div>
+                </div>
+            </div>
+            <p class="text-muted mb-0" style="font-size:.83rem">
+                {% if teamScore >= 70 %}
+                    Your profile is strong. Potential collaborators can find and trust you easily.
+                {% elseif teamScore >= 45 %}
+                    Add LinkedIn, a bio, and more projects to unlock better matches.
+                {% else %}
+                    Complete your profile to get matched with co-founders and investors.
+                {% endif %}
+            </p>
+            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary btn-sm mt-3 w-100">
+                <i class="bi bi-person-gear me-1"></i>Improve My Profile
+            </a>
+        </div>
+
+        {# Quick tips #}
+        <div class="tm-card p-4">
+            <div class="fw-semibold mb-3" style="font-size:.88rem">
+                <i class="bi bi-lightbulb me-2" style="color:var(--nj-primary)"></i>What to ask the AI
+            </div>
+            <div class="d-flex flex-column gap-2">
+                {% set tips = [
+                    'What co-founder profile do I need?',
+                    'How should I split equity with a co-founder?',
+                    'What\'s my biggest team gap right now?',
+                    'How do I find a technical co-founder in Tunisia?',
+                    'What roles should I hire first?',
+                ] %}
+                {% for tip in tips %}
+                    <button class="btn btn-sm text-start px-3 py-2 quick-chip"
+                        style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:.6rem;font-size:.82rem;color:inherit">
+                        {{ tip }}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Right column: chat + matches #}
+    <div class="col-12 col-lg-8">
+
+        {# AI Chat #}
+        <div class="tm-card p-4 mb-4">
+            <div class="fw-semibold mb-3 d-flex align-items-center gap-2">
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;background:var(--nj-gradient)">
+                    <i class="bi bi-robot text-white" style="font-size:.9rem"></i>
+                </div>
+                <span>NAJAHNI MATCH — Co-founders & Partners AI</span>
+                <span class="badge bg-success ms-auto" style="font-size:.7rem">Online</span>
+            </div>
+
+            <div id="chatMessages" style="min-height:280px;max-height:420px;overflow-y:auto;display:flex;flex-direction:column;gap:.75rem;padding-bottom:.5rem">
+                <div class="chat-bubble assistant">
+                    👋 Hi {{ app.user.firstname }}! I'm your AI team-building advisor. I can help you find the right co-founder, identify skill gaps in your team, advise on equity splits, and guide your hiring strategy. What would you like to explore?
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <form id="chatForm" class="d-flex gap-2">
+                    <input type="text" id="chatInput" class="form-control" placeholder="Ask about co-founders, team roles, equity…" autocomplete="off">
+                    <button type="submit" class="btn fw-semibold px-3" style="background:var(--nj-gradient);color:#fff">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {# Potential matches #}
+        {% if potentialMatches|length > 0 %}
+            <div class="tm-card p-4">
+                <div class="fw-semibold mb-3">
+                    <i class="bi bi-stars me-2" style="color:var(--nj-primary)"></i>Potential Collaborators on Najahni
+                </div>
+                <div class="row g-3">
+                    {% for match in potentialMatches %}
+                        <div class="col-12 col-sm-6">
+                            <div class="match-card p-3">
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:36px;height:36px;background:var(--nj-gradient);font-size:.85rem;flex-shrink:0">
+                                        {{ match.user.firstname|slice(0,1)|upper }}{{ match.user.lastname|slice(0,1)|upper }}
+                                    </div>
+                                    <div class="flex-grow-1 min-w-0">
+                                        <div class="fw-semibold text-truncate" style="font-size:.9rem">{{ match.user.firstname }} {{ match.user.lastname }}</div>
+                                        <div class="text-muted" style="font-size:.75rem">{{ match.roleLabel }}</div>
+                                    </div>
+                                    <div class="text-end flex-shrink-0">
+                                        <div class="fw-bold" style="font-size:.9rem;color:var(--nj-primary)">{{ match.score }}%</div>
+                                        <div class="text-muted" style="font-size:.68rem">match</div>
+                                    </div>
+                                </div>
+
+                                {% if match.user.companyName %}
+                                    <div class="text-muted mb-1" style="font-size:.78rem"><i class="bi bi-building me-1"></i>{{ match.user.companyName }}</div>
+                                {% endif %}
+
+                                {% if match.matchReason %}
+                                    <div class="text-muted" style="font-size:.75rem"><i class="bi bi-check2 me-1 text-success"></i>{{ match.matchReason }}</div>
+                                {% endif %}
+
+                                {% if match.user.linkedinUrl %}
+                                    <a href="{{ match.user.linkedinUrl }}" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm mt-2 w-100" style="font-size:.76rem">
+                                        <i class="bi bi-linkedin me-1"></i>View LinkedIn
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('app_user_profile', {id: match.user.id}) }}" class="btn btn-outline-secondary btn-sm mt-2 w-100" style="font-size:.76rem">
+                                        <i class="bi bi-person me-1"></i>View Profile
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+const chatMessages = document.getElementById('chatMessages');
+const chatForm = document.getElementById('chatForm');
+const chatInput = document.getElementById('chatInput');
+let history = [];
+
+function appendBubble(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-bubble ' + (role === 'user' ? 'user' : 'assistant');
+    div.style.alignSelf = role === 'user' ? 'flex-end' : 'flex-start';
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    return div;
+}
+
+function showTyping() {
+    const div = document.createElement('div');
+    div.id = 'typingIndicator';
+    div.innerHTML = '<div class="chat-typing"><span></span><span></span><span></span></div>';
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping() {
+    document.getElementById('typingIndicator')?.remove();
+}
+
+document.querySelectorAll('.quick-chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+        chatInput.value = btn.textContent.trim();
+        chatInput.focus();
+    });
+});
+
+chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = chatInput.value.trim();
+    if (!msg) return;
+    chatInput.value = '';
+
+    appendBubble('user', msg);
+    history.push({role: 'user', content: msg});
+    showTyping();
+
+    try {
+        const fd = new FormData();
+        fd.append('message', msg);
+        fd.append('history', JSON.stringify(history.slice(-10)));
+
+        const res = await fetch('{{ path('app_team_matcher_chat') }}', {method: 'POST', body: fd});
+        const data = await res.json();
+        removeTyping();
+
+        if (data.response) {
+            appendBubble('assistant', data.response);
+            history.push({role: 'assistant', content: data.response});
+        } else {
+            appendBubble('assistant', data.error || 'Something went wrong. Please try again.');
+        }
+    } catch {
+        removeTyping();
+        appendBubble('assistant', 'Network error. Please check your connection.');
+    }
+});
+</script>
+{% endblock %}

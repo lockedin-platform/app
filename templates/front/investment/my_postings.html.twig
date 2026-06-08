@@ -1,0 +1,141 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block title %}My Investment Postings — Najahni{% endblock %}
+
+{% block main %}
+<div class="row g-4">
+
+    <div class="col-12">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div>
+                <h2 class="fw-bold mb-1" style="font-size:1.8rem">
+                    <i class="bi bi-broadcast me-2" style="color:var(--nj-primary)"></i>My Investment Postings
+                </h2>
+                <p class="text-muted mb-0">Review entrepreneur applications and make investment offers</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ path('app_invest_create_posting') }}" class="btn btn-sm fw-semibold" style="background:var(--nj-gradient);color:#fff">
+                    <i class="bi bi-plus-lg me-1"></i>New Posting
+                </a>
+                <a href="{{ path('app_invest_opportunities') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i>All Postings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% for type, messages in app.flashes %}
+        {% for msg in messages %}
+            <div class="col-12">
+                <div class="alert alert-{{ type }} alert-dismissible fade show" role="alert">
+                    {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {% if pendingCount > 0 %}
+        <div class="col-12">
+            <div class="alert border-0" style="background:rgba(251,191,36,.12);border-radius:.75rem">
+                <i class="bi bi-inbox-fill me-2 text-warning"></i>
+                You have <strong>{{ pendingCount }} pending application{{ pendingCount > 1 ? 's' }}</strong> waiting for your review.
+            </div>
+        </div>
+    {% endif %}
+
+    {% if postings is empty %}
+        <div class="col-12 text-center py-5">
+            <i class="bi bi-broadcast display-4 text-muted"></i>
+            <p class="text-muted mt-3 mb-4">You haven't posted any investment interests yet.</p>
+            <a href="{{ path('app_invest_create_posting') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>Create Your First Posting
+            </a>
+        </div>
+    {% else %}
+        {% for posting in postings %}
+            <div class="col-12 col-lg-6">
+                <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-start justify-content-between mb-3">
+                            <div>
+                                <span class="badge rounded-pill px-3 py-2 mb-2" style="background:var(--nj-gradient);font-size:.78rem">
+                                    <i class="bi bi-tag me-1"></i>{{ posting.sector }}
+                                </span>
+                                <div class="fw-bold" style="font-size:1.1rem">
+                                    {{ posting.budgetMin|number_format(0, ',', ' ') }} – {{ posting.budgetMax|number_format(0, ',', ' ') }} TND
+                                </div>
+                                <div class="text-muted" style="font-size:.8rem">Posted {{ posting.createdAt|date('M d, Y') }}</div>
+                            </div>
+                            <span class="badge {{ posting.status == 'OPEN' ? 'bg-success' : 'bg-secondary' }}">{{ posting.status }}</span>
+                        </div>
+
+                        <p class="text-muted mb-3" style="font-size:.87rem;line-height:1.5">
+                            {{ posting.description|length > 120 ? posting.description|slice(0,120) ~ '…' : posting.description }}
+                        </p>
+
+                        {% if posting.deadline %}
+                            <div class="text-muted mb-3" style="font-size:.8rem">
+                                <i class="bi bi-calendar-event me-1"></i>Deadline: {{ posting.deadline|date('M d, Y') }}
+                            </div>
+                        {% endif %}
+
+                        {# Applications summary #}
+                        {% set apps = posting.applications %}
+                        {% set pendingApps = apps|filter(a => a.status == 'PENDING') %}
+                        {% set reviewedApps = apps|filter(a => a.status == 'REVIEWED') %}
+                        {% set offerMadeApps = apps|filter(a => a.status == 'OFFER_MADE') %}
+
+                        <div class="row g-2 mb-3">
+                            <div class="col-4 text-center">
+                                <div class="fw-bold" style="font-size:1.3rem">{{ apps|length }}</div>
+                                <div class="text-muted" style="font-size:.75rem">Total</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="fw-bold text-warning" style="font-size:1.3rem">{{ pendingApps|length }}</div>
+                                <div class="text-muted" style="font-size:.75rem">Pending</div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div class="fw-bold text-success" style="font-size:1.3rem">{{ offerMadeApps|length }}</div>
+                                <div class="text-muted" style="font-size:.75rem">Offer Made</div>
+                            </div>
+                        </div>
+
+                        {% if apps|length > 0 %}
+                            <div>
+                                <div class="fw-semibold mb-2" style="font-size:.85rem">Applications</div>
+                                {% for app in apps|slice(0, 5) %}
+                                    <div class="d-flex align-items-center gap-2 py-2 border-bottom" style="font-size:.85rem">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:28px;height:28px;background:var(--nj-gradient);font-size:.7rem;flex-shrink:0">
+                                            {{ app.entrepreneur.firstname|slice(0,1)|upper }}
+                                        </div>
+                                        <div class="flex-grow-1 min-w-0">
+                                            <div class="fw-semibold text-truncate">{{ app.entrepreneur.firstname }} {{ app.entrepreneur.lastname }}</div>
+                                            <div class="text-muted" style="font-size:.75rem">{{ app.project.titre }}</div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                            <span class="badge rounded-pill {{ app.status == 'PENDING' ? 'bg-warning text-dark' : (app.status == 'OFFER_MADE' ? 'bg-success' : (app.status == 'REJECTED' ? 'bg-danger' : 'bg-info')) }}" style="font-size:.7rem">
+                                                {{ app.status == 'OFFER_MADE' ? 'Offered' : app.status|capitalize }}
+                                            </span>
+                                            {% if app.status != 'OFFER_MADE' and app.status != 'REJECTED' %}
+                                                <a href="{{ path('app_invest_review_application', {id: app.id}) }}" class="btn btn-outline-primary btn-sm py-0 px-2" style="font-size:.75rem">Review</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                {% if apps|length > 5 %}
+                                    <div class="text-muted text-center mt-2" style="font-size:.8rem">+{{ apps|length - 5 }} more</div>
+                                {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="text-muted text-center py-2" style="font-size:.85rem">
+                                <i class="bi bi-hourglass me-1"></i>No applications yet
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+</div>
+{% endblock %}

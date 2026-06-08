@@ -14,29 +14,27 @@
 {# KPI Cards #}
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="display-5 fw-bold" style="color:var(--nj-primary)">{{ stats.total }}</div>
-            <p class="text-muted mb-0 small">Projets Total</p>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(67,97,238,.55)">
+            <div class="nj-num nj-num-blue" style="font-size:2.4rem">{{ stats.total }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">PROJETS TOTAL</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="display-5 fw-bold text-success">{{ stats.evalue }}</div>
-            <p class="text-muted mb-0 small">Évalués</p>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(5,150,105,.55)">
+            <div class="nj-num nj-num-good" style="font-size:2.4rem">{{ stats.evalue }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">ÉVALUÉS</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="display-5 fw-bold text-warning">{{ stats.score_moyen }}</div>
-            <p class="text-muted mb-0 small">Score Moyen /100</p>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid rgba(217,119,6,.55)">
+            <div class="nj-num nj-num-warn" style="font-size:2.4rem">{{ stats.score_moyen }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">SCORE MOYEN</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="card border-0 shadow-sm text-center p-3" style="border-radius:1rem">
-            <div class="display-5 fw-bold" style="color:{{ stats.marge_totale >= 0 ? '#10b981' : '#ef4444' }}">
-                {{ stats.marge_totale|number_format(0, ',', ' ') }}
-            </div>
-            <p class="text-muted mb-0 small">Marge Totale (DT)</p>
+        <div class="nj-raised p-3 text-center" style="border-top:2px solid {{ stats.marge_totale >= 0 ? 'rgba(5,150,105,.55)' : 'rgba(239,71,111,.55)' }}">
+            <div class="nj-num {{ stats.marge_totale >= 0 ? 'nj-num-good' : 'nj-num-danger' }}" style="font-size:2.4rem">{{ stats.marge_totale|number_format(0, ',', ' ') }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">MARGE (DT)</div>
         </div>
     </div>
 </div>

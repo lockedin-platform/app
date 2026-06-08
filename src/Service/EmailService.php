@@ -10,7 +10,7 @@ use Twig\Environment;
 
 class EmailService
 {
-    private const SENDER_EMAIL = 'ilyessguesmi7@gmail.com';
+    private const SENDER_EMAIL = 'mahdibenmariem1@gmail.com';
     private const SENDER_NAME = 'Najahni';
 
     public function __construct(

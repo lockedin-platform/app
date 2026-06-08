@@ -1,63 +1,143 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Trouver un mentor - Najahni{% endblock %}
+{% block title %}Find a Mentor - Najahni{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.mentor-card{border-radius:1.25rem;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.04);backdrop-filter:blur(14px);overflow:hidden;
+    box-shadow:0 8px 32px rgba(0,0,0,.25);transition:transform .3s,box-shadow .3s,border-color .3s;color:rgba(226,232,240,.9);position:relative}
+.mentor-card:hover{transform:translateY(-6px);box-shadow:0 20px 56px rgba(124,58,237,.3),0 0 0 1px rgba(124,58,237,.25);border-color:rgba(124,58,237,.4)}
+.mentor-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(124,58,237,.08),transparent 40%);pointer-events:none;opacity:0;transition:opacity .3s}
+.mentor-card:hover::after{opacity:1}
+.mentor-card-top{height:80px;background:linear-gradient(135deg,rgba(109,40,217,.65) 0%,rgba(114,9,183,.5) 50%,rgba(67,97,238,.35) 100%);position:relative;border-bottom:1px solid rgba(124,58,237,.25);box-shadow:inset 0 -1px 0 rgba(255,255,255,.06)}
+.mentor-avatar-wrap{position:absolute;bottom:-28px;left:1.5rem}
+.mentor-avatar{width:56px;height:56px;border-radius:50%;border:3px solid rgba(255,255,255,.15);
+    background:linear-gradient(135deg,#6d28d9,#4c1d95);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.1rem;
+    box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.mentor-badge-mentor{background:rgba(124,58,237,.2);color:#c4b5fd;border:1px solid rgba(124,58,237,.3);
+    font-size:.72rem;font-weight:700;padding:.28rem .65rem;border-radius:10rem}
+.slot-pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.8rem;font-weight:600;
+    padding:.4rem .9rem;border-radius:10rem;background:rgba(124,58,237,.15);color:#c4b5fd;
+    border:1.5px solid rgba(124,58,237,.25)}
+.slot-pill i{font-size:.78rem}
+</style>
+{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-    <h2 class="fw-bold mb-0"><i class="bi bi-search me-2"></i>Trouver un mentor</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_mentorat_calendar') }}" class="btn btn-outline-nj"><i class="bi bi-calendar2-week me-1"></i>Calendrier</a>
-        <a href="{{ path('app_mentorat_requests') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Mes demandes</a>
+
+{# ── Page Hero ── #}
+<div class="nj-page-hero nj-hero-mentorat-find mb-4">
+    <i class="bi bi-mortarboard nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Mentoring</div>
+            <h1 class="nj-ph-title mb-1">Find a Mentor</h1>
+            <p class="nj-ph-sub">Connect with experts and book your mentoring slot</p>
+        </div>
+        <div class="nj-hero-actions">
+            <div class="nj-action-group">
+                <a href="{{ path('app_mentorat_calendar') }}" class="nj-action-link"><i class="bi bi-calendar2-week"></i>Calendar</a>
+            </div>
+            <a href="{{ path('app_mentorat_requests') }}" class="nj-action-cta cta-mentorat"><i class="bi bi-list-check"></i>My Requests</a>
+        </div>
     </div>
 </div>
 
 {% for message in app.flashes('success') %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
 {% endfor %}
 
 {% if availabilities|length > 0 %}
+<div class="nj-section-label" style="--nj-section-color:linear-gradient(135deg,#7c3aed,#7209b7)"><i class="bi bi-mortarboard me-1"></i>{{ availabilities|length }} mentor{{ availabilities|length > 1 ? 's' : '' }} available</div>
 <div class="row g-4">
     {% for avail in availabilities %}
     <div class="col-md-6 col-lg-4">
-        <div class="card border-0 shadow-sm h-100" style="border-radius:1rem">
-            <div class="card-body p-4">
-                <div class="d-flex align-items-center mb-3">
-                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:56px;height:56px;min-width:56px;background:var(--nj-gradient);color:#fff;font-size:1.3rem;font-weight:700">
-                        {{ avail.mentor.firstname|first|upper }}{{ avail.mentor.lastname|first|upper }}
-                    </div>
-                    <div>
-                        <h6 class="fw-bold mb-0">{{ avail.mentor.firstname }} {{ avail.mentor.lastname }}</h6>
-                        <span class="badge bg-info bg-opacity-10 text-info"><i class="bi bi-mortarboard me-1"></i>Mentor</span>
+        <div class="mentor-card h-100 d-flex flex-column">
+            <div class="mentor-card-top">
+                <div class="mentor-avatar-wrap">
+                    {% if avail.mentor.profilePicture %}
+                        <img src="{{ avail.mentor.profilePicture }}" class="mentor-avatar" style="object-fit:cover" alt="">
+                    {% else %}
+                        <div class="mentor-avatar">
+                            {{ avail.mentor.firstname|first|upper }}{{ avail.mentor.lastname|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="p-4 pt-5 flex-grow-1 d-flex flex-column">
+                {# Identity #}
+                <div class="mb-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="fw-bold mb-1" style="font-size:.98rem">
+                                {{ avail.mentor.firstname }} {{ avail.mentor.lastname }}
+                            </h5>
+                            <span class="mentor-badge-mentor"><i class="bi bi-mortarboard me-1"></i>Certified Mentor</span>
+                        </div>
                     </div>
                 </div>
-                {% if avail.mentor.bio %}
-                    <p class="text-muted small mb-2">{{ avail.mentor.bio|length > 80 ? avail.mentor.bio|slice(0,80) ~ '...' : avail.mentor.bio }}</p>
-                {% endif %}
+
                 {% if avail.mentor.companyName %}
-                    <p class="small mb-2"><i class="bi bi-building me-1 text-muted"></i>{{ avail.mentor.companyName }}</p>
+                <p class="text-muted small mb-2" style="font-size:.82rem">
+                    <i class="bi bi-building me-1"></i>{{ avail.mentor.companyName }}
+                </p>
                 {% endif %}
-                <hr class="my-2">
-                <div class="d-flex align-items-center mb-2">
-                    <i class="bi bi-calendar-event text-primary me-2"></i>
-                    <span class="fw-semibold">{{ avail.date|date('d/m/Y') }}</span>
+
+                {% if avail.mentor.bio %}
+                <p class="text-muted mb-3" style="font-size:.85rem;line-height:1.6">
+                    {{ avail.mentor.bio|length > 90 ? avail.mentor.bio|slice(0,90) ~ '...' : avail.mentor.bio }}
+                </p>
+                {% endif %}
+
+                {# Slot #}
+                <div class="p-3 rounded-3 mb-4 mt-auto" style="background:rgba(109,40,217,.05);border:1.5px solid rgba(124,58,237,.12)">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="d-flex align-items-center justify-content-center rounded-3 flex-shrink-0"
+                            style="width:42px;height:42px;background:linear-gradient(135deg,#7c3aed,#7209b7)">
+                            <i class="bi bi-calendar-event text-white"></i>
+                        </div>
+                        <div>
+                            <div class="fw-bold" style="font-size:.88rem;color:#4c1d95">
+                                {{ avail.date|date('d/m/Y') }}
+                            </div>
+                            <div class="text-muted" style="font-size:.8rem">
+                                <i class="bi bi-clock me-1"></i>{{ avail.startTime|date('H:i') }} — {{ avail.endTime|date('H:i') }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="d-flex align-items-center mb-3">
-                    <i class="bi bi-clock text-primary me-2"></i>
-                    <span>{{ avail.startTime|date('H:i') }} → {{ avail.endTime|date('H:i') }}</span>
-                </div>
-                <a href="{{ path('app_mentorat_request_new', {mentorId: avail.mentor.id, date: avail.date|date('Y-m-d'), time: avail.startTime|date('H:i')}) }}" class="btn btn-nj w-100">
-                    <i class="bi bi-send me-1"></i>Envoyer une demande
+
+                <a href="{{ path('app_mentorat_request_new', {mentorId: avail.mentor.id, date: avail.date|date('Y-m-d'), time: avail.startTime|date('H:i')}) }}"
+                   class="btn btn-nj w-100">
+                    <i class="bi bi-send me-2"></i>Book this slot
                 </a>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+
 {% else %}
-<div class="text-center py-5">
-    <i class="bi bi-calendar-x" style="font-size:4rem;color:var(--nj-primary)"></i>
-    <h4 class="fw-bold mt-3">Aucune disponibilité de mentor</h4>
-    <p class="text-muted">Les mentors n'ont pas encore publié de créneaux disponibles.</p>
+<div class="empty-state">
+    <div class="mb-4">
+        <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(124,58,237,.12),rgba(114,9,183,.12));
+            display:flex;align-items:center;justify-content:center;margin:0 auto">
+            <i class="bi bi-calendar-x" style="font-size:3rem;color:#7c3aed"></i>
+        </div>
+    </div>
+    <h4>No mentor availability</h4>
+    <p>Mentors haven't published any slots yet. Check back soon or browse the calendar.</p>
+    <a href="{{ path('app_mentorat_calendar') }}" class="btn btn-nj px-4 py-2">
+        <i class="bi bi-calendar2-week me-2"></i>View calendar
+    </a>
 </div>
 {% endif %}
+
 {% endblock %}

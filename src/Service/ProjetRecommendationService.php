@@ -56,44 +56,50 @@ class ProjetRecommendationService
             'force_equipe' => $db?->getForceEquipe(),
         ], JSON_UNESCAPED_UNICODE);
 
-        $prompt = "Tu es un conseiller expert en entrepreneuriat tunisien. Analyse ce projet et donne des recommandations.
+        $prompt = "You are an expert startup advisor specializing in the Tunisian entrepreneurial ecosystem. Analyze this project and provide strategic recommendations entirely in English.
 
-Données : {$data}
+Data: {$data}
 
-Réponds UNIQUEMENT en JSON valide :
+Reply ONLY with valid JSON using this exact structure:
 {
+  \"swot\": {
+    \"strengths\": [\"Strength 1\", \"Strength 2\", \"Strength 3\"],
+    \"weaknesses\": [\"Weakness 1\", \"Weakness 2\", \"Weakness 3\"],
+    \"opportunities\": [\"Opportunity 1\", \"Opportunity 2\", \"Opportunity 3\"],
+    \"threats\": [\"Threat 1\", \"Threat 2\", \"Threat 3\"]
+  },
   \"mentor_profile\": {
-    \"expertise_requise\": \"Type d'expertise idéale du mentor\",
-    \"experience_secteur\": \"Expérience sectorielle souhaitée\",
-    \"competences\": [\"Compétence 1\", \"Compétence 2\", \"Compétence 3\"]
+    \"expertise_requise\": \"Ideal mentor expertise type\",
+    \"experience_secteur\": \"Desired sector experience\",
+    \"competences\": [\"Skill 1\", \"Skill 2\", \"Skill 3\"]
   },
   \"investor_profile\": {
-    \"type_investisseur\": \"Type d'investisseur adapté\",
-    \"montant_recherche\": \"Fourchette de montant\",
-    \"criteres\": [\"Critère 1\", \"Critère 2\"]
+    \"type_investisseur\": \"Suitable investor type\",
+    \"montant_recherche\": \"Funding range needed\",
+    \"criteres\": [\"Criterion 1\", \"Criterion 2\"]
   },
   \"actions_prioritaires\": [
-    {\"action\": \"Action à faire\", \"priorite\": \"haute|moyenne|basse\", \"delai\": \"Court/Moyen/Long terme\"},
-    {\"action\": \"Action 2\", \"priorite\": \"haute\", \"delai\": \"Court terme\"},
-    {\"action\": \"Action 3\", \"priorite\": \"moyenne\", \"delai\": \"Moyen terme\"}
+    {\"action\": \"Action to take\", \"priorite\": \"haute|moyenne|basse\", \"delai\": \"Short/Medium/Long term\"},
+    {\"action\": \"Action 2\", \"priorite\": \"haute\", \"delai\": \"Short term\"},
+    {\"action\": \"Action 3\", \"priorite\": \"moyenne\", \"delai\": \"Medium term\"}
   ],
   \"ressources_suggerees\": [
-    \"Ressource ou programme en Tunisie 1\",
-    \"Ressource 2\",
-    \"Ressource 3\"
+    \"Resource or program in Tunisia 1\",
+    \"Resource 2\",
+    \"Resource 3\"
   ],
   \"kpi_a_suivre\": [
-    {\"kpi\": \"Indicateur\", \"objectif\": \"Valeur cible\", \"frequence\": \"Mensuel/Trimestriel\"}
+    {\"kpi\": \"Indicator name\", \"objectif\": \"Target value\", \"frequence\": \"Monthly/Quarterly\"}
   ],
   \"score_readiness\": {
     \"investissement\": 70,
     \"marche\": 60,
     \"equipe\": 50,
-    \"commentaire\": \"Commentaire sur la maturité du projet\"
+    \"commentaire\": \"Commentary on the project's maturity and investment readiness\"
   }
 }
 
-Sois concret et adapté au contexte tunisien.";
+Be concrete, realistic, and relevant to the Tunisian startup context. All text values must be in English.";
 
         $result = $this->gemini->generateJson($prompt, 0.4);
 
@@ -108,48 +114,56 @@ Sois concret et adapté au contexte tunisien.";
 
         $actions = [];
         if ($score < 50) {
-            $actions[] = ['action' => 'Revoir le modèle économique', 'priorite' => 'haute', 'delai' => 'Court terme'];
-            $actions[] = ['action' => 'Renforcer l\'équipe fondatrice', 'priorite' => 'haute', 'delai' => 'Court terme'];
+            $actions[] = ['action' => 'Revise the business model', 'priorite' => 'haute', 'delai' => 'Short term'];
+            $actions[] = ['action' => 'Strengthen the founding team', 'priorite' => 'haute', 'delai' => 'Short term'];
         }
         if ($db && $db->getMargeEstimee() < 0) {
-            $actions[] = ['action' => 'Optimiser la structure de coûts', 'priorite' => 'haute', 'delai' => 'Court terme'];
+            $actions[] = ['action' => 'Optimize the cost structure', 'priorite' => 'haute', 'delai' => 'Short term'];
         }
         if ($db && $db->getForceEquipe() < 6) {
-            $actions[] = ['action' => 'Recruter des compétences clés', 'priorite' => 'moyenne', 'delai' => 'Moyen terme'];
+            $actions[] = ['action' => 'Recruit key competencies', 'priorite' => 'moyenne', 'delai' => 'Medium term'];
         }
-        $actions[] = ['action' => 'Participer à un programme d\'accélération', 'priorite' => 'moyenne', 'delai' => 'Moyen terme'];
-        $actions[] = ['action' => 'Développer un MVP testable', 'priorite' => 'haute', 'delai' => 'Court terme'];
+        $actions[] = ['action' => 'Apply to an acceleration program', 'priorite' => 'moyenne', 'delai' => 'Medium term'];
+        $actions[] = ['action' => 'Build a testable MVP', 'priorite' => 'haute', 'delai' => 'Short term'];
+
+        $sector = $projet->getSecteur() ?? 'entrepreneurship';
 
         return [
+            'swot' => [
+                'strengths' => ['Clear value proposition in the ' . $sector . ' sector', 'Motivated founding team', 'Identified target market'],
+                'weaknesses' => ['Limited financial resources', 'Brand visibility to build', 'Competitive pressure'],
+                'opportunities' => ['Growing Tunisian startup ecosystem', 'Access to regional markets', 'Digital transformation acceleration'],
+                'threats' => ['Economic uncertainty', 'Established competitors', 'Regulatory changes'],
+            ],
             'mentor_profile' => [
-                'expertise_requise' => 'Expert en ' . ($projet->getSecteur() ?? 'entrepreneuriat'),
-                'experience_secteur' => 'Minimum 5 ans dans le secteur',
-                'competences' => ['Stratégie business', 'Levée de fonds', 'Développement produit'],
+                'expertise_requise' => 'Expert in ' . $sector,
+                'experience_secteur' => 'Minimum 5 years in the sector',
+                'competences' => ['Business strategy', 'Fundraising', 'Product development'],
             ],
             'investor_profile' => [
-                'type_investisseur' => $score > 60 ? 'Business Angel ou VC Seed' : 'Pré-seed / Love money',
-                'montant_recherche' => number_format($db?->getCoutsEstimes() ?? 50000, 0, ',', ' ') . ' DT',
-                'criteres' => ['Secteur ' . $projet->getSecteur(), 'Stade ' . $projet->getEtape()],
+                'type_investisseur' => $score > 60 ? 'Business Angel or Seed VC' : 'Pre-seed / Bootstrapping',
+                'montant_recherche' => number_format($db?->getCoutsEstimes() ?? 50000, 0, ',', ' ') . ' TND',
+                'criteres' => [$sector . ' sector', $projet->getEtape() . ' stage'],
             ],
             'actions_prioritaires' => $actions,
             'ressources_suggerees' => [
-                'Startup Tunisia - Programme national d\'accompagnement',
-                'BIAT Foundation - Financement de startups',
-                'Flat6Labs Tunis - Accélérateur de startups',
-                'Wiki Start Up - Incubateur',
+                'Startup Tunisia - National support program',
+                'BIAT Foundation - Startup financing',
+                'Flat6Labs Tunis - Startup accelerator',
+                'Wiki Start Up - Incubator',
             ],
             'kpi_a_suivre' => [
-                ['kpi' => 'Chiffre d\'affaires mensuel', 'objectif' => number_format(($db?->getRevenusAttendus() ?? 0) / 12, 0, ',', ' ') . ' DT/mois', 'frequence' => 'Mensuel'],
-                ['kpi' => 'Taux de conversion', 'objectif' => '> 3%', 'frequence' => 'Hebdomadaire'],
-                ['kpi' => 'Burn rate', 'objectif' => '< ' . number_format(($db?->getCoutsEstimes() ?? 0) / 12, 0, ',', ' ') . ' DT/mois', 'frequence' => 'Mensuel'],
+                ['kpi' => 'Monthly revenue', 'objectif' => number_format(($db?->getRevenusAttendus() ?? 0) / 12, 0, ',', ' ') . ' TND/month', 'frequence' => 'Monthly'],
+                ['kpi' => 'Conversion rate', 'objectif' => '> 3%', 'frequence' => 'Weekly'],
+                ['kpi' => 'Burn rate', 'objectif' => '< ' . number_format(($db?->getCoutsEstimes() ?? 0) / 12, 0, ',', ' ') . ' TND/month', 'frequence' => 'Monthly'],
             ],
             'score_readiness' => [
                 'investissement' => min(100, max(0, $score - 10)),
                 'marche' => $db?->getScoreMarche() ?? 50,
                 'equipe' => ($db?->getForceEquipe() ?? 5) * 10,
                 'commentaire' => $score >= 60
-                    ? 'Le projet montre une bonne maturité. Prêt pour la prochaine étape.'
-                    : 'Le projet nécessite encore du travail avant de chercher des investisseurs.',
+                    ? 'The project shows good maturity. Ready for the next step.'
+                    : 'The project still needs work before approaching investors.',
             ],
         ];
     }

@@ -1,9 +1,9 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Contrat d'investissement - Najahni{% endblock %}
+{% block title %}Investment Contract - Najahni{% endblock %}
 
 {% block main %}
-{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Contrat', activeStep: 3} %}
+{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Contract', activeStep: 3} %}
 {% set canPayNow = contract.fullySigned and not offer.paid %}
 {% set hasMilestones = milestones is defined and milestones|length > 0 %}
 {% set contractsIndexUrl = path('app_invest_my_contracts') %}
@@ -51,16 +51,16 @@
 
 .signature-panel {
     border-radius: 1rem;
-    border: 1px solid #dbeafe;
-    background: linear-gradient(180deg, #ffffff, #eff6ff);
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.05);
     padding: 1rem;
 }
 
 .terms-box {
     white-space: pre-wrap;
     border-radius: 1rem;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
     padding: 1rem;
 }
 
@@ -81,8 +81,8 @@
     min-height: 260px;
     overflow-y: auto;
     padding: 1rem;
-    background: linear-gradient(180deg, #f8fafc, #ffffff);
-    border-bottom: 1px solid #e5e7eb;
+    background: rgba(255,255,255,.04);
+    border-bottom: 1px solid rgba(255,255,255,.1);
 }
 
 .chat-bubble {
@@ -100,20 +100,20 @@
 }
 
 .chat-bubble.theirs {
-    background: #fff;
-    border: 1px solid #dbeafe;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
 }
 
 .chat-bubble.system {
     max-width: 100%;
-    background: #fff7ed;
-    border: 1px solid #fed7aa;
-    color: #9a3412;
+    background: rgba(245,158,11,.08);
+    border: 1px solid rgba(251,191,36,.3);
+    color: #fcd34d;
 }
 
 .chat-form {
     padding: 1rem;
-    background: #fff;
+    background: rgba(255,255,255,.04);
 }
 
 .digest-badge {
@@ -122,26 +122,26 @@
     gap: .45rem;
     padding: .5rem .75rem;
     border-radius: .8rem;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #93c5fd;
     font-family: Consolas, monospace;
     font-size: .84rem;
 }
 
 .pdf-panel {
     border-radius: 1rem;
-    border: 1px solid #c7d2fe;
-    background: linear-gradient(180deg, #eef2ff, #ffffff);
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.04);
     padding: 1rem;
 }
 
 .pdf-preview {
     width: 100%;
     height: 720px;
-    border: 1px solid #dbeafe;
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 1rem;
-    background: #fff;
+    background: rgba(255,255,255,.05);
 }
 
 @media (max-width: 991.98px) {
@@ -163,8 +163,8 @@
     gap: 0;
     padding: 1.25rem 1rem .85rem;
     border-radius: 1rem;
-    background: linear-gradient(135deg, #f8fafc, #eff6ff);
-    border: 1px solid #dbeafe;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
     margin-bottom: 1.5rem;
     overflow: hidden;
 }
@@ -207,7 +207,7 @@
     font-size: .85rem;
     font-weight: 700;
     border: 2.5px solid #cbd5e1;
-    background: #fff;
+    background: rgba(255,255,255,.05);
     color: #94a3b8;
     transition: all .25s;
     flex-shrink: 0;
@@ -242,7 +242,7 @@
 }
 
 .lc-step.done .lc-label {
-    color: #334155;
+    color: rgba(255,255,255,.8);
 }
 
 .lc-step.active .lc-label {
@@ -256,11 +256,11 @@
     text-align: center;
     padding: .85rem 1rem;
     border-radius: 1rem;
-    background: linear-gradient(135deg, #f8fafc, #eff6ff);
-    border: 1px solid #dbeafe;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
     margin-bottom: 1.5rem;
     font-size: .9rem;
-    color: #334155;
+    color: rgba(255,255,255,.8);
 }
 
 .lc-mobile-hint .lc-circle {
@@ -284,25 +284,25 @@
 /* Milestone tracker */
 .milestone-card {
     border-radius: 1rem;
-    border: 1px solid #e2e8f0;
+    border: 1px solid rgba(255,255,255,.1);
     padding: 1rem 1.1rem;
-    background: #fff;
+    background: rgba(255,255,255,.05);
     transition: border-color .2s;
 }
 
 .milestone-card.released {
     border-color: #86efac;
-    background: linear-gradient(180deg, #f0fdf4, #fff);
+    background: rgba(34,197,94,.08);
 }
 
 .milestone-card.confirmed {
     border-color: #93c5fd;
-    background: linear-gradient(180deg, #eff6ff, #fff);
+    background: rgba(59,130,246,.08);
 }
 
 .milestone-card.completed {
     border-color: #fbbf24;
-    background: linear-gradient(180deg, #fffbeb, #fff);
+    background: rgba(251,191,36,.08);
 }
 
 .milestone-progress-bar {
@@ -324,8 +324,8 @@
     margin-top: .5rem;
     padding: .75rem 1rem;
     border-radius: .75rem;
-    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
-    border: 1px solid #bfdbfe;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
     font-size: .88rem;
     animation: aiSuggestFadeIn .3s ease;
 }
@@ -339,7 +339,7 @@
 
 .ai-suggest-panel .ai-suggest-body {
     white-space: pre-wrap;
-    color: #1e293b;
+    color: rgba(255,255,255,.8);
     line-height: 1.55;
 }
 
@@ -388,9 +388,9 @@
 
 /* Advisor chips */
 .advisor-chip {
-    background: #eff6ff;
-    border: 1px solid #93c5fd;
-    color: #1e40af;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #93c5fd;
     font-size: .72rem;
     padding: .2rem .6rem;
     border-radius: 999px;
@@ -401,9 +401,9 @@
     transition: background .15s, border-color .15s;
 }
 .advisor-chip:hover {
-    background: #dbeafe;
+    background: rgba(59,130,246,.2);
     border-color: #3b82f6;
-    color: #1e3a8a;
+    color: #bfdbfe;
 }
 
 /* Typing indicator */
@@ -412,8 +412,8 @@
     align-items: center;
     gap: 4px;
     padding: .5rem .85rem;
-    background: #fff;
-    border: 1px solid #e9ecef;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 1rem;
     margin-bottom: .5rem;
 }
@@ -435,8 +435,8 @@
     height: 260px;
     overflow-y: auto;
     padding: .9rem;
-    background: linear-gradient(180deg, #fafcff 0%, #f3f8ff 100%);
-    border-top: 1px solid #dbeafe;
+    background: rgba(255,255,255,.03);
+    border-top: 1px solid rgba(255,255,255,.1);
     scroll-behavior: smooth;
 }
 
@@ -452,8 +452,8 @@
     max-width: 420px;
     width: 100%;
     text-align: center;
-    background: rgba(255, 255, 255, .92);
-    border: 1px solid #dbeafe;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 1rem;
     padding: 1rem 1.1rem;
     box-shadow: 0 12px 28px rgba(37, 99, 235, .08);
@@ -466,8 +466,8 @@
     width: 42px;
     height: 42px;
     border-radius: 999px;
-    background: #dbeafe;
-    color: #1d4ed8;
+    background: rgba(59,130,246,.15);
+    color: #93c5fd;
     font-size: 1.1rem;
     margin-bottom: .65rem;
 }
@@ -475,7 +475,7 @@
 .advisor-empty-card h6 {
     margin-bottom: .35rem;
     font-weight: 700;
-    color: #1e3a8a;
+    color: rgba(255,255,255,.8);
 }
 
 .advisor-empty-card p {
@@ -487,16 +487,16 @@
 
 .advisor-composer {
     padding: .8rem .9rem .9rem;
-    border-top: 1px solid #dbeafe;
-    background: rgba(255, 255, 255, .88);
+    border-top: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.04);
 }
 
 .advisor-composer textarea {
     min-height: 72px;
     resize: vertical;
     border-radius: .9rem;
-    border-color: #bfdbfe;
-    background: #fff;
+    border-color: rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
     font-size: .9rem;
 }
 
@@ -520,15 +520,28 @@
 }
 
 /* ── Signature Canvas Modal ── */
-.sig-overlay {
+.sig-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 9998;
     background: rgba(15, 23, 42, .65);
     backdrop-filter: blur(6px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+.sig-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.sig-overlay {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 660px;
+    max-width: 96vw;
     opacity: 0;
     pointer-events: none;
     transition: opacity .25s ease;
@@ -538,17 +551,11 @@
     pointer-events: auto;
 }
 .sig-modal {
-    background: #fff;
+    background: #0f172a;
     border-radius: 1.25rem;
-    box-shadow: 0 32px 64px rgba(15, 23, 42, .18);
-    width: 660px;
-    max-width: 96vw;
+    box-shadow: 0 32px 64px rgba(15, 23, 42, .6);
+    width: 100%;
     overflow: hidden;
-    transform: translateY(20px) scale(.97);
-    transition: transform .3s ease;
-}
-.sig-overlay.active .sig-modal {
-    transform: translateY(0) scale(1);
 }
 .sig-modal-header {
     padding: 1.25rem 1.5rem;
@@ -630,21 +637,21 @@
     justify-content: flex-end;
     gap: .75rem;
     padding: 1rem 1.5rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid rgba(255,255,255,.1);
 }
 .sig-footer .sig-cancel-btn {
     padding: .55rem 1.5rem;
     border-radius: .7rem;
-    border: 1.5px solid #d1d5db;
-    background: #fff;
-    color: #475569;
+    border: 1.5px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.06);
+    color: #cbd5e1;
     font-weight: 600;
     font-size: .9rem;
     cursor: pointer;
     transition: background .15s;
 }
 .sig-footer .sig-cancel-btn:hover {
-    background: #f8fafc;
+    background: rgba(255,255,255,.1);
 }
 .sig-footer .sig-confirm-btn {
     padding: .55rem 1.5rem;
@@ -690,7 +697,7 @@
 .sig-signer-name {
     font-family: 'Caveat', cursive;
     font-size: 1.1rem;
-    color: #1e293b;
+    color: rgba(255,255,255,.8);
 }
 .sig-timestamp {
     font-size: .75rem;
@@ -717,35 +724,35 @@
 </style>
 
 {# ── Fixed persistent status bar ── #}
-{% set csBarStatus = 'Negociation active' %}
+{% set csBarStatus = 'Active negotiation' %}
 {% set csBarBadgeClass = 'background:#2563eb;color:#fff' %}
 {% if offer.paid %}
-    {% set csBarStatus = 'Finance' %}
+    {% set csBarStatus = 'Funded' %}
     {% set csBarBadgeClass = 'background:#22c55e;color:#fff' %}
 {% elseif contract.fullySigned %}
-    {% set csBarStatus = 'Pret pour paiement' %}
+    {% set csBarStatus = 'Ready for payment' %}
     {% set csBarBadgeClass = 'background:#f59e0b;color:#0f172a' %}
 {% elseif hasCurrentUserSigned %}
-    {% set csBarStatus = 'En attente de cosignature' %}
+    {% set csBarStatus = 'Awaiting co-signature' %}
     {% set csBarBadgeClass = 'background:#3b82f6;color:#fff' %}
 {% endif %}
 
 <div class="contract-status-bar">
-    <div class="csb-left">Statut : <span class="csb-badge" style="{{ csBarBadgeClass }}">{{ csBarStatus }}</span></div>
+    <div class="csb-left">Status: <span class="csb-badge" style="{{ csBarBadgeClass }}">{{ csBarStatus }}</span></div>
     <div class="csb-center">
         {% if lastMessageAt %}
-            Derniere activite : {{ lastMessageAt|date('d/m/Y H:i') }}
+            Last activity: {{ lastMessageAt|date('d/m/Y H:i') }}
         {% else %}
-            Aucun message — commencez la negociation
+            No messages yet — start the negotiation
         {% endif %}
     </div>
     <div class="csb-right">
         {% if not contract.fullySigned %}
-            <a href="#signatureSection">Signer le contrat &rarr;</a>
+            <a href="#signatureSection">Sign the contract &rarr;</a>
         {% elseif contract.fullySigned and not offer.paid %}
-            <a href="{{ postSignatureUrl }}">{{ isInvestorParty ? 'Passer au paiement' : 'Retour aux contrats' }} &rarr;</a>
+            <a href="{{ postSignatureUrl }}">{{ isInvestorParty ? 'Proceed to payment' : 'Back to contracts' }} &rarr;</a>
         {% elseif offer.paid %}
-            <a href="#pdfSection">Voir le document &rarr;</a>
+            <a href="#pdfSection">View document &rarr;</a>
         {% endif %}
     </div>
 </div>
@@ -754,27 +761,27 @@
 
 <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-4" style="position:relative;z-index:1">
     <div>
-        <a href="{{ path('app_invest_opportunity_show', {id: offer.opportunity.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Retour a l'opportunite</a>
-        <h2 class="fw-bold mt-2 mb-1">Contrat d'investissement</h2>
-        <div class="text-muted">Negociation en temps reel entre {{ contract.investor.fullName }} et {{ contract.entrepreneur.fullName }}.</div>
+        <a href="{{ path('app_invest_opportunity_show', {id: offer.opportunity.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Back to opportunity</a>
+        <h2 class="fw-bold mt-2 mb-1">Investment Contract</h2>
+        <div class="text-muted">Real-time negotiation between {{ contract.investor.fullName }} and {{ contract.entrepreneur.fullName }}.</div>
         <div class="small mt-2 {{ isInvestorParty ? 'text-primary' : 'text-success' }}">
-            Vous intervenez ici en tant que {{ isInvestorParty ? 'investisseur' : 'entrepreneur' }}. Les deux parties peuvent negocier les termes, envoyer des messages et signer.
+            You are participating as {{ isInvestorParty ? 'investor' : 'entrepreneur' }}. Both parties can negotiate terms, send messages, and sign.
         </div>
         {% if offer.riskAcknowledged %}
         <div class="d-inline-flex align-items-center gap-2 mt-2 px-3 py-1 rounded-pill" style="background:#dcfce7;color:#15803d;font-size:.82rem;font-weight:600">
-            <i class="bi bi-shield-check"></i>L'investisseur a consulte l'evaluation de risque avant de soumettre son offre
+            <i class="bi bi-shield-check"></i>The investor reviewed the risk analysis before submitting their offer
         </div>
         {% endif %}
     </div>
     <div class="d-flex gap-2 flex-wrap">
         {% if canPayNow %}
-            <a href="{{ postSignatureUrl }}" class="btn btn-nj">{{ isInvestorParty ? 'Revenir au paiement' : 'Retour aux contrats' }}</a>
+            <a href="{{ postSignatureUrl }}" class="btn btn-nj">{{ isInvestorParty ? 'Back to payment' : 'Back to contracts' }}</a>
         {% endif %}
         {% if offer.paid and is_granted('ROLE_INVESTISSEUR') %}
-            <a href="{{ path('app_invest_portfolio') }}" class="btn btn-outline-success">Voir le portfolio</a>
+            <a href="{{ path('app_invest_portfolio') }}" class="btn btn-outline-success">View portfolio</a>
         {% endif %}
         {% if not canPayNow %}
-            <a href="{{ contractsIndexUrl }}" class="btn btn-outline-secondary">Mes contrats</a>
+            <a href="{{ contractsIndexUrl }}" class="btn btn-outline-secondary">My contracts</a>
         {% endif %}
     </div>
 </div>
@@ -788,9 +795,8 @@
 
 {# ── Lifecycle stepper ── #}
 {% set step1done = offer.status == 'ACCEPTED' or offer.paid %}
-{% set step2done = contract.title is not empty and contract.terms is not empty %}
-{% set step3done = contract.fullySigned %}
-{% set step4done = contract.fullySigned and not offer.paid %}
+{% set step2done = contract.fullySigned or offer.paid %}
+{% set step3done = contract.fullySigned or offer.paid %}
 {% set step5done = offer.paid %}
 
 {# Walk forward to find the active step (first incomplete) #}
@@ -806,7 +812,7 @@
     {% set activeStep = 5 %}
 {% endif %}
 
-{% set stepLabels = {1: 'Offre acceptee', 2: 'Termes rediges', 3: 'Double signature', 4: 'Paiement en cours', 5: 'Finance'} %}
+{% set stepLabels = {1: 'Negotiation Started', 2: 'Negotiating', 3: 'Both Signed', 4: 'Payment', 5: 'Funded'} %}
 {% set stepDone  = {1: step1done, 2: step2done, 3: step3done, 4: step5done, 5: step5done} %}
 
 <div class="lc-stepper" id="dealStatusBanner">
@@ -828,7 +834,7 @@
             </span>
             <span class="lc-label">{{ stepLabels[i] }}</span>
             {% if i == 4 %}
-                <span class="lc-sublabel" style="display:block;font-size:.65rem;color:#64748b;font-weight:400;margin-top:1px">Apres signature des deux parties</span>
+                <span class="lc-sublabel" style="display:block;font-size:.65rem;color:#64748b;font-weight:400;margin-top:1px">After both parties sign</span>
             {% endif %}
         </div>
     {% endfor %}
@@ -836,7 +842,7 @@
 <div class="lc-mobile-hint">
     <span class="lc-circle">{{ activeStep }}</span>
     <strong>{{ stepLabels[activeStep] }}</strong>
-    <span class="text-muted ms-1">&mdash; Etape {{ activeStep }} sur 5</span>
+    <span class="text-muted ms-1">&mdash; Step {{ activeStep }} of 5</span>
 </div>
 
 <div class="contract-shell">
@@ -845,12 +851,12 @@
             <div class="contract-hero">
                 <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
                     <div>
-                        <div class="small text-uppercase opacity-75 mb-2">Projet</div>
-                        <h3 class="fw-bold mb-1">{{ offer.opportunity.project ? offer.opportunity.project.titre : 'Projet' }}</h3>
-                        <div class="opacity-75">Offre acceptee de {{ offer.proposedAmount|number_format(0, ',', ' ') }} DT</div>
+                        <div class="small text-uppercase opacity-75 mb-2">PROJECT</div>
+                        <h3 class="fw-bold mb-1">{{ offer.opportunity.project ? offer.opportunity.project.titre : 'Project' }}</h3>
+                        <div class="opacity-75">Accepted offer of {{ offer.proposedAmount|number_format(0, ',', ' ') }} DT</div>
                     </div>
                     <span class="signature-chip {{ contract.fullySigned ? 'bg-success text-white' : 'bg-light text-dark' }}" id="signatureStatus">
-                        {{ contract.fullySigned ? 'Signe par les deux parties' : 'Signature en attente' }}
+                        {{ contract.fullySigned ? 'Signed by both parties' : 'Signature pending' }}
                     </span>
                 </div>
 
@@ -863,28 +869,28 @@
                         </span>
                     {% elseif dealTemperatureLabel == 'active' %}
                         <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill" style="background:#dcfce7;color:#15803d;font-size:.82rem;font-weight:600">
-                            <i class="bi bi-activity"></i>Actif ({{ dealTemperature }})
+                            <i class="bi bi-activity"></i>Active ({{ dealTemperature }})
                         </span>
                     {% else %}
                         <span class="d-inline-flex align-items-center gap-1 px-3 py-1 rounded-pill" style="background:#e0f2fe;color:#0369a1;font-size:.82rem;font-weight:600">
-                            <i class="bi bi-snow"></i>Froid ({{ dealTemperature }})
+                            <i class="bi bi-snow"></i>Cold ({{ dealTemperature }})
                         </span>
                     {% endif %}
                     <span class="small" style="color:#64748b">
                         {% if lastMessageAt %}
                             {% set hoursDiff = ((date().timestamp - lastMessageAt.timestamp) / 3600)|round(0, 'floor') %}
                             {% if hoursDiff < 1 %}
-                                Negociation active — dernier message a l'instant
+                                Active negotiation — last message just now
                             {% elseif hoursDiff < 24 %}
-                                Negociation active — dernier message il y a {{ hoursDiff }} heure{{ hoursDiff > 1 ? 's' : '' }}
+                                Active negotiation — last message {{ hoursDiff }} hour{{ hoursDiff > 1 ? 's' : '' }} ago
                             {% elseif hoursDiff < 168 %}
                                 {% set daysDiff = (hoursDiff / 24)|round(0, 'floor') %}
-                                Ce deal est calme depuis {{ daysDiff }} jour{{ daysDiff > 1 ? 's' : '' }}
+                                This deal has been quiet for {{ daysDiff }} day{{ daysDiff > 1 ? 's' : '' }}
                             {% else %}
-                                Ce deal est silencieux depuis plus d'une semaine
+                                This deal has been silent for more than a week
                             {% endif %}
                         {% else %}
-                            Aucun message echange pour le moment
+                            No messages exchanged yet
                         {% endif %}
                     </span>
                 </div>
@@ -892,20 +898,20 @@
                 <div class="row g-3 mt-1">
                     <div class="col-md-4">
                         <div class="contract-stat">
-                            <div class="small opacity-75">Statut</div>
+                            <div class="small opacity-75">Status</div>
                             <div class="fw-bold" id="contractStatusLabel">{{ contract.status }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="contract-stat">
-                            <div class="small opacity-75">Participation</div>
-                            <div class="fw-bold">{{ contract.equityPercentage ? contract.equityPercentage|number_format(2, ',', ' ') ~ ' %' : 'A definir' }}</div>
+                            <div class="small opacity-75">Equity</div>
+                            <div class="fw-bold">{{ contract.equityPercentage ? contract.equityPercentage|number_format(2, ',', ' ') ~ ' %' : 'To be defined' }}</div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="contract-stat">
-                            <div class="small opacity-75">Paiement</div>
-                            <div class="fw-bold" id="paymentGateStatus">{{ canPayNow ? 'Disponible' : (offer.paid ? 'Effectue' : 'Bloque') }}</div>
+                            <div class="small opacity-75">Payment</div>
+                            <div class="fw-bold" id="paymentGateStatus">{{ canPayNow ? 'Available' : (offer.paid ? 'Completed' : 'Blocked') }}</div>
                         </div>
                     </div>
                 </div>
@@ -916,23 +922,23 @@
                     {% if contract.fullySigned %}
                         <div class="d-flex align-items-center gap-2 px-3 py-2 rounded" style="background:#dcfce7;border:1px solid #86efac">
                             <i class="bi bi-check-circle-fill" style="color:#16a34a;font-size:1.1rem"></i>
-                            <span style="color:#15803d;font-weight:600;font-size:.88rem">Contrat signe par les deux parties -- le paiement est maintenant disponible.</span>
+                            <span style="color:#15803d;font-weight:600;font-size:.88rem">Contract signed by both parties — payment is now available.</span>
                         </div>
                         {% if isInvestorParty %}
                         <div class="mt-2">
-                            <a href="{{ postSignatureUrl }}" class="btn btn-nj btn-sm">Proceder au paiement</a>
+                            <a href="{{ postSignatureUrl }}" class="btn btn-nj btn-sm">Proceed to payment</a>
                         </div>
                         {% endif %}
                     {% elseif contract.investorSignedAt or contract.entrepreneurSignedAt %}
-                        {% set missingSigner = contract.investorSignedAt ? contract.entrepreneur.fullName ~ ' (entrepreneur)' : contract.investor.fullName ~ ' (investisseur)' %}
+                        {% set missingSigner = contract.investorSignedAt ? contract.entrepreneur.fullName ~ ' (entrepreneur)' : contract.investor.fullName ~ ' (investor)' %}
                         <div class="d-flex align-items-center gap-2 px-3 py-2 rounded" style="background:#fef3c7;border:1px solid #fcd34d">
                             <i class="bi bi-hourglass-split" style="color:#d97706;font-size:1.1rem"></i>
-                            <span style="color:#92400e;font-weight:600;font-size:.88rem">En attente de la signature de {{ missingSigner }}</span>
+                            <span style="color:#92400e;font-weight:600;font-size:.88rem">Awaiting signature from {{ missingSigner }}</span>
                         </div>
                     {% else %}
                         <div class="d-flex align-items-center gap-2 px-3 py-2 rounded" style="background:#e0f2fe;border:1px solid #7dd3fc">
                             <i class="bi bi-pen" style="color:#0369a1;font-size:1.1rem"></i>
-                            <span style="color:#0c4a6e;font-size:.88rem">Signez le contrat pour debloquer le paiement. <a href="#signatureSection" style="color:#0369a1;font-weight:600;text-decoration:underline">Aller a la signature</a></span>
+                            <span style="color:#0c4a6e;font-size:.88rem">Sign the contract to unlock payment. <a href="#signatureSection" style="color:#0369a1;font-weight:600;text-decoration:underline">Go to signature</a></span>
                         </div>
                     {% endif %}
                 </div>
@@ -941,68 +947,68 @@
             </div>
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                    <h5 class="fw-bold mb-0">Version actuelle du contrat</h5>
+                    <h5 class="fw-bold mb-0">Current Contract Version</h5>
                     <span class="digest-badge" id="digestPreview"><i class="bi bi-shield-check"></i>{{ contract.termsDigest|slice(0, 20) }}...</span>
                 </div>
-                <div class="small text-muted mb-4">Chaque signature enregistre une empreinte SHA-256 du contrat, du signataire, de la date et du contexte de signature. Toute modification des termes reinitialise les signatures.</div>
+                <div class="small text-muted mb-4">Each signature records a SHA-256 fingerprint of the contract, signer, date, and signing context. Any change to terms resets all signatures.</div>
 
                 <form method="post" action="{{ path('app_invest_contract_update_terms', {id: offer.id}) }}" class="mb-4">
                     <input type="hidden" name="_token" value="{{ csrf_token('contract_terms_' ~ offer.id) }}">
                     <div class="row g-3">
                         <div class="col-12">
-                            <label class="form-label fw-semibold">Titre du contrat</label>
+                            <label class="form-label fw-semibold">Contract Title</label>
                             <input type="text" name="title" class="form-control" value="{{ contract.title }}" required>
                         </div>
                         <div class="col-md-4">
                             <div class="d-flex align-items-center gap-2 mb-1">
-                                <label class="form-label fw-semibold mb-0">Participation au capital (%)</label>
-                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="equity" title="Suggestion IA" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
+                                <label class="form-label fw-semibold mb-0">Equity Percentage (%)</label>
+                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="equity" title="AI Suggestion" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
                             </div>
-                            <input type="number" step="0.01" min="0" max="100" name="equity_percentage" class="form-control" value="{{ contract.equityPercentage }}" placeholder="Ex: 8.5">
+                            <input type="number" step="0.01" min="0" max="100" name="equity_percentage" class="form-control" value="{{ contract.equityPercentage }}" placeholder="E.g.: 8.5">
                             <div class="ai-suggest-panel d-none" id="aiSuggestEquity"></div>
                         </div>
                         <div class="col-md-8">
-                            <label class="form-label fw-semibold">Contreparties / avantages</label>
-                            <input type="text" name="consideration" class="form-control" value="{{ contract.consideration }}" placeholder="Ex: acces anticipe, distribution exclusive, licence...">
+                            <label class="form-label fw-semibold">Consideration / Benefits</label>
+                            <input type="text" name="consideration" class="form-control" value="{{ contract.consideration }}" placeholder="E.g.: early access, exclusive distribution, licence...">
                         </div>
                         <div class="col-12">
                             <div class="d-flex align-items-center gap-2 mb-1">
-                                <label class="form-label fw-semibold mb-0">Etapes et obligations</label>
-                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="milestones" title="Suggestion IA" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
+                                <label class="form-label fw-semibold mb-0">Funding Milestones</label>
+                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="milestones" title="AI Suggestion" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
                             </div>
-                            <textarea name="milestones" rows="3" class="form-control" placeholder="Decrivez les livrables, etapes de versement ou conditions de release...">{{ contract.milestones }}</textarea>
+                            <textarea name="milestones" rows="3" class="form-control" placeholder="Describe deliverables, payment stages or release conditions...">{{ contract.milestones }}</textarea>
                             <div class="ai-suggest-panel d-none" id="aiSuggestMilestones"></div>
                         </div>
                         <div class="col-12">
                             <div class="d-flex align-items-center gap-2 mb-1">
-                                <label class="form-label fw-semibold mb-0">Termes detailles</label>
-                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="terms" title="Suggestion IA" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
+                                <label class="form-label fw-semibold mb-0">Terms and Conditions</label>
+                                <button type="button" class="btn btn-sm p-0 border-0 text-muted ai-suggest-btn" data-field="terms" title="AI Suggestion" style="font-size:.95rem;line-height:1"><i class="bi bi-stars"></i></button>
                             </div>
                             <textarea name="terms" rows="10" class="form-control" required>{{ contract.terms }}</textarea>
                             <div class="ai-suggest-panel d-none" id="aiSuggestTerms"></div>
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        <button type="submit" class="btn btn-outline-primary">Enregistrer les termes</button>
+                        <button type="submit" class="btn btn-outline-primary">Save</button>
                     </div>
                 </form>
 
                 <div class="row g-3 mb-4" id="signatureSection">
                     <div class="col-md-6">
                         <div class="signature-panel h-100">
-                            <div class="small text-muted mb-1">Investisseur</div>
+                            <div class="small text-muted mb-1">Investor</div>
                             <div class="fw-bold mb-2">{{ contract.investor.fullName }}</div>
                             {% if contract.investorSignatureImage %}
-                                <img src="{{ contract.investorSignatureImage }}" alt="Signature investisseur" class="sig-drawn-img sig-reveal" id="investorSigImg">
+                                <img src="{{ contract.investorSignatureImage }}" alt="Investor signature" class="sig-drawn-img sig-reveal" id="investorSigImg">
                                 <div class="sig-signer-name">{{ contract.investorSignatureName }}</div>
-                                <div class="sig-timestamp">Signe le {{ contract.investorSignedAt|date('d/m/Y H:i') }}</div>
+                                <div class="sig-timestamp">Signed on {{ contract.investorSignedAt|date('d/m/Y H:i') }}</div>
                                 <div class="sig-hash">{{ contract.investorSignatureHash|slice(0, 24) }}...</div>
                             {% elseif contract.investorSignedAt %}
                                 <div id="investorSignatureState" class="small text-success fw-semibold">
-                                    Signe le {{ contract.investorSignedAt|date('d/m/Y H:i') }}
+                                    Signed on {{ contract.investorSignedAt|date('d/m/Y H:i') }}
                                 </div>
                             {% else %}
-                                <div id="investorSignatureState" class="small text-muted">Signature en attente</div>
+                                <div id="investorSignatureState" class="small text-muted">Signature pending</div>
                             {% endif %}
                         </div>
                     </div>
@@ -1011,16 +1017,16 @@
                             <div class="small text-muted mb-1">Entrepreneur</div>
                             <div class="fw-bold mb-2">{{ contract.entrepreneur.fullName }}</div>
                             {% if contract.entrepreneurSignatureImage %}
-                                <img src="{{ contract.entrepreneurSignatureImage }}" alt="Signature entrepreneur" class="sig-drawn-img {{ contract.investorSignatureImage ? 'sig-reveal-delay' : 'sig-reveal' }}" id="entrepreneurSigImg">
+                                <img src="{{ contract.entrepreneurSignatureImage }}" alt="Entrepreneur signature" class="sig-drawn-img {{ contract.investorSignatureImage ? 'sig-reveal-delay' : 'sig-reveal' }}" id="entrepreneurSigImg">
                                 <div class="sig-signer-name">{{ contract.entrepreneurSignatureName }}</div>
-                                <div class="sig-timestamp">Signe le {{ contract.entrepreneurSignedAt|date('d/m/Y H:i') }}</div>
+                                <div class="sig-timestamp">Signed on {{ contract.entrepreneurSignedAt|date('d/m/Y H:i') }}</div>
                                 <div class="sig-hash">{{ contract.entrepreneurSignatureHash|slice(0, 24) }}...</div>
                             {% elseif contract.entrepreneurSignedAt %}
                                 <div id="entrepreneurSignatureState" class="small text-success fw-semibold">
-                                    Signe le {{ contract.entrepreneurSignedAt|date('d/m/Y H:i') }}
+                                    Signed on {{ contract.entrepreneurSignedAt|date('d/m/Y H:i') }}
                                 </div>
                             {% else %}
-                                <div id="entrepreneurSignatureState" class="small text-muted">Signature en attente</div>
+                                <div id="entrepreneurSignatureState" class="small text-muted">Signature pending</div>
                             {% endif %}
                         </div>
                     </div>
@@ -1030,12 +1036,12 @@
                     <input type="hidden" name="_token" value="{{ csrf_token('contract_sign_' ~ offer.id) }}">
                     <input type="hidden" name="signature_image" id="signatureImageInput" value="">
                     <div class="col-lg-8">
-                        <label class="form-label fw-semibold">Nom du signataire</label>
-                        <input type="text" name="signature_name" class="form-control" id="contractSignatureName" value="{{ currentUser.fullName }}" placeholder="Votre nom complet" required>
+                        <label class="form-label fw-semibold">Signatory Name</label>
+                        <input type="text" name="signature_name" class="form-control" id="contractSignatureName" value="{{ currentUser.fullName }}" placeholder="Your full name" required>
                     </div>
                     <div class="col-lg-4 d-grid">
                         <button type="button" class="btn {{ hasCurrentUserSigned ? 'btn-outline-secondary' : 'btn-nj' }}" id="contractSignBtn" {{ contract.fullySigned ? 'disabled' : '' }}>
-                            {{ hasCurrentUserSigned ? 'Signature deja enregistree' : 'Signer numeriquement' }}
+                            {{ hasCurrentUserSigned ? 'Signature already recorded' : 'Sign digitally' }}
                         </button>
                     </div>
                 </form>
@@ -1046,7 +1052,7 @@
         <div class="card contract-card">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                    <h5 class="fw-bold mb-0">Jalons de financement</h5>
+                    <h5 class="fw-bold mb-0">Funding Milestones</h5>
                     {% if hasMilestones %}
                         {% set releasedPct = 0 %}
                         {% for m in milestones %}
@@ -1054,7 +1060,7 @@
                                 {% set releasedPct = releasedPct + m.percentage %}
                             {% endif %}
                         {% endfor %}
-                        <span class="badge bg-primary fs-6">{{ releasedPct|number_format(0) }}% libere</span>
+                        <span class="badge bg-primary fs-6">{{ releasedPct|number_format(0) }}% released</span>
                     {% endif %}
                 </div>
 
@@ -1073,7 +1079,7 @@
                                         <div class="small text-muted">{{ m.percentage|number_format(0) }}% &mdash; {{ m.amount|number_format(0, ',', ' ') }} DT</div>
                                     </div>
                                     <span class="badge {{ m.status == 'RELEASED' ? 'bg-success' : (m.status == 'CONFIRMED' ? 'bg-primary' : (m.status == 'COMPLETED' ? 'bg-warning text-dark' : 'bg-secondary')) }}">
-                                        {{ m.status == 'RELEASED' ? 'Libere' : (m.status == 'CONFIRMED' ? 'Confirme' : (m.status == 'COMPLETED' ? 'Termine' : 'En attente')) }}
+                                        {{ m.status == 'RELEASED' ? 'Released' : (m.status == 'CONFIRMED' ? 'Confirmed' : (m.status == 'COMPLETED' ? 'Completed' : 'Pending')) }}
                                     </span>
                                 </div>
 
@@ -1081,26 +1087,26 @@
                                 {% if m.status == 'PENDING' and isEntrepreneurParty and contract.fullySigned %}
                                     <form method="post" action="{{ path('app_invest_milestone_complete', {id: offer.id, milestoneId: m.id}) }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('milestone_action_' ~ m.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-warning">Marquer comme termine</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-warning">Mark as completed</button>
                                     </form>
                                 {% elseif m.status == 'COMPLETED' and isInvestorParty %}
                                     <form method="post" action="{{ path('app_invest_milestone_confirm', {id: offer.id, milestoneId: m.id}) }}">
                                         <input type="hidden" name="_token" value="{{ csrf_token('milestone_action_' ~ m.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary">Confirmer la livraison</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-primary">Confirm delivery</button>
                                     </form>
                                 {% elseif m.status == 'CONFIRMED' and isInvestorParty %}
-                                    <form method="post" action="{{ path('app_invest_milestone_release', {id: offer.id, milestoneId: m.id}) }}" onsubmit="return confirm('Liberer {{ m.amount|number_format(0, ',', ' ') }} DT pour ce jalon ?');">
+                                    <form method="post" action="{{ path('app_invest_milestone_release', {id: offer.id, milestoneId: m.id}) }}" onsubmit="return confirm('Release {{ m.amount|number_format(0, ',', ' ') }} DT for this milestone?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('milestone_action_' ~ m.id) }}">
-                                        <button type="submit" class="btn btn-sm btn-success">Liberer {{ m.amount|number_format(0, ',', ' ') }} DT</button>
+                                        <button type="submit" class="btn btn-sm btn-success">Release {{ m.amount|number_format(0, ',', ' ') }} DT</button>
                                     </form>
                                 {% elseif m.status == 'RELEASED' %}
                                     <div class="small text-success">
-                                        <i class="bi bi-check-circle-fill me-1"></i>Paiement libere {{ m.releasedAt ? 'le ' ~ m.releasedAt|date('d/m/Y H:i') : '' }}
+                                        <i class="bi bi-check-circle-fill me-1"></i>Payment released {{ m.releasedAt ? 'on ' ~ m.releasedAt|date('d/m/Y H:i') : '' }}
                                     </div>
                                 {% elseif m.status == 'COMPLETED' and isEntrepreneurParty %}
-                                    <div class="small text-warning">En attente de confirmation de l'investisseur</div>
+                                    <div class="small text-warning">Awaiting investor confirmation</div>
                                 {% elseif m.status == 'PENDING' and isInvestorParty %}
-                                    <div class="small text-muted">L'entrepreneur doit d'abord marquer ce jalon comme termine.</div>
+                                    <div class="small text-muted">The entrepreneur must first mark this milestone as completed.</div>
                                 {% endif %}
                             </div>
                         {% endfor %}
@@ -1108,13 +1114,13 @@
                 {% else %}
                     {# Define milestones form — only investor can set up milestones, and only if not yet paid #}
                     {% if isInvestorParty and not offer.paid %}
-                        <div class="small text-muted mb-3">Definissez entre 2 et 4 jalons de paiement. Chaque jalon represente une etape de livraison avec un pourcentage du montant total ({{ offer.proposedAmount|number_format(0, ',', ' ') }} DT). Le total doit faire 100%.</div>
+                        <div class="small text-muted mb-3">Define between 2 and 4 payment milestones. Each milestone represents a delivery stage with a percentage of the total amount ({{ offer.proposedAmount|number_format(0, ',', ' ') }} DT). The total must equal 100%.</div>
                         <form method="post" action="{{ path('app_invest_contract_save_milestones', {id: offer.id}) }}" id="milestoneForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('milestones_' ~ offer.id) }}">
                             <div id="milestoneRows">
                                 <div class="row g-2 mb-2 milestone-row">
                                     <div class="col-7">
-                                        <input type="text" name="milestone_label[]" class="form-control form-control-sm" placeholder="Ex: Livraison prototype" required minlength="3">
+                                        <input type="text" name="milestone_label[]" class="form-control form-control-sm" placeholder="E.g.: Prototype delivery" required minlength="3">
                                     </div>
                                     <div class="col-3">
                                         <div class="input-group input-group-sm">
@@ -1128,7 +1134,7 @@
                                 </div>
                                 <div class="row g-2 mb-2 milestone-row">
                                     <div class="col-7">
-                                        <input type="text" name="milestone_label[]" class="form-control form-control-sm" placeholder="Ex: Lancement commercial" required minlength="3">
+                                        <input type="text" name="milestone_label[]" class="form-control form-control-sm" placeholder="E.g.: Commercial launch" required minlength="3">
                                     </div>
                                     <div class="col-3">
                                         <div class="input-group input-group-sm">
@@ -1142,13 +1148,13 @@
                                 </div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-2 mb-3">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="addMilestoneRow">+ Ajouter un jalon</button>
-                                <div class="small fw-semibold" id="milestoneTotalLabel">Total : 0%</div>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" id="addMilestoneRow">+ Add milestone</button>
+                                <div class="small fw-semibold" id="milestoneTotalLabel">Total: 0%</div>
                             </div>
-                            <button type="submit" class="btn btn-nj w-100">Enregistrer les jalons</button>
+                            <button type="submit" class="btn btn-nj w-100">Save milestones</button>
                         </form>
                     {% else %}
-                        <div class="text-muted small">Aucun jalon de financement defini. {% if isInvestorParty %}Vous pouvez en definir avant le paiement.{% else %}L'investisseur peut definir des jalons de paiement.{% endif %}</div>
+                        <div class="text-muted small">No funding milestones defined. {% if isInvestorParty %}You can define them before payment.{% else %}The investor can define payment milestones.{% endif %}</div>
                     {% endif %}
                 {% endif %}
             </div>
@@ -1157,8 +1163,8 @@
         <div class="card contract-card">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-bold mb-0">Lecture rapide</h5>
-                    <span class="small text-muted">Derniere mise a jour {{ contract.updatedAt|date('d/m/Y H:i') }}</span>
+                    <h5 class="fw-bold mb-0">Quick Read</h5>
+                    <span class="small text-muted">Last updated {{ contract.updatedAt|date('d/m/Y H:i') }}</span>
                 </div>
                 <div class="terms-box">{{ contract.terms }}</div>
             </div>
@@ -1169,20 +1175,20 @@
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
                     <div>
-                        <h5 class="fw-bold mb-1">Document PDF du contrat</h5>
-                        <div class="text-muted small">Le PDF officiel est maintenant disponible avec les termes, le montant, l'empreinte SHA-256 et les deux signatures.</div>
+                        <h5 class="fw-bold mb-1">Contract PDF Document</h5>
+                        <div class="text-muted small">The official PDF is now available with the terms, amount, SHA-256 fingerprint and both signatures.</div>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="{{ pdfPreviewUrl }}" target="_blank" rel="noopener" class="btn btn-outline-primary">Ouvrir le PDF</a>
-                        <a href="{{ pdfDownloadUrl }}" class="btn btn-outline-success">Telecharger</a>
-                        <a href="{{ printViewUrl }}" target="_blank" rel="noopener" class="btn btn-nj">Imprimer</a>
+                        <a href="{{ pdfPreviewUrl }}" target="_blank" rel="noopener" class="btn btn-outline-primary">Open PDF</a>
+                        <a href="{{ pdfDownloadUrl }}" class="btn btn-outline-success">Download</a>
+                        <a href="{{ printViewUrl }}" target="_blank" rel="noopener" class="btn btn-nj">Print</a>
                     </div>
                 </div>
                 <div class="pdf-panel mb-3" id="pdfSection">
-                    <div class="small text-muted">Disponible des la seconde signature. Le bouton "Imprimer" ouvre une vue propre qui lance la boite d'impression du navigateur.</div>
+                    <div class="small text-muted">Available upon second signature. The "Print" button opens a clean view that launches the browser print dialog.</div>
                 </div>
                 <object data="{{ pdfPreviewUrl }}" type="application/pdf" class="pdf-preview">
-                    <div class="alert alert-info mb-0">Le navigateur ne peut pas afficher l'aperçu PDF ici. Utilisez les boutons ci-dessus pour ouvrir, telecharger ou imprimer le contrat.</div>
+                    <div class="alert alert-info mb-0">The browser cannot display the PDF preview here. Use the buttons above to open, download or print the contract.</div>
                 </object>
             </div>
         </div>
@@ -1191,27 +1197,27 @@
         {% if contract.fullySigned and qrCodeUrl is defined and qrCodeUrl %}
         <div class="card contract-card">
             <div class="card-body p-4">
-                <h5 class="fw-bold mb-1">Verification QR</h5>
-                <div class="text-muted small mb-3">Scannez ce code QR pour verifier l'authenticite et la validite de ce contrat signe.</div>
+                <h5 class="fw-bold mb-1">QR Verification</h5>
+                <div class="text-muted small mb-3">Scan this QR code to verify the authenticity and validity of this signed contract.</div>
                 <div class="d-flex align-items-start gap-4 flex-wrap">
                     <div>
-                        <img src="{{ qrCodeUrl }}" alt="QR de verification" style="width:160px;height:160px;border-radius:.5rem;border:1px solid #e2e8f0">
+                        <img src="{{ qrCodeUrl }}" alt="Verification QR" style="width:160px;height:160px;border-radius:.5rem;border:1px solid rgba(255,255,255,.1)">
                     </div>
                     <div class="flex-fill">
-                        <div class="small mb-2" style="background:#f1f5f9;border-radius:.5rem;padding:.6rem .8rem;word-break:break-all">
-                            <span class="text-muted">Empreinte SHA-256 :</span><br>
+                        <div class="small mb-2" style="background:rgba(255,255,255,.04);border-radius:.5rem;padding:.6rem .8rem;word-break:break-all">
+                            <span class="text-muted">SHA-256 fingerprint:</span><br>
                             <code>{{ contract.termsDigest }}</code>
                         </div>
                         <div class="small mb-3" style="background:{{ verifyUrlIsPublic ? '#ecfdf5' : '#fff7ed' }};border:1px solid {{ verifyUrlIsPublic ? '#a7f3d0' : '#fdba74' }};color:{{ verifyUrlIsPublic ? '#166534' : '#9a3412' }};border-radius:.75rem;padding:.75rem .9rem;word-break:break-word">
                             {% if verifyUrlIsPublic %}
-                                Le QR ouvre directement la page publique de verification ci-dessous :<br>
+                                The QR opens the public verification page directly below:<br>
                                 <span class="fw-semibold">{{ verifyUrl }}</span>
                             {% else %}
-                                Le QR pointe actuellement vers cette instance locale. Pour un scan fonctionnel depuis un telephone, configurez <code>APP_PUBLIC_URL</code> avec une URL publique ou reseau accessible.<br>
+                                The QR currently points to this local instance. For a working scan from a phone, configure <code>APP_PUBLIC_URL</code> with a public or network-accessible URL.<br>
                                 <span class="fw-semibold">{{ verifyUrl }}</span>
                             {% endif %}
                         </div>
-                        <a href="{{ verifyUrl }}" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">Ouvrir la page de verification</a>
+                        <a href="{{ verifyUrl }}" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">Open verification page</a>
                     </div>
                 </div>
             </div>
@@ -1223,13 +1229,18 @@
         <div class="card-body border-bottom chat-header">
             <div class="d-flex justify-content-between align-items-start gap-3">
                 <div>
-                    <div class="small text-uppercase text-muted mb-1">Negociation</div>
-                    <h5 class="fw-bold mb-1">Messagerie en temps reel</h5>
-                    <div class="text-muted small">Les nouveaux messages sont pousses par polling rapide et remontent aussi dans les notifications.</div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <div class="small text-uppercase text-muted">NEGOTIATION</div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#videoCallModal">
+                            <i class="bi bi-camera-video me-1"></i>Video Call
+                        </button>
+                    </div>
+                    <h5 class="fw-bold mb-1">Real-time Messaging</h5>
+                    <div class="text-muted small">New messages are pushed via fast polling and also appear in notifications.</div>
                 </div>
                 <div class="text-end small text-muted">
-                    <div>Interlocuteur</div>
-                    <div class="fw-semibold text-dark">{{ otherParty ? otherParty.fullName : 'Partie' }}</div>
+                    <div>Counterpart</div>
+                    <div class="fw-semibold text-dark">{{ otherParty ? otherParty.fullName : 'Party' }}</div>
                 </div>
             </div>
         </div>
@@ -1243,28 +1254,28 @@
                     <div style="white-space:pre-wrap">{{ message.body }}</div>
                 </div>
             {% else %}
-                <div class="text-muted small" id="chatEmptyState">Aucun message pour le moment. Utilisez ce fil pour negocier les conditions du contrat.</div>
+                <div class="text-muted small" id="chatEmptyState">No messages yet. Use this thread to negotiate contract terms.</div>
             {% endfor %}
         </div>
         <form class="chat-form" id="contractMessageForm">
             <input type="hidden" name="_token" value="{{ csrf_token('contract_message_' ~ offer.id) }}" id="contractMessageToken">
-            <label class="form-label fw-semibold">Nouveau message</label>
-            <textarea class="form-control mb-3" id="contractMessageInput" rows="4" maxlength="2000" placeholder="Ex: Je propose 6% du capital avec acces pre-release et un premier versement a la signature..."></textarea>
+            <label class="form-label fw-semibold">New message</label>
+            <textarea class="form-control mb-3" id="contractMessageInput" rows="4" maxlength="2000" placeholder="E.g.: I propose 6% equity with pre-release access and a first payment upon signing..."></textarea>
             <div id="contractMessageError" class="small text-danger mb-2 d-none"></div>
             <div class="d-flex justify-content-between align-items-center gap-3">
-                <div class="small text-muted">Actualisation automatique toutes les 4 secondes.</div>
-                <button type="submit" class="btn btn-nj" id="contractMessageSubmit">Envoyer</button>
+                <div class="small text-muted">Auto-refreshes every 4 seconds.</div>
+                <button type="submit" class="btn btn-nj" id="contractMessageSubmit">Send</button>
             </div>
         </form>
 
         {# ── Deal Advisor (private AI panel) ── #}
         <div class="border-top" style="border-color:#e2e8f0 !important"></div>
-        <div id="dealAdvisorPanel" style="background:#f0f9ff">
+        <div id="dealAdvisorPanel" style="background:rgba(255,255,255,.03)">
             <div class="px-3 py-2 d-flex align-items-center justify-content-between cursor-pointer" id="dealAdvisorToggle" style="cursor:pointer">
                 <div class="d-flex align-items-center gap-2">
                     <i class="bi bi-lightbulb" style="color:#2563eb;font-size:1rem"></i>
-                    <span class="fw-bold small" style="color:#1e40af">Deal Advisor</span>
-                    <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size:.68rem">IA privee</span>
+                    <span class="fw-bold small" style="color:#93c5fd">Deal Advisor</span>
+                    <span class="badge bg-primary bg-opacity-10 text-primary" style="font-size:.68rem">AI Advisor</span>
                 </div>
                 <i class="bi bi-chevron-down small" id="dealAdvisorChevron" style="transition:transform .2s"></i>
             </div>
@@ -1273,8 +1284,8 @@
                     <div class="advisor-empty-state" id="advisorPlaceholder">
                         <div class="advisor-empty-card">
                             <i class="bi bi-chat-square-text"></i>
-                            <h6>Discutez avec votre Deal Advisor</h6>
-                            <p>Posez une question sur l'equity, les milestones, les termes du contrat ou le rythme de la negociation. Cette conversation reste privee.</p>
+                            <h6>Chat with your Deal Advisor</h6>
+                            <p>Ask a question about equity, milestones, contract terms, or the pace of the negotiation. This conversation is private.</p>
                         </div>
                     </div>
                 </div>
@@ -1285,11 +1296,11 @@
                     <button type="button" class="btn advisor-chip" data-prompt="Is this deal progressing at a normal pace?">Is this deal progressing at a normal pace?</button>
                 </div>
                 <div class="advisor-composer">
-                    <label for="advisorInput" class="form-label small fw-semibold text-primary mb-2">Votre message prive</label>
-                    <textarea id="advisorInput" class="form-control form-control-sm" placeholder="Ex: Est-ce que 8% d'equity pour 120 000 DT reste coherent avec ce projet ?" maxlength="2000"></textarea>
+                    <label for="advisorInput" class="form-label small fw-semibold text-primary mb-2">Your private message</label>
+                    <textarea id="advisorInput" class="form-control form-control-sm" placeholder="E.g.: Is 8% equity for 120,000 DT reasonable for this project?" maxlength="2000"></textarea>
                     <div class="advisor-composer-actions">
-                        <div class="advisor-composer-hint">Entrer pour envoyer. Shift + Entrer pour une nouvelle ligne.</div>
-                        <button type="button" id="advisorSendBtn" class="btn btn-sm btn-primary advisor-send-btn"><i class="bi bi-send me-1"></i>Envoyer</button>
+                        <div class="advisor-composer-hint">Enter to send. Shift + Enter for a new line.</div>
+                        <button type="button" id="advisorSendBtn" class="btn btn-sm btn-primary advisor-send-btn"><i class="bi bi-send me-1"></i>Send</button>
                     </div>
                 </div>
             </div>
@@ -1303,31 +1314,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" rel="stylesheet">
 
 {# ── Signature Canvas Modal ── #}
+<div class="sig-backdrop" id="sigBackdrop"></div>
 <div class="sig-overlay" id="sigOverlay">
     <div class="sig-modal" id="sigModal">
         <div class="sig-modal-header">
-            <h4>Signez votre contrat</h4>
-            <p>Dessinez votre signature ci-dessous</p>
+            <h4>Sign your contract</h4>
+            <p>Draw your signature below</p>
         </div>
         <div class="sig-canvas-wrap">
-            <canvas id="sigCanvas" width="600" height="220"></canvas>
+            <canvas id="sigCanvas" width="600" height="160"></canvas>
         </div>
         <div class="sig-toolbar">
-            <label>Couleur</label>
+            <label>Color</label>
             <input type="color" id="sigColor" value="#1a1a2e">
-            <label>Epaisseur</label>
+            <label>Thickness</label>
             <select id="sigStroke">
-                <option value="1.5">Fine</option>
-                <option value="2.5" selected>Moyenne</option>
-                <option value="4">Epaisse</option>
+                <option value="1.5">Thin</option>
+                <option value="2.5" selected>Medium</option>
+                <option value="4">Thick</option>
             </select>
-            <button type="button" class="sig-clear-btn" id="sigClear"><i class="bi bi-eraser me-1"></i>Effacer</button>
+            <button type="button" class="sig-clear-btn" id="sigClear"><i class="bi bi-eraser me-1"></i>Clear</button>
         </div>
-        <div class="sig-disclaimer">En signant, vous confirmez avoir lu et accepte les termes du contrat.</div>
-        <div class="sig-error" id="sigError">Veuillez dessiner votre signature</div>
+        <div class="sig-disclaimer">By signing, you confirm that you have read and accepted the contract terms.</div>
+        <div class="sig-error" id="sigError">Please draw your signature</div>
         <div class="sig-footer">
-            <button type="button" class="sig-cancel-btn" id="sigCancelBtn">Annuler</button>
-            <button type="button" class="sig-confirm-btn" id="sigConfirmBtn">Confirmer la signature</button>
+            <button type="button" class="sig-cancel-btn" id="sigCancelBtn">Cancel</button>
+            <button type="button" class="sig-confirm-btn" id="sigConfirmBtn">Confirm signature</button>
         </div>
     </div>
 </div>
@@ -1383,17 +1395,17 @@
 
         contractStatusLabel.textContent = contract.status;
         digestPreview.innerHTML = '<i class="bi bi-shield-check"></i>' + escapeHtml((contract.digest || '').slice(0, 20)) + '...';
-        signatureStatus.textContent = contract.fullySigned ? 'Signe par les deux parties' : 'Signature en attente';
+        signatureStatus.textContent = contract.fullySigned ? 'Signed by both parties' : 'Signature pending';
         signatureStatus.className = 'signature-chip ' + (contract.fullySigned ? 'bg-success text-white' : 'bg-light text-dark');
-        investorSignatureState.textContent = contract.investorSigned ? 'Signe le ' + contract.investorSigned : 'Signature en attente';
+        investorSignatureState.textContent = contract.investorSigned ? 'Signed on ' + contract.investorSigned : 'Signature pending';
         investorSignatureState.className = 'small ' + (contract.investorSigned ? 'text-success fw-semibold' : 'text-muted');
-        entrepreneurSignatureState.textContent = contract.entrepreneurSigned ? 'Signe le ' + contract.entrepreneurSigned : 'Signature en attente';
+        entrepreneurSignatureState.textContent = contract.entrepreneurSigned ? 'Signed on ' + contract.entrepreneurSigned : 'Signature pending';
         entrepreneurSignatureState.className = 'small ' + (contract.entrepreneurSigned ? 'text-success fw-semibold' : 'text-muted');
-        paymentGateStatus.textContent = {{ offer.paid ? "'Effectue'" : "(contract.fullySigned ? 'Disponible' : 'Bloque')" }};
+        paymentGateStatus.textContent = {{ offer.paid ? "'Completed'" : "(contract.fullySigned ? 'Available' : 'Blocked')" }};
 
         if (contractSignBtn) {
             contractSignBtn.disabled = !!contract.fullySigned;
-            contractSignBtn.textContent = contract.signedByMe ? 'Signature deja enregistree' : 'Signer numeriquement';
+            contractSignBtn.textContent = contract.signedByMe ? 'Signature already recorded' : 'Sign digitally';
             contractSignBtn.className = 'btn ' + (contract.signedByMe ? 'btn-outline-secondary' : 'btn-nj');
         }
 
@@ -1437,7 +1449,7 @@
         event.preventDefault();
         var text = chatInput.value.trim();
         if (!text) {
-            chatError.textContent = 'Le message ne peut pas etre vide.';
+            chatError.textContent = 'Message cannot be empty.';
             chatError.classList.remove('d-none');
             return;
         }
@@ -1457,7 +1469,7 @@
         .then(function(response) { return response.json(); })
         .then(function(data) {
             if (!data.success) {
-                chatError.textContent = data.error || 'Envoi impossible pour le moment.';
+                chatError.textContent = data.error || 'Unable to send at this time.';
                 chatError.classList.remove('d-none');
                 chatSubmit.disabled = false;
                 return;
@@ -1469,7 +1481,7 @@
             chatSubmit.disabled = false;
         })
         .catch(function() {
-            chatError.textContent = 'Erreur reseau pendant l\'envoi du message.';
+            chatError.textContent = 'Network error while sending the message.';
             chatError.classList.remove('d-none');
             chatSubmit.disabled = false;
         });
@@ -1492,7 +1504,7 @@
         var pcts = container.querySelectorAll('.milestone-pct');
         var total = 0;
         pcts.forEach(function(el) { total += parseFloat(el.value) || 0; });
-        totalLabel.textContent = 'Total : ' + total + '%';
+        totalLabel.textContent = 'Total: ' + total + '%';
         totalLabel.className = 'small fw-semibold ' + (Math.abs(total - 100) < 0.01 ? 'text-success' : (total > 100 ? 'text-danger' : ''));
     }
 
@@ -1554,7 +1566,7 @@
 
             // Show loading state
             panel.classList.remove('d-none');
-            panel.innerHTML = '<span class="ai-suggest-loading"></span> <span class="small text-muted">Chargement de la suggestion...</span>';
+            panel.innerHTML = '<span class="ai-suggest-loading"></span> <span class="small text-muted">Loading suggestion...</span>';
 
             var body = new URLSearchParams();
             body.append('field', field);
@@ -1566,10 +1578,10 @@
             })
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                var suggestion = data.suggestion || 'Aucune suggestion disponible.';
-                panel.innerHTML = '<div class="ai-suggest-disclaimer"><i class="bi bi-stars me-1"></i>Suggestion IA — a titre indicatif uniquement</div>'
+                var suggestion = data.suggestion || 'No suggestion available.';
+                panel.innerHTML = '<div class="ai-suggest-disclaimer"><i class="bi bi-stars me-1"></i>AI Suggestion — for reference only</div>'
                     + '<div class="ai-suggest-body">' + escapeHtml(suggestion) + '</div>'
-                    + '<div class="text-end mt-2"><button type="button" class="btn btn-sm btn-outline-secondary ai-suggest-dismiss" style="font-size:.78rem">Fermer</button></div>';
+                    + '<div class="text-end mt-2"><button type="button" class="btn btn-sm btn-outline-secondary ai-suggest-dismiss" style="font-size:.78rem">Close</button></div>';
 
                 panel.querySelector('.ai-suggest-dismiss').addEventListener('click', function() {
                     panel.classList.add('d-none');
@@ -1577,9 +1589,9 @@
                 });
             })
             .catch(function() {
-                panel.innerHTML = '<div class="ai-suggest-disclaimer"><i class="bi bi-stars me-1"></i>Suggestion IA — a titre indicatif uniquement</div>'
-                    + '<div class="ai-suggest-body">Suggestion non disponible pour le moment.</div>'
-                    + '<div class="text-end mt-2"><button type="button" class="btn btn-sm btn-outline-secondary ai-suggest-dismiss" style="font-size:.78rem">Fermer</button></div>';
+                panel.innerHTML = '<div class="ai-suggest-disclaimer"><i class="bi bi-stars me-1"></i>AI Suggestion — for reference only</div>'
+                    + '<div class="ai-suggest-body">Suggestion not available at this time.</div>'
+                    + '<div class="text-end mt-2"><button type="button" class="btn btn-sm btn-outline-secondary ai-suggest-dismiss" style="font-size:.78rem">Close</button></div>';
 
                 panel.querySelector('.ai-suggest-dismiss').addEventListener('click', function() {
                     panel.classList.add('d-none');
@@ -1714,7 +1726,7 @@
     function seedAdvisorIntro() {
         if (advisorSeeded) return;
         advisorSeeded = true;
-        appendAssistant('Je peux vous aider a analyser ce deal, proposer une structure de milestones, ou revoir les points sensibles du contrat.');
+        appendAssistant('I can help you analyze this deal, suggest a milestone structure, or review the key contract points.');
     }
 
     toggle.addEventListener('click', function() {
@@ -1847,14 +1859,14 @@
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 removeTyping();
-                var resp = data.response || data.error || 'Pas de reponse.';
+                var resp = data.response || data.error || 'No response.';
                 appendAssistant(resp);
                 advisorHistory.push({role: 'assistant', content: resp});
                 sendBtn.disabled = false;
             })
             .catch(function() {
                 removeTyping();
-                appendAssistant('Erreur de connexion.');
+                appendAssistant('Connection error.');
                 sendBtn.disabled = false;
             });
     }
@@ -1884,6 +1896,7 @@
 // ── Signature Canvas Modal ──
 (function() {
     var overlay = document.getElementById('sigOverlay');
+    var backdrop = document.getElementById('sigBackdrop');
     var modal = document.getElementById('sigModal');
     var canvas = document.getElementById('sigCanvas');
     var ctx = canvas.getContext('2d');
@@ -2021,11 +2034,13 @@
     function openModal() {
         clearCanvas();
         overlay.classList.add('active');
+        backdrop.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         overlay.classList.remove('active');
+        backdrop.classList.remove('active');
         document.body.style.overflow = '';
     }
 
@@ -2038,9 +2053,7 @@
 
     cancelBtn.addEventListener('click', closeModal);
 
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) closeModal();
-    });
+    backdrop.addEventListener('click', closeModal);
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && overlay.classList.contains('active')) {
@@ -2065,5 +2078,32 @@
     // Init baseline
     drawBaseline();
 })();
+</script>
+
+<div class="modal fade" id="videoCallModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content" style="background:#0f172a;border:1px solid rgba(255,255,255,.1);border-radius:1.25rem;overflow:hidden">
+      <div class="modal-header border-0" style="background:#0f172a">
+        <h5 class="modal-title text-white"><i class="bi bi-camera-video me-2 text-primary"></i>Video Call — Contract Negotiation</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body p-0">
+        <iframe id="jitsiFrame" allow="camera; microphone; fullscreen; display-capture" style="width:100%;height:560px;border:0" src=""></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var vcModal = document.getElementById('videoCallModal');
+    if (vcModal) {
+        vcModal.addEventListener('show.bs.modal', function() {
+            document.getElementById('jitsiFrame').src = 'https://meet.jit.si/najahni-contract-{{ offer.id }}#config.startWithVideoMuted=false&config.startWithAudioMuted=true';
+        });
+        vcModal.addEventListener('hide.bs.modal', function() {
+            document.getElementById('jitsiFrame').src = '';
+        });
+    }
+});
 </script>
 {% endblock %}

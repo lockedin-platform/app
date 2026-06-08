@@ -6,12 +6,11 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class InvestmentChatbotService
 {
-    private const HF_URL = 'https://router.huggingface.co/v1/chat/completions';
+    private const HF_URL = 'https://api.groq.com/openai/v1/chat/completions';
     private const HF_MODELS = [
-        'Qwen/Qwen2.5-7B-Instruct',
-        'mistralai/Mistral-7B-Instruct-v0.3',
-        'meta-llama/Llama-3.1-8B-Instruct',
-        'meta-llama/Llama-3.2-1B-Instruct',
+        'llama-3.3-70b-versatile',
+        'llama-3.1-8b-instant',
+        'gemma2-9b-it',
     ];
     private const MAX_HISTORY = 20;
     private const MAX_RETRIES = 3;
@@ -39,25 +38,29 @@ Tu es NAJAHNI AI, l'assistant intelligent integre dans la plateforme fintech NAJ
 === SECTEURS PORTEURS EN TUNISIE ===
 Technologie, Agriculture, Tourisme, Sante, Energie renouvelable, Industrie textile, Agroalimentaire, Services financiers.
 
-=== REGLES ===
-- Reponds TOUJOURS en francais
-- Sois concis mais precis (max 4-5 phrases sauf demande de details)
-- Pour les analyses d'investissement : fournis niveau de risque, avantages, inconvenients, recommandation
-- Tu connais le contexte tunisien (TND, dinar tunisien, secteurs porteurs)
-- Ne donne jamais de conseil juridique formel — rappelle de consulter un professionnel
-- Si la question n'est pas liee a NAJAHNI ou la finance, reponds que tu es specialise dans la plateforme NAJAHNI
+=== RULES ===
+- ALWAYS reply in English
+- Be concise but precise (max 4-5 sentences unless details are requested)
+- For investment analyses: provide risk level, advantages, disadvantages, recommendation
+- You know the Tunisian context (TND, Tunisian dinar, key sectors)
+- Never give formal legal advice — remind users to consult a professional
+- If the question is not related to NAJAHNI or finance, reply that you specialise in the NAJAHNI platform
 PROMPT;
 
     /** @var array<int, array{role: string, content: string}> */
     private array $conversationHistory = [];
-    private string $hfToken;
+    private string $apiKey;
     private ?string $workingModel = null;
 
     public function __construct(
         private readonly HttpClientInterface $httpClient,
         string $hfToken,
+        string $groqApiKey = '',
     ) {
-        $this->hfToken = trim($hfToken);
+        // Prefer Groq key; fall back to HF token if present
+        $groq = trim($groqApiKey);
+        $hf = trim($hfToken);
+        $this->apiKey = ($groq !== '' && $groq !== 'YOUR_API_KEY_HERE' && $groq !== 'your_groq_api_key_here') ? $groq : $hf;
     }
 
     public function chat(string $userMessage): string
@@ -81,16 +84,16 @@ PROMPT;
         float $currentRiskScore,
     ): string {
         $prompt = sprintf(
-            "Analyse de risque IA pour cet investissement :\n\n"
-            . "Projet : %s\nSecteur : %s\nMontant : %.2f EUR\nDeadline : %s\nDescription : %s\n"
-            . "Score de risque algorithmique actuel : %.0f/100\n\n"
-            . "Fournis une analyse structuree avec :\n"
-            . "1. Ton evaluation du risque (Faible/Moyen/Eleve) et pourquoi\n"
-            . "2. Points forts de cet investissement (2-3 points)\n"
-            . "3. Points de vigilance (2-3 points)\n"
-            . "4. Recommandation finale (investir / attendre / eviter)\n"
-            . "5. Ton score de confiance dans cette analyse (0-100%%)\n\n"
-            . "Contexte : Plateforme d'investissement tunisienne NAJAHNI.",
+            "AI risk analysis for this investment:\n\n"
+            . "Project: %s\nSector: %s\nAmount: %.2f TND\nDeadline: %s\nDescription: %s\n"
+            . "Current algorithmic risk score: %.0f/100\n\n"
+            . "Provide a structured analysis in English with:\n"
+            . "1. Your risk assessment (Low/Medium/High) and why\n"
+            . "2. Key strengths of this investment (2-3 points)\n"
+            . "3. Key risk factors to watch (2-3 points)\n"
+            . "4. Final recommendation (invest / wait / avoid)\n"
+            . "5. Your confidence score in this analysis (0-100%%)\n\n"
+            . "Context: NAJAHNI Tunisian investment platform.",
             $projectTitle, $sector, $amount, $deadline, $description, $currentRiskScore
         );
 
@@ -115,8 +118,8 @@ PROMPT;
         $ecoSnippet = '';
         if (!empty($economicContext)) {
             $ecoSnippet = sprintf(
-                "\nContexte economique : pays %s, inflation %.1f%%, PIB %.1f Mrd $, taux EUR/USD %.4f.",
-                $economicContext['country'] ?? 'inconnu',
+                "\nEconomic context: country %s, inflation %.1f%%, GDP %.1f Bn $, EUR/USD rate %.4f.",
+                $economicContext['country'] ?? 'unknown',
                 $economicContext['inflation'] ?? 0,
                 $economicContext['gdp'] ?? 0,
                 $economicContext['eurUsd'] ?? 0,
@@ -124,12 +127,12 @@ PROMPT;
         }
 
         $prompt = sprintf(
-            "Tu es un conseiller financier sur la plateforme NAJAHNI. "
-            . "Redige un verdict en 2 a 3 phrases maximum, en francais, comme si tu parlais directement a un investisseur. "
-            . "Pas de listes, pas de titres, pas de puces, juste du texte naturel. "
-            . "Sois honnete et direct. Si le risque est eleve, dis-le clairement. Si c'est prometteur, dis-le aussi.\n\n"
-            . "Projet : %s\nSecteur : %s\nMontant : %.0f DT\nDeadline : %s\nDescription : %s\n"
-            . "Score de risque algorithmique : %.0f/100 (%s)%s",
+            "You are a financial advisor on NAJAHNI platform. "
+            . "Write a verdict in 2 to 3 sentences maximum, in English, as if speaking directly to an investor. "
+            . "No lists, no titles, no bullet points — plain natural text only. "
+            . "Be honest and direct. If the risk is high, say so clearly. If it looks promising, say that too.\n\n"
+            . "Project: %s\nSector: %s\nAmount: %.0f TND\nDeadline: %s\nDescription: %s\n"
+            . "Algorithmic risk score: %.0f/100 (%s)%s",
             $projectTitle, $sector, $amount, $deadline, $description, $riskScore, $riskLevel, $ecoSnippet
         );
 
@@ -162,6 +165,54 @@ PROMPT;
     private function buildContextualSystemPrompt(array $ctx): string
     {
         $mode = $ctx['mode'] ?? 'risk';
+
+        if ($mode === 'team_matcher') {
+            return sprintf(
+                "You are NAJAHNI MATCH, an AI co-founder and team-building advisor on the NAJAHNI platform — a Tunisian startup ecosystem.\n\n"
+                . "You are helping %s, a %s.\n"
+                . "Their projects: %s (%d project(s) total).\n\n"
+                . "Your role: help the user find and evaluate potential co-founders, team members, mentors, or investors.\n\n"
+                . "Your expertise:\n"
+                . "1. Co-founder matching: technical vs business skills gap analysis, equity split advice\n"
+                . "2. Team building: what roles to hire first, CTO/CMO/CFO profiles\n"
+                . "3. Profile compatibility: evaluating complementary skill sets\n"
+                . "4. Investor-founder fit: personality and vision alignment\n"
+                . "5. Tunisian startup ecosystem: local talent pools, universities, incubators\n\n"
+                . "Rules:\n"
+                . "- Respond in the same language the user writes in (Arabic, French, or English)\n"
+                . "- Give concrete, specific advice — not generic tips\n"
+                . "- Help identify skill gaps and suggest who to look for\n"
+                . "- Be direct and honest about team weaknesses",
+                $ctx['userName'] ?? 'the user',
+                $ctx['role'] ?? 'entrepreneur',
+                $ctx['projects'] ?? 'No projects yet',
+                (int) ($ctx['projectCount'] ?? 0),
+            );
+        }
+
+        if ($mode === 'advisor') {
+            return sprintf(
+                "You are NAJAHNI COACH, a personal AI business advisor on the NAJAHNI platform — a Tunisian startup ecosystem connecting entrepreneurs, mentors, and investors.\n\n"
+                . "You are advising %s, a %s on the platform.\n"
+                . "Their projects: %s (%d project(s) total).\n\n"
+                . "Your expertise:\n"
+                . "1. Investor readiness: pitch decks, valuation, due diligence, term sheets\n"
+                . "2. Business strategy: market positioning, competitive analysis, growth\n"
+                . "3. Tunisian market: regulations, opportunities, key sectors\n"
+                . "4. Funding: angel investors, VCs, government grants (BFPME, SICAR, SNIT, Startup Act)\n"
+                . "5. Entrepreneurship: team building, product-market fit, scaling\n\n"
+                . "Rules:\n"
+                . "- Respond in the same language the user writes in (Arabic, French, or English)\n"
+                . "- Be specific and actionable — give concrete next steps, not generic advice\n"
+                . "- Reference Tunisian context when relevant (TND, local ecosystem, Arab market)\n"
+                . "- Keep answers concise (3-5 sentences) unless the user asks for details\n"
+                . "- Never give formal legal or financial advice — recommend consulting a professional",
+                $ctx['userName'] ?? 'the user',
+                $ctx['role'] ?? 'entrepreneur',
+                $ctx['projects'] ?? 'No projects yet',
+                (int) ($ctx['projectCount'] ?? 0),
+            );
+        }
 
         if ($mode === 'contract') {
             return sprintf(
@@ -220,14 +271,14 @@ PROMPT;
     public function isFailureResponse(string $response): bool
     {
         return preg_match(
-            '/IA temporairement indisponible|IA indisponible|Authentification Hugging Face invalide|Le chatbot IA n\'est pas configure|Quota IA atteint|Aucun modele compatible|Requete IA invalide/i',
+            '/AI temporarily unavailable|AI temporarily|Hugging Face authentication|not configured|quota reached|rate limit|Invalid AI request/i',
             $response
         ) === 1;
     }
 
     public function isConfigured(): bool
     {
-        return $this->hfToken !== '' && $this->hfToken !== 'your_huggingface_token_here';
+        return $this->apiKey !== '' && $this->apiKey !== 'YOUR_API_KEY_HERE' && $this->apiKey !== 'your_groq_api_key_here';
     }
 
     private function sendOneShot(string $prompt, int $maxTokens = 512): string
@@ -253,7 +304,7 @@ PROMPT;
     private function sendRequest(array $messages, int $maxTokens = 512): string
     {
         if (!$this->isConfigured()) {
-            return 'Le chatbot IA n\'est pas configure. Veuillez definir HF_TOKEN dans votre fichier .env.';
+            return 'The AI assistant is not configured. Please set HF_TOKEN in your .env file.';
         }
 
         foreach ($this->getCandidateModels() as $model) {
@@ -272,7 +323,7 @@ PROMPT;
                         'verify_peer' => false,
                         'verify_host' => false,
                         'headers' => [
-                            'Authorization' => 'Bearer ' . $this->hfToken,
+                            'Authorization' => 'Bearer ' . $this->apiKey,
                             'Content-Type' => 'application/json',
                         ],
                         'json' => $payload,
@@ -295,7 +346,7 @@ PROMPT;
                     $data = $response->toArray();
                     $this->workingModel = $model;
 
-                    return $data['choices'][0]['message']['content'] ?? 'Reponse vide de l\'IA.';
+                    return $data['choices'][0]['message']['content'] ?? 'The AI returned an empty response.';
                 } catch (\Throwable $e) {
                     if ($attempt < self::MAX_RETRIES) {
                         usleep(250000 * $attempt);
@@ -305,7 +356,7 @@ PROMPT;
             }
         }
 
-        return 'IA temporairement indisponible. Aucun modele compatible n\'est actuellement disponible pour votre configuration Hugging Face.';
+        return 'AI temporarily unavailable. No compatible model is currently available for your Hugging Face configuration.';
     }
 
     private function buildErrorMessage(int $statusCode, string $responseBody): string
@@ -320,26 +371,26 @@ PROMPT;
         }
 
         if ($statusCode === 401 || $statusCode === 403) {
-            return 'Authentification Hugging Face invalide. Verifiez la valeur de HF_TOKEN dans .env.';
+            return 'Hugging Face authentication failed. Please check your HF_TOKEN in .env.';
         }
 
         if ($statusCode === 429) {
-            return 'Quota IA atteint ou limite de requetes depassee. Reessayez plus tard.';
+            return 'AI quota reached or rate limit exceeded. Please try again later.';
         }
 
         if ($this->isRetryableStatus($statusCode)) {
-            return 'IA temporairement indisponible (code ' . $statusCode . '). Le service distant ne repond pas correctement apres plusieurs tentatives.';
+            return 'AI temporarily unavailable (code ' . $statusCode . '). The remote service did not respond correctly after several attempts.';
         }
 
         if ($statusCode === 400 && is_string($apiMessage) && $apiMessage !== '') {
-            return 'Requete IA invalide: ' . $apiMessage;
+            return 'Invalid AI request: ' . $apiMessage;
         }
 
         if (is_string($apiMessage) && $apiMessage !== '') {
-            return 'IA temporairement indisponible (code ' . $statusCode . '): ' . $apiMessage;
+            return 'AI temporarily unavailable (code ' . $statusCode . '): ' . $apiMessage;
         }
 
-        return 'IA temporairement indisponible (code ' . $statusCode . '). Reessayez dans quelques instants.';
+        return 'AI temporarily unavailable (code ' . $statusCode . '). Please try again in a moment.';
     }
 
     private function trimHistory(): void

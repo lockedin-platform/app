@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Fil d'actualité - Najahni{% endblock %}
+{% block title %}Community Feed - Najahni{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -21,7 +21,7 @@
         max-height: 420px;
         object-fit: cover;
         border-radius: 1rem;
-        border: 1px solid rgba(0, 0, 0, .05);
+        border: 1px solid rgba(255, 255, 255, .08);
     }
 
     .community-reaction-bar {
@@ -45,12 +45,12 @@
     .community-reaction-trigger,
     .community-reaction-toggle {
         appearance: none;
-        border: 1px solid rgba(67, 97, 238, .16);
-        background: #fff;
+        border: 1px solid rgba(255, 255, 255, .12);
+        background: rgba(255, 255, 255, .06);
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        color: #314063;
+        color: rgba(226, 232, 240, .8);
         transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease, background-color .18s ease;
     }
 
@@ -75,8 +75,9 @@
     .community-reaction-picker.is-open .community-reaction-toggle {
         transform: translateY(-1px);
         border-color: rgba(67, 97, 238, .4);
-        background: rgba(67, 97, 238, .08);
-        box-shadow: 0 10px 24px rgba(67, 97, 238, .12);
+        background: rgba(67, 97, 238, .15);
+        box-shadow: 0 10px 24px rgba(67, 97, 238, .2);
+        color: #fff;
     }
 
     .community-reaction-trigger-icon {
@@ -91,9 +92,10 @@
         min-width: 13rem;
         padding: .5rem;
         border-radius: 1rem;
-        border: 1px solid rgba(67, 97, 238, .16);
-        background: rgba(255, 255, 255, .98);
-        box-shadow: 0 20px 45px rgba(49, 64, 99, .16);
+        border: 1px solid rgba(255, 255, 255, .1);
+        background: rgba(11, 20, 49, .97);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 20px 48px rgba(0, 0, 0, .5);
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
@@ -115,7 +117,7 @@
         appearance: none;
         border: none;
         background: transparent;
-        color: #314063;
+        color: rgba(226, 232, 240, .8);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -130,8 +132,8 @@
         width: 2.7rem;
         height: 2.7rem;
         border-radius: 999px;
-        border: 1px solid rgba(49, 64, 99, .1);
-        background: rgba(255, 255, 255, .94);
+        border: 1px solid rgba(255, 255, 255, .1);
+        background: rgba(255, 255, 255, .06);
         font-size: 1.35rem;
         transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
     }
@@ -139,17 +141,18 @@
     .community-reaction-option:hover .community-reaction-option-emoji,
     .community-reaction-option:focus-visible .community-reaction-option-emoji {
         transform: translateY(-.22rem) scale(1.06);
-        box-shadow: 0 14px 24px rgba(49, 64, 99, .16);
+        box-shadow: 0 14px 24px rgba(67, 97, 238, .25);
+        border-color: rgba(67, 97, 238, .4);
     }
 
     .community-reaction-option-label {
         font-size: .72rem;
-        color: #67748e;
+        color: rgba(255, 255, 255, .45);
     }
 
     .community-reaction-option.active .community-reaction-option-emoji {
-        border-color: rgba(67, 97, 238, .35);
-        background: rgba(67, 97, 238, .1);
+        border-color: rgba(67, 97, 238, .45);
+        background: rgba(67, 97, 238, .2);
     }
 
     .community-reaction-option-remove .community-reaction-option-emoji {
@@ -167,7 +170,7 @@
 
     .community-reaction-caption {
         font-size: .94rem;
-        color: #67748e;
+        color: rgba(255, 255, 255, .5);
     }
 
     .community-side-card {
@@ -193,44 +196,72 @@
 {% set openPostEditId = openPostEditId|default(null) %}
 {% set postEditData = postEditData|default({content: '', remove_image: false}) %}
 {% set postEditErrors = postEditErrors|default({}) %}
+
+{# ── Page Hero ── #}
+<div class="nj-page-hero nj-hero-community mb-4">
+    <i class="bi bi-people nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Community</div>
+            <h1 class="nj-ph-title mb-1">Feed</h1>
+            <p class="nj-ph-sub">Share, react and connect with the Najahni community</p>
+        </div>
+        <div class="nj-hero-actions">
+            <div class="nj-action-group">
+                <a href="{{ path('app_community_groups') }}" class="nj-action-link"><i class="bi bi-collection"></i>Groups</a>
+                <span class="nj-action-sep"></span>
+                <a href="{{ path('app_community_events') }}" class="nj-action-link"><i class="bi bi-calendar-event"></i>Events</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row g-4">
     <div class="col-xl-8">
-        <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
-            <div>
-                <h2 class="fw-bold mb-1"><i class="bi bi-chat-square-text me-2"></i>Fil d'actualité</h2>
-                <p class="text-muted mb-0">Publiez, traduisez, reagissez et filtrez les posts en temps reel pendant la frappe.</p>
-            </div>
+        <div class="nj-filter-bar nj-filter-community mb-4">
             <form method="get" action="{{ path('app_community_posts') }}" class="community-feed-toolbar w-100">
-                <input type="search" name="q" value="{{ search }}" class="form-control" placeholder="Rechercher un auteur ou un texte..." data-live-post-search>
+                <input type="search" name="q" value="{{ search }}" class="form-control" placeholder="Search by author or text..." data-live-post-search>
                 <select name="sort" class="form-select">
-                    <option value="newest" {{ sort == 'newest' ? 'selected' }}>Plus recentes</option>
-                    <option value="oldest" {{ sort == 'oldest' ? 'selected' }}>Plus anciennes</option>
-                    <option value="reactions" {{ sort == 'reactions' ? 'selected' }}>Plus de reactions</option>
+                    <option value="newest" {{ sort == 'newest' ? 'selected' }}>Most recent</option>
+                    <option value="oldest" {{ sort == 'oldest' ? 'selected' }}>Oldest first</option>
+                    <option value="reactions" {{ sort == 'reactions' ? 'selected' }}>Most reactions</option>
                 </select>
-                <button type="submit" class="btn btn-outline-nj"><i class="bi bi-funnel me-2"></i>Filtrer</button>
+                <button type="submit" class="btn btn-outline-nj"><i class="bi bi-funnel me-1"></i>Filter</button>
             </form>
         </div>
 
+        <div class="nj-section-label" style="--nj-section-color:linear-gradient(135deg,#db2777,#7c3aed)"><i class="bi bi-pencil-square me-1"></i>New Post</div>
         {# New Post Form #}
         <div class="card border-0 shadow-sm mb-4" style="border-radius:1rem">
             <div class="card-body p-4">
+                {# AI moderation warning (hidden by default, shown by JS) #}
+                <div id="aiModerationWarning" class="d-none mb-3 p-3 rounded-3" style="background:rgba(239,71,111,.1);border:1.5px solid rgba(239,71,111,.3)">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-shield-exclamation" style="color:#fca5a5;font-size:1.1rem"></i>
+                        <div>
+                            <div class="fw-semibold" style="color:#fca5a5;font-size:.88rem">AI Moderation Warning</div>
+                            <div class="text-muted" style="font-size:.8rem">Your post contains inappropriate content. It will be automatically filtered before publication.</div>
+                        </div>
+                        <span class="badge ms-auto" style="background:rgba(239,71,111,.2);color:#fca5a5;font-size:.7rem"><i class="bi bi-robot me-1"></i>AI Filter</span>
+                    </div>
+                </div>
                 <form method="post" action="{{ path('app_community_post_new') }}" enctype="multipart/form-data">
-                    <label class="form-label fw-semibold">Texte</label>
-                    <textarea name="content" class="form-control mb-3{{ newPostErrors.content is defined ? ' is-invalid' }}" rows="3" placeholder="Quoi de neuf ? Partagez avec la communauté..." maxlength="500">{{ newPostData.content }}</textarea>
+                    <label class="form-label fw-semibold">Text</label>
+                    <textarea id="newPostContent" name="content" class="form-control mb-3{{ newPostErrors.content is defined ? ' is-invalid' }}" rows="3" placeholder="What's new? Share with the community..." maxlength="500">{{ newPostData.content }}</textarea>
                     {% if newPostErrors.content is defined %}
                     <div class="invalid-feedback d-block mb-3">{{ newPostErrors.content }}</div>
                     {% endif %}
                     <div class="row g-3 align-items-center">
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold">Image</label>
+                            <label class="form-label fw-semibold">Photo</label>
                             <input type="file" name="image" class="form-control{{ newPostErrors.image is defined ? ' is-invalid' }}" accept="image/*">
                             {% if newPostErrors.image is defined %}
                             <div class="invalid-feedback d-block">{{ newPostErrors.image }}</div>
                             {% endif %}
                         </div>
                         <div class="col-md-6 d-flex justify-content-between align-items-center">
-                            <small class="text-muted">Texte ou image, max 500 caracteres</small>
-                            <button type="submit" class="btn btn-nj"><i class="bi bi-send me-2"></i>Publier</button>
+                            <small class="text-muted">Text or image, max 500 characters</small>
+                            <button type="submit" class="btn btn-nj"><i class="bi bi-send me-2"></i>Post</button>
                         </div>
                     </div>
                 </form>
@@ -238,15 +269,16 @@
         </div>
 
         {# Posts Feed #}
+        <div class="nj-section-label" style="--nj-section-color:linear-gradient(135deg,#db2777,#7c3aed)"><i class="bi bi-chat-square-text me-1"></i>Feed</div>
         <div id="liveResults">
         {% for post in posts %}
         {% set myReaction = post.getReactionTypeForUser(app.user) %}
         {% set summary = post.reactionSummary %}
-        {% set reactionCaption = post.reactionsCount > 0 ? post.reactionsCount ~ ' reactions' : 'Pas encore de reaction' %}
+        {% set reactionCaption = post.reactionsCount > 0 ? post.reactionsCount ~ ' reactions' : 'No reactions yet' %}
         {% set currentReactionMeta = myReaction and reactionMeta[myReaction] is defined ? reactionMeta[myReaction] : reactionMeta['LIKE'] %}
         {% set postEditActive = openPostEditId == post.id %}
         {% if myReaction and reactionMeta[myReaction] is defined %}
-            {% set reactionCaption = reactionCaption ~ ' · Vous avez choisi ' ~ reactionMeta[myReaction].label %}
+            {% set reactionCaption = reactionCaption ~ ' · You chose ' ~ reactionMeta[myReaction].label %}
         {% endif %}
         <div id="post-{{ post.id }}" class="card border-0 shadow-sm mb-3" style="border-radius:1rem" data-post-id="{{ post.id }}" data-live-post-card data-live-post-text="{{ (post.user.firstname ~ ' ' ~ post.user.lastname ~ ' ' ~ post.content)|lower|e('html_attr') }}">
             <div class="card-body p-4">
@@ -261,7 +293,7 @@
                         </div>
                     </a>
                     <div class="ms-auto d-flex gap-2 align-items-center">
-                        <select class="form-select form-select-sm community-translation-select" data-translate-url="{{ path('app_community_post_translate', {id: post.id}) }}" style="width:auto">
+                        <select class="form-select form-select-sm community-translation-select" data-translate-url="{{ path('app_community_post_translate', {id: post.id}) }}" style="width:130px;min-width:130px">
                             <option value="original">Original</option>
                             {% for code, label in translationLanguages %}
                             <option value="{{ code }}">{{ label }}</option>
@@ -277,7 +309,7 @@
                 </div>
 
                 <p class="mb-2 community-post-copy" data-post-text data-original-text="{{ post.content|e('html_attr') }}">{{ post.content }}</p>
-                <small class="text-muted d-block mb-3" data-translation-status>Texte original</small>
+                <small class="text-muted d-block mb-3" data-translation-status>Original text</small>
 
                 {% if post.imageUrl %}
                 <img src="{{ post.imageUrl }}" alt="Illustration de publication" class="community-post-image mb-3">
@@ -304,10 +336,10 @@
                                     {% if post.imageUrl %}
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remove_image" id="remove-image-{{ post.id }}" value="1" {{ postEditActive and postEditData.remove_image ? 'checked' }}>
-                                        <label class="form-check-label small" for="remove-image-{{ post.id }}">Supprimer l'image</label>
+                                        <label class="form-check-label small" for="remove-image-{{ post.id }}">Remove image</label>
                                     </div>
                                     {% endif %}
-                                    <button type="submit" class="btn btn-sm btn-nj">Enregistrer</button>
+                                    <button type="submit" class="btn btn-sm btn-nj">Save</button>
                                 </div>
                             </div>
                         </form>
@@ -322,11 +354,11 @@
                             <input type="hidden" name="reaction" value="LIKE">
                             <button class="community-reaction-trigger {{ myReaction ? 'active' }}" type="submit" data-reaction-trigger>
                                 <span class="community-reaction-trigger-icon" data-reaction-trigger-icon>{{ myReaction ? currentReactionMeta.emoji : reactionMeta['LIKE'].emoji }}</span>
-                                <span data-reaction-trigger-label>{{ myReaction ? currentReactionMeta.label : 'J\'aime' }}</span>
+                                <span data-reaction-trigger-label>{{ myReaction ? currentReactionMeta.label : 'Like' }}</span>
                             </button>
                         </form>
 
-                        <button class="community-reaction-toggle" type="button" data-picker-toggle aria-expanded="false" aria-label="Choisir une reaction">+</button>
+                        <button class="community-reaction-toggle" type="button" data-picker-toggle aria-expanded="false" aria-label="Choose a reaction">+</button>
 
                         <div class="community-picker-menu community-reaction-menu" data-picker-menu>
                             {% for type, meta in reactionMeta %}
@@ -340,9 +372,9 @@
                             {% endfor %}
 
                             <form method="post" action="{{ path('app_community_post_unreact', {id: post.id}) }}" data-async-reaction data-reaction-remove-form {{ myReaction ? '' : 'hidden' }}>
-                                <button class="community-reaction-option community-reaction-option-remove" type="submit" title="Retirer la reaction" aria-label="Retirer la reaction">
+                                <button class="community-reaction-option community-reaction-option-remove" type="submit" title="Remove reaction" aria-label="Remove reaction">
                                     <span class="community-reaction-option-emoji">×</span>
-                                    <span class="community-reaction-option-label">Retirer</span>
+                                    <span class="community-reaction-option-label">Remove</span>
                                 </button>
                             </form>
                         </div>
@@ -354,14 +386,14 @@
         {% else %}
         <div class="text-center py-5">
             <div class="text-center"><i class="bi bi-chat-left-text" style="font-size:3rem;color:var(--nj-primary)"></i></div>
-            <p class="text-muted mt-2">Aucune publication. Soyez le premier à partager !</p>
+            <p class="text-muted mt-2">No posts yet. Be the first to share!</p>
         </div>
         {% endfor %}
         </div>
         {% if posts|length > 0 %}
         <div class="text-center py-5 d-none" data-live-post-empty>
             <div class="text-center"><i class="bi bi-search" style="font-size:2.5rem;color:var(--nj-primary)"></i></div>
-            <p class="text-muted mt-2 mb-0">Aucune publication ne correspond a votre recherche en direct.</p>
+            <p class="text-muted mt-2 mb-0">No posts match your live search.</p>
         </div>
         {% endif %}
     </div>
@@ -369,26 +401,68 @@
     {# Sidebar #}
     <div class="col-xl-4">
         <div class="community-side-card d-flex flex-column gap-3">
+
+            {# Navigation #}
             <div class="card border-0 shadow-sm" style="border-radius:1rem">
                 <div class="card-body p-4">
                     <h6 class="fw-bold mb-3"><i class="bi bi-grid me-2"></i>Navigation</h6>
                     <div class="d-grid gap-2">
-                        <a href="{{ path('app_community_groups') }}" class="btn btn-outline-primary text-start"><i class="bi bi-people me-2"></i>Groupes</a>
-                        <a href="{{ path('app_community_events') }}" class="btn btn-outline-primary text-start"><i class="bi bi-calendar-event me-2"></i>Événements</a>
+                        <a href="{{ path('app_community_groups') }}" class="btn btn-outline-primary text-start"><i class="bi bi-people me-2"></i>Groups</a>
+                        <a href="{{ path('app_community_events') }}" class="btn btn-outline-primary text-start"><i class="bi bi-calendar-event me-2"></i>Events</a>
                     </div>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm" style="border-radius:1rem">
+            {# Upcoming Events #}
+            <div class="card border-0 shadow-sm" style="border-radius:1rem;border-top:3px solid var(--nj-c-community)!important">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold mb-3"><i class="bi bi-stars me-2"></i>Ce qui change</h6>
-                    <div class="small text-muted d-flex flex-column gap-2">
-                        <span>Reactions mises a jour sans retour en haut de page.</span>
-                        <span>Traduction a la demande en francais, anglais et arabe.</span>
-                        <span>Edition de publication avec image locale sans toucher aux autres modules.</span>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0"><i class="bi bi-calendar-event me-2" style="color:var(--nj-c-community)"></i>Upcoming Events</h6>
+                        <a href="{{ path('app_community_events') }}" class="small text-decoration-none" style="color:var(--nj-primary)">See all</a>
+                    </div>
+                    {% if upcomingEvents|length > 0 %}
+                    <div class="d-flex flex-column gap-3">
+                        {% for event in upcomingEvents %}
+                        <div style="border-left:3px solid var(--nj-c-community);padding-left:.85rem">
+                            <div class="fw-semibold" style="font-size:.88rem">{{ event.title }}</div>
+                            <div class="d-flex align-items-center gap-2 mt-1">
+                                <small class="text-muted"><i class="bi bi-calendar3 me-1"></i>{{ event.eventDate|date('d M Y, H:i') }}</small>
+                                <small class="text-muted"><i class="bi bi-people me-1"></i>{{ event.participantsCount }}{% if event.capacity > 0 %}/{{ event.capacity }}{% endif %}</small>
+                            </div>
+                            {% if event.hasCapacity and not event.hasParticipant(app.user) %}
+                            <form method="post" action="{{ path('app_community_event_join', {id: event.id}) }}" class="mt-2">
+                                <button class="btn btn-sm btn-nj w-100" style="font-size:.75rem;padding:.3rem .7rem"><i class="bi bi-check-circle me-1"></i>Join</button>
+                            </form>
+                            {% elseif event.hasParticipant(app.user) %}
+                            <div class="mt-2"><span class="badge" style="background:rgba(236,72,153,.15);color:#f9a8d4;font-size:.72rem"><i class="bi bi-check-circle-fill me-1"></i>Registered</span></div>
+                            {% else %}
+                            <div class="mt-2"><span class="badge bg-secondary" style="font-size:.72rem">Full</span></div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-2">
+                        <i class="bi bi-calendar-x" style="font-size:2rem;color:rgba(255,255,255,.2)"></i>
+                        <p class="text-muted small mb-2 mt-1">No upcoming events.</p>
+                        <a href="{{ path('app_community_event_new') }}" class="btn btn-sm btn-outline-secondary">Create one</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# AI Moderation Info #}
+            <div class="card border-0 shadow-sm" style="border-radius:1rem;background:linear-gradient(135deg,rgba(67,97,238,.08),rgba(114,9,183,.06));border:1.5px solid rgba(67,97,238,.2)!important">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-shield-check me-2" style="color:var(--nj-success)"></i>AI Moderation Active</h6>
+                    <p class="text-muted small mb-0">Every post is automatically scanned for inappropriate content before publication. The AI filters profanity in English, French and Arabic in real time.</p>
+                    <div class="d-flex align-items-center gap-2 mt-3">
+                        <span class="badge" style="background:rgba(6,214,160,.15);color:#6ee7b7;font-size:.72rem"><i class="bi bi-circle-fill me-1" style="font-size:.45rem"></i>Online</span>
+                        <small class="text-muted" style="font-size:.72rem">Powered by PurgoMalum API</small>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -628,6 +702,19 @@ document.addEventListener('DOMContentLoaded', () => {
         livePostSearch.addEventListener('input', applyLivePostFilter);
         applyLivePostFilter();
     }
+
+    // Real-time AI moderation warning
+    (function(){
+        const textarea = document.getElementById('newPostContent');
+        const warning = document.getElementById('aiModerationWarning');
+        if (!textarea || !warning) return;
+        const badWords = ['fuck','shit','bitch','asshole','bastard','merde','putain','salope','conard','conasse','puta','idiot','stupid'];
+        textarea.addEventListener('input', function(){
+            const val = textarea.value.toLowerCase();
+            const hasBad = badWords.some(w => val.includes(w));
+            warning.classList.toggle('d-none', !hasBad);
+        });
+    })();
 
     // AJAX sort (server-side) for the sort dropdown
     (function(){

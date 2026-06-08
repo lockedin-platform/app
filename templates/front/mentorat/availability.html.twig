@@ -1,20 +1,20 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Disponibilités - Najahni{% endblock %}
+{% block title %}Availability - Najahni{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="fw-bold mb-0"><i class="bi bi-mortarboard me-2"></i>Mentorat</h2>
-    <a href="{{ path('app_mentorat_my_calendar') }}" class="btn btn-outline-nj"><i class="bi bi-calendar2-week me-1"></i>Mon Calendrier</a>
+    <a href="{{ path('app_mentorat_my_calendar') }}" class="btn btn-outline-nj"><i class="bi bi-calendar2-week me-1"></i>My Calendar</a>
 </div>
 
 {# ── 4-Tab Navigation (role-aware) ── #}
 {% set userRole = app.user.role %}
 <ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Demandes</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Requests</a></li>
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_sessions') }}"><i class="bi bi-camera-video me-1"></i>Sessions</a></li>
     {% if userRole == 'MENTOR' %}
-        <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Disponibilités</a></li>
+        <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Availability</a></li>
     {% endif %}
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_chatbot') }}"><i class="bi bi-robot me-1"></i>Chatbot</a></li>
 </ul>
@@ -27,7 +27,7 @@
     {# ── Add Form ── #}
     <div class="col-md-5">
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle me-1"></i>Ajouter un créneau</h5>
+            <h5 class="fw-bold mb-3"><i class="bi bi-plus-circle me-1"></i>Add a slot</h5>
             <form method="post" action="{{ path('app_mentorat_availability_new') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('mentorat_availability') }}">
                 <div class="mb-3">
@@ -36,15 +36,15 @@
                 </div>
                 <div class="row g-3">
                     <div class="col-6">
-                        <label class="form-label fw-semibold">Début</label>
+                        <label class="form-label fw-semibold">Start</label>
                         <input type="time" name="start_time" class="form-control" required>
                     </div>
                     <div class="col-6">
-                        <label class="form-label fw-semibold">Fin</label>
+                        <label class="form-label fw-semibold">End</label>
                         <input type="time" name="end_time" class="form-control" required>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-nj w-100 mt-3"><i class="bi bi-plus-lg me-2"></i>Ajouter</button>
+                <button type="submit" class="btn btn-nj w-100 mt-3"><i class="bi bi-plus-lg me-2"></i>Add</button>
             </form>
         </div>
     </div>
@@ -55,7 +55,7 @@
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light"><tr><th>Date</th><th>Début</th><th>Fin</th><th>Actions</th></tr></thead>
+                        <thead class="table-light"><tr><th>Date</th><th>Start</th><th>End</th><th>Actions</th></tr></thead>
                         <tbody>
                             {% for a in availabilities %}
                             <tr id="avail-row-{{ a.id }}">
@@ -64,10 +64,10 @@
                                 <td>{{ a.endTime|date('H:i') }}</td>
                                 <td>
                                     <div class="btn-group btn-group-sm">
-                                        <button class="btn btn-outline-primary" title="Modifier" onclick="toggleEditRow({{ a.id }}, '{{ a.date|date('Y-m-d') }}', '{{ a.startTime|date('H:i') }}', '{{ a.endTime|date('H:i') }}')"><i class="bi bi-pencil"></i></button>
-                                        <form method="post" action="{{ path('app_mentorat_availability_delete', {id: a.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer ce créneau ?')">
+                                        <button class="btn btn-outline-primary" title="Edit" onclick="toggleEditRow({{ a.id }}, '{{ a.date|date('Y-m-d') }}', '{{ a.startTime|date('H:i') }}', '{{ a.endTime|date('H:i') }}')"><i class="bi bi-pencil"></i></button>
+                                        <form method="post" action="{{ path('app_mentorat_availability_delete', {id: a.id}) }}" class="d-inline" onsubmit="return confirm('Delete this slot?')">
                                             <input type="hidden" name="_token" value="{{ csrf_token('mentorat_avail_del_' ~ a.id) }}">
-                                            <button class="btn btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                                            <button class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
                                         </form>
                                     </div>
                                 </td>
@@ -78,15 +78,15 @@
                                     <form method="post" action="{{ path('app_mentorat_availability_edit', {id: a.id}) }}" class="d-flex gap-2 align-items-end">
                                         <input type="hidden" name="_token" value="{{ csrf_token('mentorat_avail_edit_' ~ a.id) }}">
                                         <div><label class="form-label small mb-0">Date</label><input type="date" name="date" class="form-control form-control-sm" id="edit-date-{{ a.id }}"></div>
-                                        <div><label class="form-label small mb-0">Début</label><input type="time" name="start_time" class="form-control form-control-sm" id="edit-start-{{ a.id }}"></div>
-                                        <div><label class="form-label small mb-0">Fin</label><input type="time" name="end_time" class="form-control form-control-sm" id="edit-end-{{ a.id }}"></div>
+                                        <div><label class="form-label small mb-0">Start</label><input type="time" name="start_time" class="form-control form-control-sm" id="edit-start-{{ a.id }}"></div>
+                                        <div><label class="form-label small mb-0">End</label><input type="time" name="end_time" class="form-control form-control-sm" id="edit-end-{{ a.id }}"></div>
                                         <button class="btn btn-sm btn-success"><i class="bi bi-check-lg"></i></button>
                                         <button type="button" class="btn btn-sm btn-secondary" onclick="toggleEditRow({{ a.id }})"><i class="bi bi-x-lg"></i></button>
                                     </form>
                                 </td>
                             </tr>
                             {% else %}
-                            <tr><td colspan="4" class="text-center text-muted py-4">Aucun créneau défini.</td></tr>
+                            <tr><td colspan="4" class="text-center text-muted py-4">No slots defined.</td></tr>
                             {% endfor %}
                         </tbody>
                     </table>

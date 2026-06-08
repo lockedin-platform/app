@@ -114,9 +114,9 @@ class ProjetScoringService
         else $score += 5;
 
         $modele = strtolower($db->getModeleRevenu() ?? '');
-        if (str_contains($modele, 'abonnement') || str_contains($modele, 'saas') || str_contains($modele, 'récurrent')) {
+        if (str_contains($modele, 'abonnement') || str_contains($modele, 'subscription') || str_contains($modele, 'saas') || str_contains($modele, 'récurrent') || str_contains($modele, 'recurring') || str_contains($modele, 'freemium')) {
             $score += 15;
-        } elseif (str_contains($modele, 'marketplace') || str_contains($modele, 'commission')) {
+        } elseif (str_contains($modele, 'marketplace') || str_contains($modele, 'commission') || str_contains($modele, 'b2b') || str_contains($modele, 'b2c')) {
             $score += 10;
         } else {
             $score += 5;
@@ -135,10 +135,10 @@ class ProjetScoringService
         $risque = strtolower($db->getNiveauRisque() ?? '');
 
         return match (true) {
-            str_contains($risque, 'faible') => 85,
-            str_contains($risque, 'modéré'), str_contains($risque, 'modere') => 65,
-            str_contains($risque, 'élevé'), str_contains($risque, 'eleve') => 40,
-            str_contains($risque, 'très'), str_contains($risque, 'tres') => 20,
+            str_contains($risque, 'low') || str_contains($risque, 'faible') => 85,
+            str_contains($risque, 'moderate') || str_contains($risque, 'modéré') || str_contains($risque, 'modere') => 65,
+            str_contains($risque, 'very high') || str_contains($risque, 'très') || str_contains($risque, 'tres') => 20,
+            str_contains($risque, 'high') || str_contains($risque, 'élevé') || str_contains($risque, 'eleve') => 40,
             default => 50,
         };
     }
@@ -169,18 +169,18 @@ class ProjetScoringService
             ];
         }
 
-        return "Tu es un expert en évaluation de projets entrepreneuriaux en Tunisie. Analyse ce projet et fournis un diagnostic complet en français.
+        return "You are an expert evaluator of entrepreneurial projects in Tunisia. Analyze this project and provide a complete diagnostic in English.
 
-Données du projet :
+Project data:
 " . json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) . "
 
-Fournis un diagnostic structuré avec :
-1. **Analyse SWOT** (Forces, Faiblesses, Opportunités, Menaces) - 2-3 points par catégorie
-2. **Points critiques** à surveiller
-3. **Recommandations concrètes** pour améliorer le projet (3-5 actions prioritaires)
-4. **Score de viabilité** : commentaire sur le score global de {$projet->getScoreGlobal()}/100
+Provide a structured diagnostic covering:
+1. **SWOT Analysis** (Strengths, Weaknesses, Opportunities, Threats) - 2-3 points per category
+2. **Critical watch points**
+3. **Concrete recommendations** to improve the project (3-5 priority actions)
+4. **Viability assessment**: commentary on the global score of {$projet->getScoreGlobal()}/100
 
-Sois direct, concret et adapté au contexte tunisien. Limite ta réponse à 500 mots.";
+Be direct, concrete, and relevant to the Tunisian startup context. Limit your response to 500 words. Reply entirely in English.";
     }
 
     private function generateLocalDiagnostic(Projet $projet): string
@@ -190,27 +190,27 @@ Sois direct, concret et adapté au contexte tunisien. Limite ta réponse à 500 
         $parts = [];
 
         if ($score >= 75) {
-            $parts[] = "✅ **Projet prometteur** (Score : {$score}/100). Ce projet présente de solides indicateurs.";
+            $parts[] = "✅ **Promising project** (Score: {$score}/100). This project shows solid indicators across the board.";
         } elseif ($score >= 50) {
-            $parts[] = "⚠️ **Projet à potentiel** (Score : {$score}/100). Des améliorations sont nécessaires.";
+            $parts[] = "⚠️ **Project with potential** (Score: {$score}/100). Some improvements are needed before seeking investment.";
         } else {
-            $parts[] = "❌ **Projet à risque** (Score : {$score}/100). Une révision profonde est recommandée.";
+            $parts[] = "❌ **At-risk project** (Score: {$score}/100). A deep revision is recommended before moving forward.";
         }
 
         if ($db) {
             if ($db->getMargeEstimee() < 0) {
-                $parts[] = "📉 La marge estimée est négative. Revoir la structure de coûts ou le pricing.";
+                $parts[] = "📉 The estimated margin is negative. Review the cost structure or pricing strategy.";
             }
             if ($db->getForceEquipe() < 5) {
-                $parts[] = "👥 La force de l'équipe est faible ({$db->getForceEquipe()}/10). Envisagez de renforcer l'équipe.";
+                $parts[] = "👥 Team strength is low ({$db->getForceEquipe()}/10). Consider strengthening the founding team.";
             }
             $risque = strtolower($db->getNiveauRisque() ?? '');
-            if (str_contains($risque, 'élevé') || str_contains($risque, 'très')) {
-                $parts[] = "⚡ Risque élevé détecté. Préparez un plan de mitigation des risques.";
+            if (str_contains($risque, 'high') || str_contains($risque, 'very')) {
+                $parts[] = "⚡ High risk detected. Prepare a solid risk mitigation plan before approaching investors.";
             }
         }
 
-        $parts[] = "💡 **Prochaines étapes** : Soumettez votre projet pour une évaluation IA complète avec une clé API Groq configurée.";
+        $parts[] = "💡 **Next steps**: Configure your Gemini API key to get a full AI-powered diagnostic with SWOT analysis and personalized recommendations.";
 
         $diagnostic = implode("\n\n", $parts);
         $projet->setDiagnosticIa($diagnostic);

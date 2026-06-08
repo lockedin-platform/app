@@ -1,44 +1,44 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Analyse de risque - {{ opportunity.project ? opportunity.project.titre : 'Opportunite' }} - Najahni{% endblock %}
+{% block title %}Risk Analysis - {{ opportunity.project ? opportunity.project.titre : 'Opportunity' }} - Najahni{% endblock %}
 
 {% block main %}
-{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Analyse de risque', activeStep: 2} %}
+{% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Risk Analysis', activeStep: 2} %}
 <style>
 .analysis-panel {
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
-    border: 1px solid rgba(15, 23, 42, 0.08);
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 1rem;
     padding: 1.25rem;
 }
 
 .analysis-intro {
-    background: #eef6ff;
-    border: 1px solid #d7e9ff;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(59,130,246,.25);
     border-radius: .9rem;
     padding: 1rem 1.1rem;
-    color: #1e3a5f;
+    color: #93c5fd;
     margin-bottom: 1rem;
 }
 
 .analysis-section {
-    background: #ffffff;
-    border: 1px solid #e9eef5;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
     border-radius: .9rem;
     padding: 1rem 1.1rem;
     margin-bottom: .9rem;
-    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 8px 24px rgba(0,0,0,.15);
 }
 
 .analysis-section h6 {
     margin-bottom: .75rem;
     font-weight: 700;
-    color: #0f172a;
+    color: rgba(255,255,255,.9);
 }
 
 .analysis-section p {
     margin-bottom: .65rem;
-    color: #334155;
+    color: rgba(255,255,255,.7);
     line-height: 1.7;
 }
 
@@ -49,12 +49,12 @@
 
 .analysis-section li {
     margin-bottom: .5rem;
-    color: #334155;
+    color: rgba(255,255,255,.7);
     line-height: 1.6;
 }
 
 .analysis-error {
-    background: #fff7ed;
+    background: rgba(255,214,0,.06);
     border: 1px solid #fed7aa;
     color: #9a3412;
     border-radius: .9rem;
@@ -62,11 +62,11 @@
 }
 
 .analysis-placeholder {
-    border: 1px dashed #cbd5e1;
+    border: 1px dashed rgba(255,255,255,.2);
     border-radius: .9rem;
     padding: 1rem 1.1rem;
-    background: #f8fafc;
-    color: #64748b;
+    background: rgba(255,255,255,.04);
+    color: rgba(255,255,255,.5);
 }
 
 /* Animated risk dial */
@@ -85,7 +85,7 @@
 
 .risk-dial-track {
     fill: none;
-    stroke: #e2e8f0;
+    stroke: rgba(255,255,255,.12);
     stroke-width: 10;
 }
 
@@ -125,12 +125,12 @@
 
 .risk-dial-sub {
     font-size: .85rem;
-    color: #94a3b8;
+    color: rgba(255,255,255,.45);
 }
 
 .risk-verdict {
-    background: linear-gradient(135deg, #f8fafc 0%, #eef6ff 100%);
-    border: 1px solid #dbeafe;
+    background: rgba(59,130,246,.1);
+    border: 1px solid rgba(59,130,246,.25);
     border-left: 4px solid #3b82f6;
     border-radius: .95rem;
     padding: 1rem 1.1rem;
@@ -141,7 +141,7 @@
     align-items: center;
     gap: .55rem;
     margin-bottom: .45rem;
-    color: #0f172a;
+    color: rgba(255,255,255,.9);
     font-weight: 700;
 }
 
@@ -153,7 +153,7 @@
 .analysis-skeleton-line {
     height: 12px;
     border-radius: 999px;
-    background: linear-gradient(90deg, #e2e8f0 25%, #f8fafc 50%, #e2e8f0 75%);
+    background: linear-gradient(90deg, rgba(255,255,255,.08) 25%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.08) 75%);
     background-size: 220% 100%;
     animation: aiSkeleton 1.25s linear infinite;
 }
@@ -168,16 +168,16 @@
 .risk-context-banner { background: #1e293b; border-radius: .5rem; padding: .55rem 1rem; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .risk-context-banner .rcb-left { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: #e2e8f0; }
 .risk-context-banner .rcb-left i { color: #60a5fa; font-size: .9rem; }
-.risk-context-banner .rcb-steps { display: flex; align-items: center; gap: .35rem; font-size: .72rem; color: #94a3b8; }
+.risk-context-banner .rcb-steps { display: flex; align-items: center; gap: .35rem; font-size: .72rem; color: rgba(255,255,255,.45); }
 .risk-context-banner .rcb-step { padding: .15rem .5rem; border-radius: 10rem; }
 .risk-context-banner .rcb-step.active { background: rgba(59,130,246,.2); color: #93c5fd; font-weight: 600; }
 .risk-context-banner .rcb-arrow { color: #475569; }
 
 /* Chat chips */
 .chat-chip {
-    background: #f1f5f9;
-    border: 1px solid #94a3b8;
-    color: #334155;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.75);
     font-size: .75rem;
     padding: .25rem .65rem;
     border-radius: 999px;
@@ -188,9 +188,9 @@
     transition: background .15s, border-color .15s;
 }
 .chat-chip:hover {
-    background: #e2e8f0;
-    border-color: #64748b;
-    color: #0f172a;
+    background: rgba(255,255,255,.15);
+    border-color: rgba(255,255,255,.4);
+    color: #fff;
 }
 
 /* Typing indicator */
@@ -199,8 +199,8 @@
     align-items: center;
     gap: 4px;
     padding: .5rem .85rem;
-    background: #fff;
-    border: 1px solid #e9ecef;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
     border-radius: 1rem;
     margin-bottom: .5rem;
 }
@@ -222,20 +222,20 @@
 <div class="risk-context-banner">
     <div class="rcb-left">
         <i class="bi bi-info-circle-fill"></i>
-        <span>Vous evaluez ce projet avant de soumettre une offre. Votre reconnaissance du risque sera enregistree lors de l'investissement.</span>
+        <span>You are reviewing this project before submitting an offer. Your risk acknowledgement will be recorded upon investment.</span>
     </div>
     <div class="rcb-steps">
-        <span class="rcb-step active">Etape 1 : Analyse de risque</span>
+        <span class="rcb-step active">Step 1: Risk Analysis</span>
         <span class="rcb-arrow"><i class="bi bi-chevron-right"></i></span>
-        <span class="rcb-step">Soumission d'offre</span>
+        <span class="rcb-step">Offer Submission</span>
         <span class="rcb-arrow"><i class="bi bi-chevron-right"></i></span>
-        <span class="rcb-step">Negociation</span>
+        <span class="rcb-step">Negotiation</span>
     </div>
 </div>
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-shield-check me-2"></i>Analyse de risque IA</h2>
-    <a href="{{ path('app_invest_opportunity_show', {id: opportunity.id}) }}?risk_reviewed=1" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-1"></i>Retour</a>
+    <h2 class="fw-bold mb-0"><i class="bi bi-shield-check me-2"></i>AI Risk Analysis</h2>
+    <a href="{{ path('app_invest_opportunity_show', {id: opportunity.id}) }}?risk_reviewed=1" class="btn btn-outline-primary"><i class="bi bi-arrow-left me-1"></i>Back</a>
 </div>
 
 {# Opportunity summary #}
@@ -243,15 +243,15 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-4">
-                <div class="small text-muted">Projet</div>
+                <div class="small text-muted">Project</div>
                 <div class="fw-bold">{{ opportunity.project ? opportunity.project.titre : 'N/A' }}</div>
             </div>
             <div class="col-md-2">
-                <div class="small text-muted">Secteur</div>
+                <div class="small text-muted">Sector</div>
                 <div class="fw-semibold">{{ opportunity.project ? opportunity.project.secteur : 'N/A' }}</div>
             </div>
             <div class="col-md-3">
-                <div class="small text-muted">Montant cible</div>
+                <div class="small text-muted">Target Amount</div>
                 <div class="fw-bold">{{ opportunity.targetAmount|number_format(0, ',', ' ') }} DT</div>
             </div>
             <div class="col-md-3">
@@ -268,19 +268,19 @@
         <div class="card border-0 shadow-sm" style="border-radius:1rem">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="fw-semibold mb-0">Score de risque</h5>
+                    <h5 class="fw-semibold mb-0">Risk Score</h5>
                     <select id="riskCountry" class="form-select" style="width:auto">
-                        <option value="TN" selected>Tunisie</option>
+                        <option value="TN" selected>Tunisia</option>
                         <option value="FR">France</option>
-                        <option value="US">Etats-Unis</option>
-                        <option value="DE">Allemagne</option>
-                        <option value="MA">Maroc</option>
+                        <option value="US">United States</option>
+                        <option value="DE">Germany</option>
+                        <option value="MA">Morocco</option>
                     </select>
                 </div>
 
                 <div id="riskSpinner" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status"></div>
-                    <p class="small text-muted mt-2">Calcul du score de risque en cours...</p>
+                    <p class="small text-muted mt-2">Calculating risk score...</p>
                 </div>
 
                 <div id="riskResult" class="d-none">
@@ -310,33 +310,33 @@
                     <div class="risk-verdict mb-4" id="verdictCard">
                         <div class="risk-verdict-title">
                             <i class="bi bi-compass" id="verdictIcon"></i>
-                            <span>Verdict du modele</span>
+                            <span>Model Verdict</span>
                         </div>
-                        <div id="verdictContent" style="font-size:.98rem;line-height:1.7;color:#334155">
-                            <span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Preparation du verdict...</span>
+                        <div id="verdictContent" style="font-size:.98rem;line-height:1.7;color:rgba(255,255,255,.75)">
+                            <span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Preparing verdict...</span>
                         </div>
                     </div>
 
-                    <h6 class="fw-semibold mb-3">Decomposition des facteurs</h6>
+                    <h6 class="fw-semibold mb-3">Factor Breakdown</h6>
                     <div class="mb-2">
-                        <div class="d-flex justify-content-between small"><span>Montant (<span id="fAmount">0</span>/100)</span><span class="text-muted">Poids: 30%</span></div>
+                        <div class="d-flex justify-content-between small"><span>Amount (<span id="fAmount">0</span>/100)</span><span class="text-muted">Weight: 30%</span></div>
                         <div class="progress" style="height:6px"><div class="progress-bar bg-primary" id="barAmount" style="width:0%"></div></div>
                     </div>
                     <div class="mb-2">
-                        <div class="d-flex justify-content-between small"><span>Duree (<span id="fDuration">0</span>/100)</span><span class="text-muted">Poids: 20%</span></div>
+                        <div class="d-flex justify-content-between small"><span>Duration (<span id="fDuration">0</span>/100)</span><span class="text-muted">Weight: 20%</span></div>
                         <div class="progress" style="height:6px"><div class="progress-bar bg-info" id="barDuration" style="width:0%"></div></div>
                     </div>
                     <div class="mb-2">
-                        <div class="d-flex justify-content-between small"><span>Economique (<span id="fEconomic">0</span>/100)</span><span class="text-muted">Poids: 50%</span></div>
+                        <div class="d-flex justify-content-between small"><span>Economic (<span id="fEconomic">0</span>/100)</span><span class="text-muted">Weight: 50%</span></div>
                         <div class="progress" style="height:6px"><div class="progress-bar" id="barEconomic" style="width:0%"></div></div>
                     </div>
 
                     <hr>
-                    <h6 class="fw-semibold mb-2">Donnees economiques utilisees</h6>
+                    <h6 class="fw-semibold mb-2">Economic Data Used</h6>
                     <div class="row g-2 small">
-                        <div class="col-6"><span class="text-muted">Pays:</span> <span id="ecoCountry">--</span></div>
+                        <div class="col-6"><span class="text-muted">Country:</span> <span id="ecoCountry">--</span></div>
                         <div class="col-6"><span class="text-muted">EUR/USD:</span> <span id="ecoEurUsd">--</span></div>
-                        <div class="col-6"><span class="text-muted">PIB:</span> <span id="ecoGdp">--</span> Mrd $</div>
+                        <div class="col-6"><span class="text-muted">GDP:</span> <span id="ecoGdp">--</span> Bn $</div>
                         <div class="col-6"><span class="text-muted">Inflation:</span> <span id="ecoInfl">--</span>%</div>
                     </div>
                 </div>
@@ -357,7 +357,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h5 class="fw-semibold mb-0">AI Analysis</h5>
-                    <span class="badge text-bg-light border">Optionnel</span>
+                    <span class="badge text-bg-light border">Optional</span>
                 </div>
                 <div id="aiSpinner" class="analysis-skeleton py-2">
                     <div class="analysis-skeleton-line"></div>
@@ -369,10 +369,11 @@
             </div>
         </div>
 
-        {# Chatbot #}
+        {# Chatbot — investors only #}
+        {% if not isOwner %}
         <div class="card border-0 shadow-sm mt-3" style="border-radius:1rem">
             <div class="card-body">
-                <h5 class="fw-semibold mb-3"><i class="bi bi-chat-dots me-2"></i>Chatbot NAJAHNI</h5>
+                <h5 class="fw-semibold mb-3"><i class="bi bi-chat-dots me-2"></i>NAJAHNI Chatbot</h5>
                 <div id="chatbotContainer"
                      data-opportunity-id="{{ opportunity.id }}"
                      data-opportunity-title="{{ opportunity.project ? opportunity.project.titre : 'N/A' }}"
@@ -388,8 +389,8 @@
                      data-budget-max=""
                      data-preferred-sectors=""
                      data-risk-tolerance="">
-                    <div id="chatMessages" style="height:280px;overflow-y:auto;border:1px solid #e9ecef;border-radius:.75rem;padding:.75rem;margin-bottom:.75rem;background:#fafafa">
-                        <div class="text-muted small text-center" id="chatPlaceholder">Posez vos questions sur cette opportunite.</div>
+                    <div id="chatMessages" style="height:280px;overflow-y:auto;border:1px solid rgba(255,255,255,.1);border-radius:.75rem;padding:.75rem;margin-bottom:.75rem;background:rgba(255,255,255,.04)">
+                        <div class="text-muted small text-center" id="chatPlaceholder">Ask your questions about this opportunity.</div>
                     </div>
                     <div id="chatSuggestedPrompts" class="d-flex flex-wrap gap-2 mb-2" style="transition:opacity .2s ease">
                         <button type="button" class="btn chat-chip" data-prompt="Is this risk level acceptable for my investment profile?">Is this risk level acceptable for my investment profile?</button>
@@ -398,12 +399,13 @@
                         <button type="button" class="btn chat-chip" data-prompt="What equity percentage is fair for this amount?">What equity percentage is fair for this amount?</button>
                     </div>
                     <div class="input-group">
-                        <input type="text" id="chatInput" class="form-control" placeholder="Votre question..." maxlength="2000">
+                        <input type="text" id="chatInput" class="form-control" placeholder="Your question..." maxlength="2000">
                         <button type="button" id="chatSendBtn" class="btn btn-nj"><i class="bi bi-send"></i></button>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 
@@ -466,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderAiAnalysis(text) {
         const normalized = String(text || '').replace(/\r/g, '').trim();
         if (!normalized) {
-            return '<div class="analysis-error">Aucune reponse exploitable n\'a ete retournee par le service IA.</div>';
+            return '<div class="analysis-error">No usable response was returned by the AI service.</div>';
         }
 
         if (isAiError(normalized)) {
@@ -475,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const blocks = normalized.split(/\n{2,}/).map(block => block.trim()).filter(Boolean);
         if (!blocks.length) {
-            return '<div class="analysis-error">Aucune reponse exploitable n\'a ete retournee par le service IA.</div>';
+            return '<div class="analysis-error">No usable response was returned by the AI service.</div>';
         }
 
         const html = [];
@@ -584,7 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     riskRadarChart = new Chart(radarCtx, {
                         type: 'radar',
                         data: {
-                            labels: ['Montant', 'Duree', 'Environnement', 'Inflation', 'Change'],
+                            labels: ['Amount', 'Duration', 'Environment', 'Inflation', 'Exchange'],
                             datasets: [{
                                 data: [data.factors.amount, data.factors.duration, data.factors.economic, inflationFactor, exchangeFactor],
                                 backgroundColor: fillColor,
@@ -637,7 +639,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loadVerdict();
             })
             .catch(() => {
-                document.getElementById('riskSpinner').innerHTML = '<p class="text-danger">Erreur lors du calcul.</p>';
+                document.getElementById('riskSpinner').innerHTML = '<p class="text-danger">Error calculating score.</p>';
             });
     }
 
@@ -645,7 +647,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var verdictContent = document.getElementById('verdictContent');
         var verdictCard = document.getElementById('verdictCard');
         var verdictIcon = document.getElementById('verdictIcon');
-        verdictContent.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>Le modele prepare son verdict...</span>';
+        verdictContent.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split me-1"></i>The model is preparing its verdict...</span>';
         verdictCard.style.borderLeftColor = '#64748b';
         aiResult.classList.add('d-none');
         aiSpinner.classList.remove('d-none');
@@ -656,7 +658,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(data) {
                 var text = data.verdict || '';
                 if (!text) {
-                    verdictContent.innerHTML = '<span class="text-muted">Verdict indisponible.</span>';
+                    verdictContent.innerHTML = '<span class="text-muted">Verdict unavailable.</span>';
                     return;
                 }
                 verdictContent.innerHTML = '<em>' + escapeHtml(text) + '</em>';
@@ -678,7 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(function() {
-                verdictContent.innerHTML = '<span class="text-muted">Impossible de charger le verdict.</span>';
+                verdictContent.innerHTML = '<span class="text-muted">Unable to load verdict.</span>';
                 aiSpinner.classList.add('d-none');
                 aiAnalysisCard.classList.add('d-none');
             });
@@ -688,6 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadRisk();
 
     // Chatbot with context, memory, chips, typewriter, markdown, typing indicator
+    if (document.getElementById('chatMessages')) { (function() {
     var chatMessages = document.getElementById('chatMessages');
     var chatInput = document.getElementById('chatInput');
     var chatSendBtn = document.getElementById('chatSendBtn');
@@ -778,7 +781,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var div = document.createElement('div');
         div.className = 'mb-2';
         var bubble = document.createElement('div');
-        bubble.className = 'd-inline-block px-3 py-2 rounded-3 bg-white border';
+        bubble.className = 'd-inline-block px-3 py-2 rounded-3';
+        bubble.style.background = 'rgba(255,255,255,.08)';
+        bubble.style.border = '1px solid rgba(255,255,255,.12)';
         bubble.style.maxWidth = '85%';
         bubble.style.textAlign = 'left';
         var content = document.createElement('span');
@@ -857,14 +862,14 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(function(r) { return r.json(); })
             .then(function(data) {
                 removeTypingIndicator();
-                var responseText = data.response || data.error || 'Pas de reponse.';
+                var responseText = data.response || data.error || 'No response.';
                 appendAssistantChat(responseText);
                 conversationHistory.push({role: 'assistant', content: responseText});
                 chatSendBtn.disabled = false;
             })
             .catch(function() {
                 removeTypingIndicator();
-                appendAssistantChat('Erreur de connexion.');
+                appendAssistantChat('Connection error.');
                 chatSendBtn.disabled = false;
             });
     }
@@ -891,6 +896,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.economicData.eurUsd !== undefined) chatContainer.setAttribute('data-exchange-rate', data.economicData.eurUsd);
         }
     };
+
+    })(); } // end chatbot block
 });
 </script>
 
@@ -998,15 +1005,16 @@ document.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 
-{# Decision Funnel #}
+{# Decision Funnel — investors only #}
+{% if not isOwner %}
 <div class="row g-4 mt-4 mb-3">
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;border-left:4px solid #22c55e">
             <div class="card-body d-flex flex-column p-4">
-                <h5 class="fw-bold mb-2" style="color:#15803d"><i class="bi bi-check-circle me-2"></i>Je suis a l'aise avec ce risque</h5>
-                <p class="text-muted mb-3" style="font-size:.9rem;line-height:1.6">Vous avez examine le profil de risque. Soumettez votre offre en toute connaissance des conditions.</p>
+                <h5 class="fw-bold mb-2" style="color:#4ade80"><i class="bi bi-check-circle me-2"></i>I am comfortable with this risk</h5>
+                <p class="text-muted mb-3" style="font-size:.9rem;line-height:1.6">You have reviewed the risk profile. Submit your offer with full knowledge of the conditions.</p>
                 <a href="{{ path('app_invest_opportunity_show', {id: opportunity.id}) }}?risk_reviewed=1" class="btn btn-success mt-auto">
-                    <i class="bi bi-arrow-right me-1"></i>Proceder a l'investissement
+                    <i class="bi bi-arrow-right me-1"></i>Proceed with Investment
                 </a>
             </div>
         </div>
@@ -1014,15 +1022,21 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="col-md-6">
         <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;border-left:4px solid #cbd5e1">
             <div class="card-body d-flex flex-column p-4">
-                <h5 class="fw-bold mb-2" style="color:#475569"><i class="bi bi-arrow-repeat me-2"></i>Ce risque est trop eleve pour moi</h5>
-                <p class="text-muted mb-3" style="font-size:.9rem;line-height:1.6">Consultez des opportunites adaptees a votre tolerance au risque et a votre profil d'investisseur.</p>
+                <h5 class="fw-bold mb-2" style="color:#94a3b8"><i class="bi bi-arrow-repeat me-2"></i>This risk is too high for me</h5>
+                <p class="text-muted mb-3" style="font-size:.9rem;line-height:1.6">Browse opportunities suited to your risk tolerance and investor profile.</p>
                 <a href="{{ path('app_invest_matching') }}" class="btn btn-outline-secondary mt-auto">
-                    <i class="bi bi-search me-1"></i>Trouver une meilleure correspondance
+                    <i class="bi bi-search me-1"></i>Find a better match
                 </a>
             </div>
         </div>
     </div>
 </div>
-<p class="text-muted text-center small mb-4" style="font-size:.76rem">L'evaluation de risque est une estimation basee sur des indicateurs economiques. Exercez toujours votre propre jugement.</p>
+<p class="text-muted text-center small mb-4" style="font-size:.76rem">Risk assessment is an estimate based on economic indicators. Always exercise your own judgment.</p>
+{% else %}
+<div class="alert border-0 text-center mt-4 mb-3" style="background:rgba(255,255,255,.05);border-radius:1rem">
+    <i class="bi bi-info-circle me-2 text-primary"></i>
+    <span class="text-muted">You are viewing the risk analysis for your own project. Investors will see their decision tools here.</span>
+</div>
+{% endif %}
 
 {% endblock %}

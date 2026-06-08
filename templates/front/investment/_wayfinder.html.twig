@@ -7,15 +7,15 @@
     {num: 5, label: 'Portfolio', icon: 'bi-briefcase'},
 ] %}
 <style>
-.wf-bar{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:.5rem;padding:.45rem 1.2rem;margin-bottom:.85rem;min-height:40px;gap:1rem}
-.wf-page{font-size:.82rem;font-weight:600;color:#1e293b;white-space:nowrap}
+.wf-bar{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:.75rem;padding:.5rem 1.2rem;margin-bottom:.85rem;min-height:40px;gap:1rem;backdrop-filter:blur(14px)}
+.wf-page{font-size:.82rem;font-weight:700;color:rgba(255,255,255,.9);white-space:nowrap;letter-spacing:.01em}
 .wf-steps{display:flex;align-items:center;gap:0}
-.wf-step{display:flex;align-items:center;gap:.3rem;font-size:.72rem;color:#94a3b8;white-space:nowrap;padding:.2rem .45rem;border-radius:10rem;transition:all .2s}
-.wf-step.wf-active{color:#3b82f6;font-weight:600;background:rgba(59,130,246,.08)}
-.wf-step.wf-done{color:#64748b}
+.wf-step{display:flex;align-items:center;gap:.3rem;font-size:.72rem;color:rgba(255,255,255,.35);white-space:nowrap;padding:.2rem .45rem;border-radius:10rem;transition:all .2s}
+.wf-step.wf-active{color:#67e8f9;font-weight:600;background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.18)}
+.wf-step.wf-done{color:rgba(255,255,255,.55)}
 .wf-step i{font-size:.7rem}
-.wf-connector{width:18px;height:1px;background:#cbd5e1;flex-shrink:0}
-.wf-step.wf-active+.wf-connector{background:#3b82f6}
+.wf-connector{width:18px;height:1px;background:rgba(255,255,255,.1);flex-shrink:0}
+.wf-step.wf-active+.wf-connector{background:rgba(103,232,249,.3)}
 @media(max-width:576px){.wf-steps{display:none}}
 </style>
 <div class="wf-bar">

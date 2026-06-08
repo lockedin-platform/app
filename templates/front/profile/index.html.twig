@@ -1,214 +1,254 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Mon Profil - Najahni{% endblock %}
+{% block title %}My Profile - Najahni{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.profile-hero{border-radius:1.5rem;overflow:hidden;position:relative;margin-bottom:1.5rem}
+.profile-cover{height:140px;background:linear-gradient(135deg,#0891b2 0%,#4361ee 50%,#7209b7 100%);position:relative}
+.profile-cover::after{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.profile-avatar-area{padding:0 2rem 1.5rem;background:rgba(255,255,255,.03);position:relative}
+.profile-avatar{width:90px;height:90px;border-radius:50%;border:4px solid rgba(255,255,255,.2);
+    box-shadow:0 4px 20px rgba(0,0,0,.4);object-fit:cover;
+    margin-top:-45px;display:block}
+.profile-avatar-initials{width:90px;height:90px;border-radius:50%;border:4px solid rgba(255,255,255,.2);
+    box-shadow:0 4px 20px rgba(0,0,0,.4);margin-top:-45px;
+    background:linear-gradient(135deg,#4361ee,#7209b7);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:800}
+.security-item{display:flex;justify-content:space-between;align-items:center;
+    padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.security-item:last-child{border-bottom:none}
+.xp-bar-wrap{background:rgba(255,255,255,.08);border-radius:10rem;height:8px;overflow:hidden}
+.info-label{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:.2rem}
+.info-value{font-size:.9rem;color:rgba(226,232,240,.85);font-weight:500}
+.ai-section{border:1.5px solid rgba(67,97,238,.2);border-radius:1.25rem;padding:1.5rem;
+    background:linear-gradient(135deg,rgba(67,97,238,.08),rgba(114,9,183,.06))}
+</style>
+{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-person-circle me-2"></i>Mon Profil</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_profile_notifications') }}" class="btn btn-outline-secondary position-relative">
-            <i class="bi bi-bell"></i>
-            {% if unreadNotifs > 0 %}
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.65rem">{{ unreadNotifs }}</span>
-            {% endif %}
-        </a>
-        <a href="{{ path('app_profile_edit') }}" class="btn btn-nj"><i class="bi bi-pencil me-2"></i>Modifier</a>
-    </div>
+
+<div class="d-flex justify-content-end gap-2 mb-3">
+    <a href="{{ path('app_profile_notifications') }}" class="btn btn-outline-secondary position-relative">
+        <i class="bi bi-bell"></i>
+        {% if unreadNotifs > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:.6rem">{{ unreadNotifs }}</span>
+        {% endif %}
+    </a>
+    <a href="{{ path('app_profile_edit') }}" class="btn btn-nj"><i class="bi bi-pencil me-2"></i>Edit Profile</a>
 </div>
 
 <div class="row g-4">
-    {# Left Column: Avatar & Quick Info #}
+    {# ── Left column ── #}
     <div class="col-md-4">
-        <div class="card border-0 shadow-sm text-center p-4" style="border-radius:1rem">
-            {% if app.user.profilePicture %}
-                <img src="{{ app.user.profilePicture }}" class="rounded-circle mx-auto mb-3" width="120" height="120" style="object-fit:cover" alt="Avatar">
-            {% else %}
-                <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:120px;height:120px;background:var(--nj-gradient);color:#fff;font-size:3rem">
-                    {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+        {# Profile card with cover photo #}
+        <div class="card p-0 overflow-hidden mb-3">
+            <div class="profile-cover"></div>
+            <div class="profile-avatar-area">
+                {% if app.user.profilePicture %}
+                    <img src="{{ app.user.profilePicture }}" class="profile-avatar" alt="">
+                {% else %}
+                    <div class="profile-avatar-initials">
+                        {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                    </div>
+                {% endif %}
+                <div class="mt-2">
+                    <h4 class="fw-bold mb-1">{{ app.user.firstname }} {{ app.user.lastname }}</h4>
+                    <span class="badge badge-role-{{ app.user.role }} rounded-pill mb-2">{{ app.user.role|lower|capitalize }}</span>
+                    <p class="text-muted mb-1" style="font-size:.85rem"><i class="bi bi-envelope me-1"></i>{{ app.user.email }}</p>
+                    {% if app.user.phone %}<p class="text-muted mb-0" style="font-size:.85rem"><i class="bi bi-phone me-1"></i>{{ app.user.phone }}</p>{% endif %}
                 </div>
-            {% endif %}
-            <h4 class="fw-bold mb-1">{{ app.user.firstname }} {{ app.user.lastname }}</h4>
-            <span class="badge rounded-pill mb-2" style="background:var(--nj-gradient)">{{ app.user.role }}</span>
-            <p class="text-muted small">{{ app.user.email }}</p>
-            {% if app.user.phone %}<p class="text-muted small mb-0"><i class="bi bi-phone me-1"></i>{{ app.user.phone }}</p>{% endif %}
+            </div>
         </div>
 
+        {# XP card #}
         {% if app.user.totalXp > 0 %}
-        <div class="card border-0 shadow-sm mt-3 p-4" style="border-radius:1rem">
-            <h6 class="fw-bold mb-3"><i class="bi bi-star-fill text-warning me-2"></i>Expérience</h6>
-            <div class="d-flex align-items-center">
-                <div class="display-6 fw-bold me-3" style="color:var(--nj-primary)">{{ app.user.totalXp }}</div>
-                <span class="text-muted">Points XP</span>
+        <div class="card p-4 mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h6 class="fw-bold mb-0"><i class="bi bi-star-fill text-warning me-2"></i>Experience</h6>
+                <span class="badge" style="background:rgba(255,209,102,.15);color:#fde68a;font-size:.72rem">
+                    Level {{ (app.user.totalXp / 100)|round }}
+                </span>
             </div>
+            <div class="d-flex align-items-baseline gap-2 mb-2">
+                <span class="nj-num nj-num-cyan" style="font-size:2rem">{{ app.user.totalXp }}</span>
+                <span class="text-muted small">XP points</span>
+            </div>
+            <div class="xp-bar-wrap">
+                <div class="progress-bar" style="width:{{ min(app.user.totalXp % 100, 100) }}%;height:8px;background:linear-gradient(90deg,#f59e0b,#d97706)"></div>
+            </div>
+            <p class="text-muted mb-0 mt-1" style="font-size:.75rem">{{ 100 - (app.user.totalXp % 100) }} XP until next level</p>
         </div>
         {% endif %}
 
-        {# Account Security Card #}
-        <div class="card border-0 shadow-sm mt-3 p-4" style="border-radius:1rem">
-            <h6 class="fw-bold mb-3"><i class="bi bi-shield-check me-2"></i>Sécurité du compte</h6>
-            <div class="d-flex flex-column gap-2">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="small">Email vérifié</span>
-                    {% if app.user.verified %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Oui</span>
-                    {% else %}
-                        <form method="post" action="{{ path('app_profile_verify_email') }}" class="d-inline">
-                            <input type="hidden" name="action" value="send">
-                            <button type="submit" class="badge bg-warning border-0 text-dark" style="cursor:pointer"><i class="bi bi-exclamation-circle"></i> Vérifier</button>
-                        </form>
-                    {% endif %}
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="small">Google lié</span>
-                    {% if app.user.googleProviderId %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Oui</span>
-                    {% else %}
-                        <a href="{{ path('app_google_connect') }}" class="badge bg-secondary text-decoration-none"><i class="bi bi-google"></i> Lier</a>
-                    {% endif %}
-                </div>
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="small">Face ID</span>
-                    {% if app.user.faceRegistered %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Actif</span>
-                    {% else %}
-                        <span class="badge bg-secondary">Inactif</span>
-                    {% endif %}
-                </div>
+        {# Security card #}
+        <div class="card p-4">
+            <h6 class="fw-bold mb-3"><i class="bi bi-shield-check me-2" style="color:var(--nj-success)"></i>Account Security</h6>
+            <div class="security-item">
+                <span class="small fw-medium">Email verified</span>
+                {% if app.user.verified %}
+                    <span class="badge" style="background:rgba(5,150,105,.15);color:#6ee7b7">
+                        <i class="bi bi-check-circle-fill me-1"></i>Verified
+                    </span>
+                {% else %}
+                    <form method="post" action="{{ path('app_profile_verify_email') }}" class="d-inline">
+                        <input type="hidden" name="action" value="send">
+                        <button type="submit" class="badge border-0" style="background:rgba(217,119,6,.15);color:#fde68a;cursor:pointer">
+                            <i class="bi bi-exclamation-circle me-1"></i>Verify
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+            <div class="security-item">
+                <span class="small fw-medium">Google linked</span>
+                {% if app.user.googleProviderId %}
+                    <span class="badge" style="background:rgba(5,150,105,.1);color:#059669"><i class="bi bi-check-circle-fill me-1"></i>Linked</span>
+                {% else %}
+                    <a href="{{ path('app_google_connect') }}" class="badge text-decoration-none" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)">
+                        <i class="bi bi-google me-1"></i>Link
+                    </a>
+                {% endif %}
+            </div>
+            <div class="security-item">
+                <span class="small fw-medium">Face ID</span>
+                {% if app.user.faceRegistered %}
+                    <span class="badge" style="background:rgba(67,97,238,.2);color:#93c5fd"><i class="bi bi-person-bounding-box me-1"></i>Active</span>
+                {% else %}
+                    <span class="badge" style="background:rgba(255,255,255,.06);color:rgba(255,255,255,.4)">Inactive</span>
+                {% endif %}
             </div>
         </div>
     </div>
 
-    {# Right Column: Details & History #}
+    {# ── Right column ── #}
     <div class="col-md-8">
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4"><i class="bi bi-info-circle me-2"></i>Informations</h5>
-
-            <div class="row g-3">
+        {# Info card #}
+        <div class="card p-4 mb-4">
+            <h5 class="fw-bold mb-4"><i class="bi bi-person-lines-fill me-2" style="color:var(--nj-primary)"></i>Personal Information</h5>
+            <div class="row g-4">
                 {% if app.user.bio %}
                 <div class="col-12">
-                    <label class="form-label text-muted small fw-semibold">Bio</label>
-                    <p>{{ app.user.bio }}</p>
+                    <div class="info-label">Bio</div>
+                    <p class="info-value mb-0">{{ app.user.bio }}</p>
                 </div>
                 {% endif %}
-
                 {% if app.user.companyName %}
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">Entreprise</label>
-                    <p><i class="bi bi-building me-1"></i>{{ app.user.companyName }}</p>
+                    <div class="info-label">Company</div>
+                    <div class="info-value"><i class="bi bi-building me-1 text-muted"></i>{{ app.user.companyName }}</div>
                 </div>
                 {% endif %}
-
                 {% if app.user.linkedinUrl %}
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">LinkedIn</label>
-                    <p><a href="{{ app.user.linkedinUrl }}" target="_blank" class="text-decoration-none"><i class="bi bi-linkedin me-1"></i>Voir le profil</a></p>
+                    <div class="info-label">LinkedIn</div>
+                    <a href="{{ app.user.linkedinUrl }}" target="_blank" class="info-value text-decoration-none" style="color:var(--nj-primary)">
+                        <i class="bi bi-linkedin me-1"></i>View profile
+                    </a>
                 </div>
                 {% endif %}
-
                 {% if app.user.address %}
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">Adresse</label>
-                    <p><i class="bi bi-geo-alt me-1"></i>{{ app.user.address }}</p>
+                    <div class="info-label">Address</div>
+                    <div class="info-value"><i class="bi bi-geo-alt me-1 text-muted"></i>{{ app.user.address }}</div>
                 </div>
                 {% endif %}
-
                 {% if app.user.dateOfBirth %}
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">Date de naissance</label>
-                    <p><i class="bi bi-calendar me-1"></i>{{ app.user.dateOfBirth|date('d/m/Y') }}</p>
+                    <div class="info-label">Date of birth</div>
+                    <div class="info-value"><i class="bi bi-calendar me-1 text-muted"></i>{{ app.user.dateOfBirth|date('d/m/Y') }}</div>
                 </div>
                 {% endif %}
-
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">Membre depuis</label>
-                    <p><i class="bi bi-clock me-1"></i>{{ app.user.createdAt|date('d/m/Y') }}</p>
+                    <div class="info-label">Member since</div>
+                    <div class="info-value"><i class="bi bi-clock me-1 text-muted"></i>{{ app.user.createdAt|date('d/m/Y') }}</div>
                 </div>
-
                 <div class="col-md-6">
-                    <label class="form-label text-muted small fw-semibold">Statut</label>
-                    <p>
+                    <div class="info-label">Status</div>
+                    <div>
                         {% if app.user.verified %}
-                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Vérifié</span>
+                            <span class="badge" style="background:rgba(5,150,105,.1);color:#059669"><i class="bi bi-check-circle-fill me-1"></i>Verified</span>
                         {% else %}
-                            <span class="badge bg-warning text-dark"><i class="bi bi-exclamation-circle me-1"></i>Non vérifié</span>
+                            <span class="badge" style="background:rgba(217,119,6,.12);color:#d97706"><i class="bi bi-exclamation-circle me-1"></i>Not verified</span>
                         {% endif %}
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
+        {# AI Assistant #}
+        <div class="ai-section mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>Assistant IA de profil</h5>
+                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2" style="color:var(--nj-primary)"></i>Profile AI Assistant</h5>
                 {% if not aiEnabled %}
-                    <span class="badge bg-secondary">IA désactivée</span>
+                    <span class="badge bg-secondary">AI disabled</span>
                 {% endif %}
             </div>
-            <p class="text-muted small">Améliorez votre bio, obtenez des recommandations personnalisées et posez une question à l'assistant IA.</p>
-            <div class="d-flex flex-column flex-md-row gap-2 mb-3">
-                <button id="generateBioBtn" class="btn btn-outline-primary w-100" {{ not aiEnabled ? 'disabled' : '' }}>
-                    <i class="bi bi-pencil-square me-1"></i>Réécrire ma bio
+            <p class="text-muted small mb-3">Improve your bio, get personalized recommendations and connect with the right profiles.</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button id="generateBioBtn" class="btn btn-sm btn-outline-primary" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-pencil-square me-1"></i>Rewrite my bio
                 </button>
-                <button id="recommendationsBtn" class="btn btn-outline-success w-100" {{ not aiEnabled ? 'disabled' : '' }}>
-                    <i class="bi bi-stars me-1"></i>Recommandations IA
+                <button id="recommendationsBtn" class="btn btn-sm btn-outline-success" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-stars me-1"></i>Recommendations
                 </button>
-                <button id="matchingBtn" class="btn btn-outline-info w-100" {{ not aiEnabled ? 'disabled' : '' }}>
-                    <i class="bi bi-people-fill me-1"></i>Connexions suggérées
+                <button id="matchingBtn" class="btn btn-sm btn-outline-info" {{ not aiEnabled ? 'disabled' : '' }}>
+                    <i class="bi bi-people-fill me-1"></i>Suggested connections
                 </button>
             </div>
             <div id="matchingResult" class="d-none mb-3">
-                <h6 class="fw-semibold"><i class="bi bi-people me-1"></i>Utilisateurs compatibles</h6>
-                <div id="matchingList" class="list-group"></div>
+                <h6 class="fw-semibold small mb-2"><i class="bi bi-people me-1"></i>Compatible profiles</h6>
+                <div id="matchingList" class="d-flex flex-column gap-2"></div>
             </div>
-            <div id="aiResult" class="border rounded-3 p-3 bg-light" style="min-height:120px;">
-                <p class="mb-0 text-muted">Résultats IA affichés ici.</p>
+            <div id="aiResult" class="rounded-3 p-3" style="min-height:80px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);font-size:.88rem;color:rgba(226,232,240,.85)">
+                <p class="mb-0 text-muted">AI results will appear here.</p>
             </div>
-            <div class="mt-4">
-                <label class="form-label fw-semibold">Posez une question à l’assistant</label>
+            <div class="mt-3">
+                <label class="form-label fw-semibold small mb-1">Ask the assistant</label>
                 <div class="input-group">
-                    <textarea id="aiChatMessage" class="form-control" rows="2" placeholder="Que puis-je améliorer sur mon profil ?" {{ not aiEnabled ? 'disabled' : '' }}></textarea>
-                    <button id="aiChatSend" class="btn btn-nj" type="button" {{ not aiEnabled ? 'disabled' : '' }}><i class="bi bi-send-fill me-1"></i>Envoyer</button>
+                    <textarea id="aiChatMessage" class="form-control" rows="2" placeholder="What can I improve on my profile?" {{ not aiEnabled ? 'disabled' : '' }}></textarea>
+                    <button id="aiChatSend" class="btn btn-nj" type="button" {{ not aiEnabled ? 'disabled' : '' }}><i class="bi bi-send-fill"></i></button>
                 </div>
-                <div id="aiChatResponse" class="mt-3 text-muted small">Réponse de l'IA ici.</div>
+                <div id="aiChatResponse" class="mt-2 text-muted" style="font-size:.85rem"></div>
             </div>
         </div>
 
-        {# Recent Login History #}
-        <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
+        {# Login history #}
+        <div class="card p-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Connexions récentes</h5>
-                <a href="{{ path('app_profile_login_history') }}" class="btn btn-sm btn-outline-nj">Voir tout</a>
+                <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2" style="color:var(--nj-accent)"></i>Recent Sign-ins</h5>
+                <a href="{{ path('app_profile_login_history') }}" class="btn btn-sm btn-outline-secondary">View all</a>
             </div>
             {% if loginHistory|length > 0 %}
                 <div class="table-responsive">
-                    <table class="table table-sm mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Date</th>
-                                <th>Méthode</th>
-                                <th>IP</th>
-                                <th>Statut</th>
+                    <table class="table table-sm mb-0" style="font-size:.86rem">
+                        <thead>
+                            <tr style="background:rgba(255,255,255,.04)">
+                                <th class="border-0 py-2 text-muted fw-semibold" style="font-size:.75rem;letter-spacing:.04em">DATE</th>
+                                <th class="border-0 py-2 text-muted fw-semibold" style="font-size:.75rem;letter-spacing:.04em">METHOD</th>
+                                <th class="border-0 py-2 text-muted fw-semibold" style="font-size:.75rem;letter-spacing:.04em">IP</th>
+                                <th class="border-0 py-2 text-muted fw-semibold" style="font-size:.75rem;letter-spacing:.04em">STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for entry in loginHistory|slice(0, 5) %}
                             <tr>
-                                <td class="small">{{ entry.loginTime|date('d/m/Y H:i') }}</td>
-                                <td>
+                                <td class="text-muted py-2">{{ entry.loginTime|date('d/m/Y H:i') }}</td>
+                                <td class="py-2">
                                     {% if entry.loginMethod == 'GOOGLE' %}
-                                        <span class="badge bg-info"><i class="bi bi-google me-1"></i>Google</span>
+                                        <span class="badge" style="background:rgba(66,133,244,.12);color:#4285F4"><i class="bi bi-google me-1"></i>Google</span>
                                     {% elseif entry.loginMethod == 'FACE_ID' %}
-                                        <span class="badge" style="background:var(--nj-accent)"><i class="bi bi-person-bounding-box me-1"></i>Face ID</span>
+                                        <span class="badge" style="background:rgba(114,9,183,.12);color:#7209b7"><i class="bi bi-person-bounding-box me-1"></i>Face ID</span>
                                     {% else %}
-                                        <span class="badge bg-secondary"><i class="bi bi-key me-1"></i>Email</span>
+                                        <span class="badge" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.65)"><i class="bi bi-key me-1"></i>Email</span>
                                     {% endif %}
                                 </td>
-                                <td class="small text-muted">{{ entry.ipAddress }}</td>
-                                <td>
+                                <td class="text-muted py-2 small">{{ entry.ipAddress }}</td>
+                                <td class="py-2">
                                     {% if entry.success %}
-                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        <span style="color:#059669"><i class="bi bi-check-circle-fill"></i></span>
                                     {% else %}
-                                        <i class="bi bi-x-circle-fill text-danger"></i>
+                                        <span style="color:#dc2626"><i class="bi bi-x-circle-fill"></i></span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -217,7 +257,10 @@
                     </table>
                 </div>
             {% else %}
-                <p class="text-muted text-center small mb-0">Aucun historique de connexion.</p>
+                <div class="text-center py-3">
+                    <i class="bi bi-clock-history text-muted" style="font-size:2rem;opacity:.4"></i>
+                    <p class="text-muted small mb-0 mt-2">No login history.</p>
+                </div>
             {% endif %}
         </div>
     </div>
@@ -227,117 +270,75 @@
 {% block javascripts %}
 <script>
 (function() {
-    const baseUrl = window.location.origin;
     const resultBox = document.getElementById('aiResult');
     const responseBox = document.getElementById('aiChatResponse');
     const messageInput = document.getElementById('aiChatMessage');
 
-    function setLoading(button, text) {
-        button.disabled = true;
-        button.dataset.original = button.innerHTML;
-        button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>' + text;
+    function setLoading(btn, txt) {
+        btn.disabled = true;
+        btn.dataset.orig = btn.innerHTML;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>' + txt;
     }
-
-    function resetButton(button) {
-        if (button.dataset.original) {
-            button.innerHTML = button.dataset.original;
-            button.disabled = false;
-        }
-    }
+    function resetBtn(btn) { if (btn.dataset.orig) { btn.innerHTML = btn.dataset.orig; btn.disabled = false; } }
 
     async function callAi(endpoint, payload) {
-        const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-        });
-        return response.json();
+        const r = await fetch(endpoint, { method:'POST', headers:{'X-Requested-With':'XMLHttpRequest','Content-Type':'application/json'}, body: JSON.stringify(payload) });
+        return r.json();
     }
 
     const generateBioBtn = document.getElementById('generateBioBtn');
     const recommendationsBtn = document.getElementById('recommendationsBtn');
     const chatSendBtn = document.getElementById('aiChatSend');
-
-    if (generateBioBtn) {
-        generateBioBtn.addEventListener('click', async function() {
-            setLoading(generateBioBtn, 'Génération...');
-            const data = await callAi('{{ path('app_profile_ai_generate_bio') }}', {});
-            if (data.bio) {
-                resultBox.innerHTML = '<strong>Bio IA :</strong><p class="mb-0">' + data.bio.replace(/\n/g, '<br>') + '</p>';
-            } else {
-                resultBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de la génération.') + '</span>';
-            }
-            resetButton(generateBioBtn);
-        });
-    }
-
-
-    if (recommendationsBtn) {
-        recommendationsBtn.addEventListener('click', async function() {
-            setLoading(recommendationsBtn, 'Chargement...');
-            const data = await callAi('{{ path('app_profile_ai_recommendations') }}', {});
-            if (data.recommendations) {
-                resultBox.innerHTML = '<strong>Recommandations :</strong><p class="mb-0">' + data.recommendations.replace(/\n/g, '<br>') + '</p>';
-            } else {
-                resultBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de la génération.') + '</span>';
-            }
-            resetButton(recommendationsBtn);
-        });
-    }
-
-    if (chatSendBtn) {
-        chatSendBtn.addEventListener('click', async function() {
-            const message = messageInput.value.trim();
-            if (!message) {
-                responseBox.textContent = 'Entrez votre question pour l\'assistant.';
-                return;
-            }
-            setLoading(chatSendBtn, 'Envoi...');
-            const data = await callAi('{{ path('app_profile_ai_chat') }}', {message});
-            if (data.answer) {
-                responseBox.innerHTML = '<strong>IA :</strong> ' + data.answer.replace(/\n/g, '<br>');
-            } else {
-                responseBox.innerHTML = '<span class="text-danger">' + (data.error || 'Erreur lors de l\'envoi.') + '</span>';
-            }
-            resetButton(chatSendBtn);
-        });
-    }
-
     const matchingBtn = document.getElementById('matchingBtn');
     const matchingResult = document.getElementById('matchingResult');
     const matchingList = document.getElementById('matchingList');
 
-    if (matchingBtn) {
-        matchingBtn.addEventListener('click', async function() {
-            setLoading(matchingBtn, 'Analyse IA...');
-            const data = await callAi('{{ path('app_profile_ai_matching') }}', {});
-            if (data.matches && data.matches.length > 0) {
-                matchingResult.classList.remove('d-none');
-                matchingList.innerHTML = data.matches.map(m => `
-                    <div class="list-group-item d-flex align-items-center gap-3">
-                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" style="width:40px;height:40px;font-size:0.9rem;">
-                            ${m.picture ? '<img src="/uploads/profiles/' + m.picture + '" class="rounded-circle" style="width:40px;height:40px;object-fit:cover">' : m.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="fw-semibold">${m.name} <span class="badge bg-secondary ms-1">${m.role}</span></div>
-                            ${m.company ? '<small class="text-muted">' + m.company + '</small><br>' : ''}
-                            <small class="text-success"><i class="bi bi-lightning-fill"></i> ${m.reason}</small>
-                        </div>
-                        <div class="text-end">
-                            <span class="badge bg-info">${m.score}%</span>
-                        </div>
+    if (generateBioBtn) generateBioBtn.addEventListener('click', async function() {
+        setLoading(generateBioBtn, 'Generating...');
+        const data = await callAi('{{ path('app_profile_ai_generate_bio') }}', {});
+        resultBox.innerHTML = data.bio ? '<strong class="d-block mb-1">Suggested bio:</strong><p class="mb-0">' + data.bio.replace(/\n/g,'<br>') + '</p>' : '<span class="text-danger">' + (data.error||'Error') + '</span>';
+        resetBtn(generateBioBtn);
+    });
+
+    if (recommendationsBtn) recommendationsBtn.addEventListener('click', async function() {
+        setLoading(recommendationsBtn, 'Loading...');
+        const data = await callAi('{{ path('app_profile_ai_recommendations') }}', {});
+        resultBox.innerHTML = data.recommendations ? '<strong class="d-block mb-1">Recommendations:</strong><p class="mb-0">' + data.recommendations.replace(/\n/g,'<br>') + '</p>' : '<span class="text-danger">' + (data.error||'Error') + '</span>';
+        resetBtn(recommendationsBtn);
+    });
+
+    if (chatSendBtn) chatSendBtn.addEventListener('click', async function() {
+        const msg = messageInput.value.trim();
+        if (!msg) return;
+        setLoading(chatSendBtn, '');
+        const data = await callAi('{{ path('app_profile_ai_chat') }}', {message:msg});
+        responseBox.innerHTML = data.answer ? '<strong>AI: </strong>' + data.answer.replace(/\n/g,'<br>') : '<span class="text-danger">' + (data.error||'Error') + '</span>';
+        resetBtn(chatSendBtn);
+    });
+
+    if (matchingBtn) matchingBtn.addEventListener('click', async function() {
+        setLoading(matchingBtn, 'Analyzing...');
+        const data = await callAi('{{ path('app_profile_ai_matching') }}', {});
+        if (data.matches && data.matches.length > 0) {
+            matchingResult.classList.remove('d-none');
+            matchingList.innerHTML = data.matches.map(m => `
+                <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)">
+                    <div class="nj-avatar nj-avatar-sm flex-shrink-0" style="background:var(--nj-gradient)">
+                        ${m.picture ? '<img src="/uploads/profiles/'+m.picture+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover">' : m.name.charAt(0).toUpperCase()}
                     </div>
-                `).join('');
-            } else {
-                matchingResult.classList.remove('d-none');
-                matchingList.innerHTML = '<p class="text-muted text-center small mb-0">Aucune suggestion disponible pour le moment.</p>';
-            }
-            resetButton(matchingBtn);
-        });
-    }
+                    <div class="flex-grow-1 min-w-0">
+                        <div class="fw-semibold" style="font-size:.88rem;color:#e2e8f0">${m.name} <span class="badge ms-1" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);font-size:.68rem">${m.role}</span></div>
+                        ${m.company ? '<small class="text-muted">'+m.company+'</small>' : ''}
+                        <div class="text-success" style="font-size:.77rem"><i class="bi bi-lightning-fill"></i> ${m.reason}</div>
+                    </div>
+                    <span class="badge rounded-pill" style="background:rgba(67,97,238,.2);color:#93c5fd">${m.score}%</span>
+                </div>`).join('');
+        } else {
+            matchingResult.classList.remove('d-none');
+            matchingList.innerHTML = '<p class="text-muted text-center small p-3 mb-0">No suggestions available.</p>';
+        }
+        resetBtn(matchingBtn);
+    });
 })();
 </script>
 {% endblock %}

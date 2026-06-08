@@ -2,56 +2,126 @@
 
 {% block title %}Mes Projets - Najahni{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.proj-card{border-radius:1.25rem;border:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.04);backdrop-filter:blur(14px);overflow:hidden;
+    box-shadow:0 8px 32px rgba(0,0,0,.25);transition:transform .3s ease,box-shadow .3s ease,border-color .3s ease;color:rgba(226,232,240,.9);position:relative}
+.proj-card:hover{transform:translateY(-6px);box-shadow:0 20px 56px rgba(67,97,238,.25),0 0 0 1px rgba(67,97,238,.2);border-color:rgba(67,97,238,.35)}
+.proj-card::after{content:'';position:absolute;inset:0;border-radius:inherit;background:linear-gradient(180deg,rgba(67,97,238,.06),transparent 40%);pointer-events:none;opacity:0;transition:opacity .3s}
+.proj-card:hover::after{opacity:1}
+.proj-card-header{height:3px;background:var(--nj-gradient)}
+.proj-card-header.st-EVALUE{background:linear-gradient(90deg,#059669,#06d6a0);box-shadow:0 0 12px rgba(6,214,160,.35)}
+.proj-card-header.st-SOUMIS{background:linear-gradient(90deg,#d97706,#ffd166);box-shadow:0 0 12px rgba(255,209,102,.35)}
+.proj-card-header.st-BROUILLON{background:linear-gradient(90deg,#475569,#64748b)}
+.proj-stat-chip{display:inline-flex;align-items:center;gap:.3rem;font-size:.75rem;font-weight:600;
+    padding:.3rem .7rem;border-radius:10rem;border:1.5px solid}
+.proj-stat-chip.st-EVALUE{background:rgba(5,150,105,.15);color:#6ee7b7;border-color:rgba(5,150,105,.3)}
+.proj-stat-chip.st-SOUMIS{background:rgba(217,119,6,.15);color:#fde68a;border-color:rgba(217,119,6,.3)}
+.proj-stat-chip.st-BROUILLON{background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);border-color:rgba(255,255,255,.15)}
+.score-ring{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:.8rem;font-weight:800;flex-shrink:0;border:3px solid}
+.score-ring.high{border-color:#6ee7b7;color:#6ee7b7;background:rgba(5,150,105,.12)}
+.score-ring.mid{border-color:#fde68a;color:#fde68a;background:rgba(217,119,6,.12)}
+.score-ring.low{border-color:#fca5a5;color:#fca5a5;background:rgba(239,71,111,.12)}
+.sector-tag{font-size:.76rem;font-weight:600;padding:.28rem .65rem;border-radius:8px;
+    background:rgba(67,97,238,.15);color:#93c5fd;border:1px solid rgba(67,97,238,.25)}
+.etape-tag{font-size:.76rem;font-weight:600;padding:.28rem .65rem;border-radius:8px;
+    background:rgba(6,182,212,.12);color:#67e8f9;border:1px solid rgba(6,182,212,.25)}
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-rocket-takeoff me-2"></i>Mes Projets</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_projet_chatbot') }}" class="btn btn-outline-dark"><i class="bi bi-robot me-1"></i>Chatbot IA</a>
-        <a href="{{ path('app_projet_dashboard') }}" class="btn btn-outline-primary"><i class="bi bi-speedometer2 me-1"></i>Dashboard</a>
-        <a href="{{ path('app_projet_export_csv') }}" class="btn btn-outline-success"><i class="bi bi-file-earmark-excel me-1"></i>Export CSV</a>
-        <a href="{{ path('app_projet_new') }}" class="btn btn-nj"><i class="bi bi-plus-lg me-2"></i>Nouveau Projet</a>
+
+{# ── Page Hero ── #}
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-rocket-takeoff nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Projects</div>
+            <h1 class="nj-ph-title mb-1">My Projects</h1>
+            <p class="nj-ph-sub">Manage, score and grow your entrepreneurial projects with AI</p>
+        </div>
+        <div class="nj-hero-actions">
+            <div class="nj-action-group">
+                <a href="{{ path('app_projet_dashboard') }}" class="nj-action-link"><i class="bi bi-speedometer2"></i>Dashboard</a>
+            </div>
+            <a href="{{ path('app_projet_new') }}" class="nj-action-cta"><i class="bi bi-plus-lg"></i>New Project</a>
+        </div>
     </div>
 </div>
 
-{# Barre de recherche, filtre et tri #}
-<div class="card border-0 shadow-sm mb-4 p-3" style="border-radius:1rem">
-    <form method="get" action="{{ path('app_projet_index') }}">
+{# ── Stats strip ── #}
+{% set nEvalue = projets|filter(p => p.statutProjet == 'EVALUE')|length %}
+{% set nSoumis = projets|filter(p => p.statutProjet == 'SOUMIS')|length %}
+{% set nBrouillon = projets|filter(p => p.statutProjet == 'BROUILLON')|length %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <div class="nj-raised p-3 text-center">
+            <div class="nj-num nj-num-blue" style="font-size:1.9rem">{{ projets|length }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">PROJECTS</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="nj-raised p-3 text-center">
+            <div class="nj-num nj-num-good" style="font-size:1.9rem">{{ nEvalue }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">EVALUATED</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="nj-raised p-3 text-center">
+            <div class="nj-num nj-num-warn" style="font-size:1.9rem">{{ nSoumis }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">SUBMITTED</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="nj-raised p-3 text-center">
+            <div class="nj-num" style="font-size:1.9rem;color:rgba(255,255,255,.5)">{{ nBrouillon }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.72rem;margin-top:.3rem;letter-spacing:.04em">DRAFTS</div>
+        </div>
+    </div>
+</div>
+
+{# ── Filter bar ── #}
+<div class="nj-filter-bar nj-filter-projets mb-4">
+    <form method="get" action="{{ path('app_projet_index') }}" id="projFilerForm">
         <div class="row g-3 align-items-end">
             <div class="col-md-4">
-                <label class="form-label fw-semibold small mb-1">Rechercher</label>
+                <label class="form-label fw-semibold small mb-1 text-secondary">Search</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                    <input type="text" name="q" class="form-control" placeholder="Titre, description, secteur..." value="{{ search }}">
+                    <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="q" class="form-control" placeholder="Title, description, sector..." value="{{ search }}">
                 </div>
             </div>
             <div class="col-md-3">
-                <label class="form-label fw-semibold small mb-1">Secteur</label>
+                <label class="form-label fw-semibold small mb-1 text-secondary">Sector</label>
                 <select name="secteur" class="form-select">
-                    <option value="">Tous les secteurs</option>
+                    <option value="">All sectors</option>
                     {% for s in secteurs %}
                         <option value="{{ s }}" {{ selectedSecteur == s ? 'selected' }}>{{ s }}</option>
                     {% endfor %}
                 </select>
             </div>
             <div class="col-md-3">
-                <label class="form-label fw-semibold small mb-1">Trier par</label>
+                <label class="form-label fw-semibold small mb-1 text-secondary">Sort by</label>
                 <div class="input-group">
                     <select name="sort" class="form-select">
-                        <option value="dateCreation" {{ sort == 'dateCreation' ? 'selected' }}>Date de création</option>
-                        <option value="titre" {{ sort == 'titre' ? 'selected' }}>Titre</option>
-                        <option value="secteur" {{ sort == 'secteur' ? 'selected' }}>Secteur</option>
-                        <option value="statutProjet" {{ sort == 'statutProjet' ? 'selected' }}>Statut</option>
-                        <option value="scoreGlobal" {{ sort == 'scoreGlobal' ? 'selected' }}>Score</option>
+                        <option value="dateCreation" {{ sort == 'dateCreation' ? 'selected' }}>Date created</option>
+                        <option value="titre" {{ sort == 'titre' ? 'selected' }}>Title</option>
+                        <option value="secteur" {{ sort == 'secteur' ? 'selected' }}>Sector</option>
+                        <option value="statutProjet" {{ sort == 'statutProjet' ? 'selected' }}>Status</option>
+                        <option value="scoreGlobal" {{ sort == 'scoreGlobal' ? 'selected' }}>AI Score</option>
                     </select>
-                    <select name="dir" class="form-select" style="max-width:90px">
-                        <option value="DESC" {{ direction == 'DESC' ? 'selected' }}>Desc</option>
-                        <option value="ASC" {{ direction == 'ASC' ? 'selected' }}>Asc</option>
+                    <select name="dir" class="form-select" style="max-width:82px">
+                        <option value="DESC" {{ direction == 'DESC' ? 'selected' }}>↓</option>
+                        <option value="ASC" {{ direction == 'ASC' ? 'selected' }}>↑</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-2 d-flex gap-2">
-                <button type="submit" class="btn btn-nj flex-fill"><i class="bi bi-funnel me-1"></i>Filtrer</button>
-                <a href="{{ path('app_projet_index') }}" class="btn btn-outline-secondary" title="Réinitialiser"><i class="bi bi-x-lg"></i></a>
+                <button type="submit" class="btn btn-nj flex-fill"><i class="bi bi-funnel me-1"></i>Filter</button>
+                <a href="{{ path('app_projet_index') }}" class="btn btn-outline-secondary px-3" title="Reset"><i class="bi bi-x-lg"></i></a>
             </div>
         </div>
     </form>
@@ -59,61 +129,99 @@
 
 {% if projets|length > 0 %}
 <div id="liveResults">
+<div class="nj-section-label" style="--nj-section-color:linear-gradient(135deg,#4361ee,#7209b7)"><i class="bi bi-grid-3x3-gap me-1"></i>My projects</div>
 <div class="row g-4">
     {% for projet in projets %}
+    {% set score = projet.scoreGlobal %}
+    {% set scoreClass = score >= 70 ? 'high' : (score >= 40 ? 'mid' : 'low') %}
     <div class="col-md-6 col-lg-4">
-        <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;transition:transform .2s">
-            <div class="card-body p-4">
+        <div class="proj-card h-100 d-flex flex-column">
+            <div class="proj-card-header st-{{ projet.statutProjet }}"></div>
+            <div class="p-4 flex-grow-1 d-flex flex-column">
+                {# Header row #}
                 <div class="d-flex justify-content-between align-items-start mb-3">
-                    <h5 class="fw-bold mb-0">{{ projet.titre }}</h5>
-                    <span class="badge rounded-pill {{ projet.statutProjet == 'EVALUE' ? 'bg-success' : (projet.statutProjet == 'SOUMIS' ? 'bg-warning text-dark' : 'bg-secondary') }}">
-                        {{ projet.statutProjet }}
-                    </span>
+                    <div class="flex-grow-1 me-2">
+                        <h5 class="fw-bold mb-1 lh-sm" style="font-size:1rem">{{ projet.titre }}</h5>
+                        <span class="proj-stat-chip st-{{ projet.statutProjet }}">
+                            {% if projet.statutProjet == 'EVALUE' %}<i class="bi bi-check-circle-fill"></i>
+                            {% elseif projet.statutProjet == 'SOUMIS' %}<i class="bi bi-clock-fill"></i>
+                            {% else %}<i class="bi bi-pencil-fill"></i>{% endif %}
+                            {{ projet.statutProjet|lower|capitalize }}
+                        </span>
+                    </div>
+                    {% if score %}
+                    <div class="score-ring {{ scoreClass }}" title="Score IA global">{{ score|round }}%</div>
+                    {% endif %}
                 </div>
-                <p class="text-muted small mb-3">{{ projet.description|length > 120 ? projet.description|slice(0,120) ~ '...' : projet.description }}</p>
+
+                {# Description #}
+                <p class="text-muted mb-3" style="font-size:.86rem;line-height:1.6">
+                    {{ projet.description|length > 110 ? projet.description|slice(0,110) ~ '...' : projet.description }}
+                </p>
+
+                {# Tags #}
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    {% if projet.secteur %}<span class="badge bg-primary bg-opacity-10 text-primary">{{ projet.secteur }}</span>{% endif %}
-                    {% if projet.etape %}<span class="badge bg-info bg-opacity-10 text-info">{{ projet.etape }}</span>{% endif %}
+                    {% if projet.secteur %}<span class="sector-tag">{{ projet.secteur }}</span>{% endif %}
+                    {% if projet.etape %}<span class="etape-tag">{{ projet.etape }}</span>{% endif %}
                 </div>
-                {% if projet.scoreGlobal %}
+
+                {# Score bar #}
+                {% if score %}
                 <div class="mb-3">
-                    <small class="text-muted">Score global</small>
-                    <div class="progress" style="height:8px">
-                        <div class="progress-bar" style="width:{{ projet.scoreGlobal }}%;background:var(--nj-gradient)"></div>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <small class="text-muted fw-semibold" style="font-size:.73rem">AI SCORE</small>
+                        <small class="fw-bold" style="font-size:.73rem;color:{{ score >= 70 ? '#059669' : (score >= 40 ? '#d97706' : '#ef476f') }}">{{ score|round }}%</small>
+                    </div>
+                    <div class="progress" style="height:5px">
+                        <div class="progress-bar" style="width:{{ score }}%;background:{{ score >= 70 ? 'linear-gradient(90deg,#059669,#06d6a0)' : (score >= 40 ? 'linear-gradient(90deg,#d97706,#ffd166)' : 'linear-gradient(90deg,#ef476f,#ff6b9d)') }}"></div>
                     </div>
                 </div>
                 {% endif %}
-                <div class="d-flex gap-2">
-                    <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="btn btn-sm btn-outline-primary flex-fill">
-                        <i class="bi bi-eye me-1"></i>Détails
-                    </a>
-                    <a href="{{ path('app_projet_edit', {id: projet.id}) }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-pencil"></i>
-                    </a>
+
+                {# Footer #}
+                <div class="mt-auto">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <i class="bi bi-calendar3 text-muted" style="font-size:.8rem"></i>
+                        <small class="text-muted" style="font-size:.78rem">{{ projet.dateCreation|date('d M Y') }}</small>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="btn btn-nj btn-sm flex-fill">
+                            <i class="bi bi-eye me-1"></i>View project
+                        </a>
+                        <a href="{{ path('app_projet_edit', {id: projet.id}) }}" class="btn btn-sm btn-outline-secondary px-3" title="Modifier">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div class="card-footer bg-transparent border-0 px-4 pb-3">
-                <small class="text-muted">Créé le {{ projet.dateCreation|date('d/m/Y') }}</small>
             </div>
         </div>
     </div>
     {% endfor %}
 </div>
+</div>
+
 {% else %}
-<div class="text-center py-5">
-    <div style="font-size:5rem">📋</div>
-    <h4 class="fw-bold mt-3">Aucun projet pour le moment</h4>
-    <p class="text-muted">Commencez par créer votre premier projet entrepreneurial</p>
-    <a href="{{ path('app_projet_new') }}" class="btn btn-nj"><i class="bi bi-plus-lg me-2"></i>Créer un projet</a>
+<div class="empty-state">
+    <div class="mb-4">
+        <div style="width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,rgba(67,97,238,.12),rgba(114,9,183,.12));
+            display:flex;align-items:center;justify-content:center;margin:0 auto">
+            <i class="bi bi-rocket-takeoff" style="font-size:3rem;color:var(--nj-primary)"></i>
+        </div>
+    </div>
+    <h4>No projects yet</h4>
+    <p>Start by creating your first entrepreneurial project. AI will help you evaluate it and generate a business plan.</p>
+    <a href="{{ path('app_projet_new') }}" class="btn btn-nj px-4 py-2">
+        <i class="bi bi-plus-lg me-2"></i>Create my first project
+    </a>
 </div>
 {% endif %}
-</div>
+
 {% endblock %}
 
 {% block javascripts %}
 <script>
 (function(){
-    const form = document.querySelector('form[action*="projet"]');
+    const form = document.getElementById('projFilerForm');
     if (!form) return;
     let timer;
     function liveSearch() {
@@ -121,19 +229,19 @@
         timer = setTimeout(function() {
             const params = new URLSearchParams(new FormData(form)).toString();
             fetch(form.action + '?' + params, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(function(r) { return r.text(); })
-                .then(function(html) {
+                .then(r => r.text())
+                .then(html => {
                     const doc = new DOMParser().parseFromString(html, 'text/html');
                     const nr = doc.getElementById('liveResults');
                     const cur = document.getElementById('liveResults');
                     if (nr && cur) cur.innerHTML = nr.innerHTML;
                 });
-        }, 300);
+        }, 320);
     }
-    form.querySelectorAll('input[name="q"], select').forEach(function(el) {
+    form.querySelectorAll('input[name="q"], select').forEach(el => {
         el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', liveSearch);
     });
-    form.addEventListener('submit', function(e) { e.preventDefault(); liveSearch(); });
+    form.addEventListener('submit', e => { e.preventDefault(); liveSearch(); });
 })();
 </script>
 {% endblock %}

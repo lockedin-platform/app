@@ -4,11 +4,15 @@ namespace App\Controller;
 
 use App\Entity\InvestmentOffer;
 use App\Entity\InvestmentOpportunity;
+use App\Entity\InvestorApplication;
+use App\Entity\InvestorPosting;
 use App\Entity\Projet;
 use App\Repository\ContractMilestoneRepository;
 use App\Repository\InvestmentContractRepository;
 use App\Repository\InvestmentOfferRepository;
 use App\Repository\InvestmentOpportunityRepository;
+use App\Repository\InvestorApplicationRepository;
+use App\Repository\InvestorPostingRepository;
 use App\Repository\InvestorProfileRepository;
 use App\Repository\ProjetRepository;
 use App\Service\EmailService;
@@ -33,132 +37,305 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class InvestmentController extends AbstractController
 {
     #[Route('/opportunities', name: 'app_invest_opportunities')]
-    public function opportunities(Request $request, InvestmentOpportunityRepository $repo, InvestmentOfferRepository $offerRepo, InvestmentContractRepository $contractRepo, InvestorProfileRepository $profileRepo, ContractMilestoneRepository $milestoneRepo, EconomicApiService $ecoApi, PaginatorInterface $paginator): Response
+    public function opportunities(Request $request, InvestorPostingRepository $postingRepo, InvestorApplicationRepository $appRepo, PaginatorInterface $paginator): Response
     {
         $search = trim($request->query->get('q', ''));
         $sort = $request->query->get('sort', 'recent');
         $page = $request->query->getInt('page', 1);
 
-        $qb = $repo->searchOpenQuery($search, $sort);
+        $qb = $postingRepo->searchOpenQuery($search, $sort);
         $pagination = $paginator->paginate($qb, $page, 9);
+        $postings = iterator_to_array($pagination);
 
-        $opportunities = iterator_to_array($pagination);
-
-        // Fetch economic indicators once for the whole page
-        $ecoData = [];
-        try {
-            $ecoData = $ecoApi->fetchAllEconomicData('TN');
-        } catch (\Throwable $e) {
-            // fallback: empty eco data, badges won't render
-        }
-
-        $dealFeed = $this->buildDealFeed($repo, $offerRepo, $contractRepo);
-
-        // Build pitch lines for each opportunity
-        $inflation = (float) ($ecoData['inflationRate'] ?? 5.0);
-        $pitchLines = [];
-        foreach ($opportunities as $opp) {
-            $pitchLines[$opp->getId()] = $this->buildPitchLine($opp, $inflation);
-        }
-
-        // ── Welcome moment data ──
-        $welcomeData = null;
         $user = $this->getUser();
-        $entrepreneurInboxCount = 0;
+        $myApplicationPostingIds = [];
+        $pendingInboxCount = 0;
+
         if ($user) {
-            $welcomeData = [];
-
             if ($this->isGranted('ROLE_ENTREPRENEUR')) {
-                $entrepreneurInboxCount = $offerRepo->countPendingForEntrepreneur($user);
-            }
-
-            // 1. New opportunities since last offer
-            $lastOffer = $offerRepo->createQueryBuilder('o')
-                ->where('o.investor = :u')
-                ->setParameter('u', $user)
-                ->orderBy('o.createdAt', 'DESC')
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getOneOrNullResult();
-
-            if ($lastOffer && $lastOffer->getCreatedAt()) {
-                $newSince = $repo->createQueryBuilder('o')
-                    ->select('COUNT(o.id)')
-                    ->where('o.status = :s AND o.createdAt > :d')
-                    ->setParameter('s', 'OPEN')
-                    ->setParameter('d', $lastOffer->getCreatedAt())
-                    ->getQuery()
-                    ->getSingleScalarResult();
-                $welcomeData['newCount'] = (int) $newSince;
-                $welcomeData['returning'] = true;
-            } else {
-                $welcomeData['newCount'] = count($opportunities);
-                $welcomeData['returning'] = false;
-            }
-
-            // 2. Matching count from investor profile
-            $profile = $profileRepo->findByUser($user);
-            if ($profile && !empty($profile->getSectorArray())) {
-                $preferredSectors = $profile->getSectorArray();
-                $matchCount = 0;
-                foreach ($opportunities as $opp) {
-                    $sector = $opp->getProject()?->getSecteur();
-                    if ($sector) {
-                        foreach ($preferredSectors as $ps) {
-                            if (stripos($sector, trim($ps)) !== false) {
-                                $matchCount++;
-                                break;
-                            }
-                        }
-                    }
+                $myApps = $appRepo->findByEntrepreneur($user);
+                foreach ($myApps as $app) {
+                    $myApplicationPostingIds[] = $app->getPosting()->getId();
                 }
-                $welcomeData['matchCount'] = $matchCount;
-                $welcomeData['hasProfile'] = true;
-            } else {
-                $welcomeData['matchCount'] = 0;
-                $welcomeData['hasProfile'] = $profile !== null;
             }
-
-            // 3. Pending accepted offers awaiting action
-            $pendingAction = $offerRepo->createQueryBuilder('o')
-                ->select('COUNT(o.id)')
-                ->where('o.investor = :u AND o.status = :s AND o.paid = :p')
-                ->setParameter('u', $user)
-                ->setParameter('s', 'ACCEPTED')
-                ->setParameter('p', false)
-                ->getQuery()
-                ->getSingleScalarResult();
-            $welcomeData['pendingActionCount'] = (int) $pendingAction;
-
-            // Find first pending offer for link
-            if ($welcomeData['pendingActionCount'] > 0) {
-                $firstPending = $offerRepo->createQueryBuilder('o')
-                    ->where('o.investor = :u AND o.status = :s AND o.paid = :p')
-                    ->setParameter('u', $user)
-                    ->setParameter('s', 'ACCEPTED')
-                    ->setParameter('p', false)
-                    ->orderBy('o.updatedAt', 'DESC')
-                    ->setMaxResults(1)
-                    ->getQuery()
-                    ->getOneOrNullResult();
-                $welcomeData['pendingOfferId'] = $firstPending?->getId();
+            if ($this->isGranted('ROLE_INVESTISSEUR')) {
+                $pendingInboxCount = $appRepo->countPendingForInvestor($user);
             }
         }
-
-        $activityFeed = $this->buildActivityTicker($repo, $offerRepo, $contractRepo, $milestoneRepo);
 
         return $this->render('front/investment/opportunities.html.twig', [
-            'opportunities' => $opportunities,
+            'postings' => $postings,
             'pagination' => $pagination,
             'search' => $search,
             'sort' => $sort,
-            'ecoData' => $ecoData,
-            'dealFeed' => $dealFeed,
-            'pitchLines' => $pitchLines,
-            'welcomeData' => $welcomeData,
-            'activityFeed' => $activityFeed,
-            'entrepreneurInboxCount' => $entrepreneurInboxCount,
+            'myApplicationPostingIds' => $myApplicationPostingIds,
+            'pendingInboxCount' => $pendingInboxCount,
         ]);
+    }
+
+    #[Route('/postings/{id}/apply', name: 'app_invest_posting_apply', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_ENTREPRENEUR')]
+    public function applyToPosting(
+        InvestorPosting $posting,
+        Request $request,
+        EntityManagerInterface $em,
+        InvestorApplicationRepository $appRepo,
+        ProjetRepository $projetRepo,
+        NotificationService $notificationService,
+    ): Response {
+        $user = $this->getUser();
+
+        if ($posting->getStatus() !== InvestorPosting::STATUS_OPEN) {
+            $this->addFlash('danger', 'This posting is no longer open.');
+            return $this->redirectToRoute('app_invest_opportunities');
+        }
+
+        if ($appRepo->findExisting($posting, $user)) {
+            $this->addFlash('warning', 'You have already applied to this posting.');
+            return $this->redirectToRoute('app_invest_opportunities');
+        }
+
+        $projects = $projetRepo->findByUser($user);
+        if (empty($projects)) {
+            $this->addFlash('warning', 'You need to create a project before applying.');
+            return $this->redirectToRoute('app_projet_index');
+        }
+
+        if ($request->isMethod('POST')) {
+            $token = $request->request->get('_token');
+            if (!$this->isCsrfTokenValid('apply_posting_' . $posting->getId(), $token)) {
+                $this->addFlash('danger', 'Invalid security token.');
+                return $this->redirectToRoute('app_invest_opportunities');
+            }
+
+            $project = $projetRepo->find($request->request->get('project_id'));
+            if (!$project || $project->getUser() !== $user) {
+                $this->addFlash('danger', 'Invalid project selected.');
+                return $this->render('front/investment/apply.html.twig', ['posting' => $posting, 'projects' => $projects]);
+            }
+
+            $coverMessage = trim($request->request->get('cover_message', ''));
+            if (mb_strlen($coverMessage) < 20) {
+                $this->addFlash('danger', 'Cover message must be at least 20 characters.');
+                return $this->render('front/investment/apply.html.twig', ['posting' => $posting, 'projects' => $projects]);
+            }
+
+            $application = new InvestorApplication();
+            $application->setPosting($posting);
+            $application->setEntrepreneur($user);
+            $application->setProject($project);
+            $application->setCoverMessage($coverMessage);
+
+            $em->persist($application);
+            $em->flush();
+
+            $inboxUrl = $this->generateUrl('app_invest_my_postings');
+            $notificationService->notify(
+                $posting->getPostedBy(),
+                'New application received',
+                ($user->getFirstname() ?? 'An entrepreneur') . ' applied to your "' . $posting->getSector() . '" posting with their project "' . $project->getTitre() . '".',
+                'INFO',
+                $inboxUrl,
+                'Review application'
+            );
+
+            $this->addFlash('success', 'Application submitted! The investor will review your project and reach out if interested.');
+            return $this->redirectToRoute('app_invest_my_applications');
+        }
+
+        return $this->render('front/investment/apply.html.twig', [
+            'posting' => $posting,
+            'projects' => $projects,
+        ]);
+    }
+
+    #[Route('/my-applications', name: 'app_invest_my_applications')]
+    #[IsGranted('ROLE_ENTREPRENEUR')]
+    public function myApplications(InvestorApplicationRepository $appRepo): Response
+    {
+        $apps = $appRepo->findByEntrepreneur($this->getUser());
+        return $this->render('front/investment/my_applications.html.twig', ['applications' => $apps]);
+    }
+
+    #[Route('/my-postings', name: 'app_invest_my_postings')]
+    #[IsGranted('ROLE_INVESTISSEUR')]
+    public function myPostings(InvestorPostingRepository $postingRepo, InvestorApplicationRepository $appRepo): Response
+    {
+        $postings = $postingRepo->findByInvestor($this->getUser());
+        $pendingCount = $appRepo->countPendingForInvestor($this->getUser());
+        return $this->render('front/investment/my_postings.html.twig', [
+            'postings' => $postings,
+            'pendingCount' => $pendingCount,
+        ]);
+    }
+
+    #[Route('/postings/create', name: 'app_invest_create_posting', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_INVESTISSEUR')]
+    public function createPosting(Request $request, EntityManagerInterface $em): Response
+    {
+        if ($request->isMethod('POST')) {
+            $token = $request->request->get('_token');
+            if (!$this->isCsrfTokenValid('create_posting', $token)) {
+                $this->addFlash('danger', 'Invalid security token.');
+                return $this->render('front/investment/create_posting.html.twig');
+            }
+
+            $sector = trim($request->request->get('sector', ''));
+            $budgetMin = $request->request->get('budget_min');
+            $budgetMax = $request->request->get('budget_max');
+            $description = trim($request->request->get('description', ''));
+            $deadlineStr = $request->request->get('deadline', '');
+
+            $errors = [];
+            if ($sector === '') $errors[] = 'Sector is required.';
+            if (!is_numeric($budgetMin) || (float)$budgetMin < 0) $errors[] = 'Budget minimum must be a positive number.';
+            if (!is_numeric($budgetMax) || (float)$budgetMax <= 0) $errors[] = 'Budget maximum must be a positive number.';
+            if ((float)$budgetMax < (float)$budgetMin) $errors[] = 'Budget maximum must be greater than minimum.';
+            if (mb_strlen($description) < 20) $errors[] = 'Description must be at least 20 characters.';
+
+            $deadline = null;
+            if ($deadlineStr !== '' && strtotime($deadlineStr) !== false) {
+                $deadline = new \DateTime($deadlineStr);
+                if ($deadline <= new \DateTime('today')) {
+                    $errors[] = 'Deadline must be in the future.';
+                }
+            }
+
+            if (!empty($errors)) {
+                foreach ($errors as $err) { $this->addFlash('danger', $err); }
+                return $this->render('front/investment/create_posting.html.twig', compact('sector', 'budgetMin', 'budgetMax', 'description', 'deadlineStr'));
+            }
+
+            $posting = new InvestorPosting();
+            $posting->setPostedBy($this->getUser());
+            $posting->setSector($sector);
+            $posting->setBudgetMin((string)(float)$budgetMin);
+            $posting->setBudgetMax((string)(float)$budgetMax);
+            $posting->setDescription($description);
+            $posting->setDeadline($deadline);
+
+            $em->persist($posting);
+            $em->flush();
+
+            $this->addFlash('success', 'Investment posting published! Entrepreneurs can now apply.');
+            return $this->redirectToRoute('app_invest_my_postings');
+        }
+
+        return $this->render('front/investment/create_posting.html.twig');
+    }
+
+    #[Route('/applications/{id}/review', name: 'app_invest_review_application', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_INVESTISSEUR')]
+    public function reviewApplication(InvestorApplication $application, EntityManagerInterface $em): Response
+    {
+        if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('You do not have access to this application.');
+        }
+
+        if ($application->getStatus() === InvestorApplication::STATUS_PENDING) {
+            $application->setStatus(InvestorApplication::STATUS_REVIEWED);
+            $em->flush();
+        }
+
+        return $this->render('front/investment/review_application.html.twig', [
+            'application' => $application,
+        ]);
+    }
+
+    #[Route('/applications/{id}/make-offer', name: 'app_invest_make_offer_from_app', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_INVESTISSEUR')]
+    public function makeOfferFromApplication(
+        InvestorApplication $application,
+        Request $request,
+        EntityManagerInterface $em,
+        NotificationService $notificationService,
+    ): Response {
+        if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('make_offer_app_' . $application->getId(), $token)) {
+            $this->addFlash('danger', 'Invalid security token.');
+            return $this->redirectToRoute('app_invest_review_application', ['id' => $application->getId()]);
+        }
+
+        $amount = $request->request->get('amount');
+        if (!is_numeric($amount) || (float)$amount <= 0) {
+            $this->addFlash('danger', 'Offer amount must be a positive number.');
+            return $this->redirectToRoute('app_invest_review_application', ['id' => $application->getId()]);
+        }
+
+        $project = $application->getProject();
+        $posting = $application->getPosting();
+
+        // Create InvestmentOpportunity linked to the entrepreneur's project
+        $opp = new InvestmentOpportunity();
+        $opp->setProject($project);
+        $opp->setTargetAmount((string)(float)$amount);
+        $opp->setDescription('Investment opportunity created from posting: ' . $posting->getSector());
+        $opp->setDeadline($posting->getDeadline() ?? new \DateTime('+6 months'));
+        $opp->setStatus(InvestmentOpportunity::STATUS_OPEN);
+        $em->persist($opp);
+
+        // Create InvestmentOffer from investor
+        $offer = new InvestmentOffer();
+        $offer->setOpportunity($opp);
+        $offer->setInvestor($this->getUser());
+        $offer->setProposedAmount((string)(float)$amount);
+        $offer->setStatus(InvestmentOffer::STATUS_ACCEPTED);
+        $em->persist($offer);
+
+        // Mark application as offer made
+        $application->setStatus(InvestorApplication::STATUS_OFFER_MADE);
+
+        $em->flush();
+
+        // Notify entrepreneur
+        $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
+        $notificationService->notify(
+            $application->getEntrepreneur(),
+            'Investment offer received!',
+            ($this->getUser()->getFirstname() ?? 'An investor') . ' has reviewed your project "' . $project->getTitre() . '" and prepared an investment offer of ' . number_format((float)$amount, 0, ',', ' ') . ' TND. Start negotiating!',
+            'SUCCESS',
+            $contractUrl,
+            'View offer & negotiate'
+        );
+
+        $this->addFlash('success', 'Investment offer sent! The entrepreneur has been notified and can start negotiating.');
+        return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
+    }
+
+    #[Route('/applications/{id}/reject', name: 'app_invest_reject_application', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[IsGranted('ROLE_INVESTISSEUR')]
+    public function rejectApplication(
+        InvestorApplication $application,
+        Request $request,
+        EntityManagerInterface $em,
+        NotificationService $notificationService,
+    ): Response {
+        if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('reject_app_' . $application->getId(), $token)) {
+            $this->addFlash('danger', 'Invalid security token.');
+            return $this->redirectToRoute('app_invest_review_application', ['id' => $application->getId()]);
+        }
+
+        $application->setStatus(InvestorApplication::STATUS_REJECTED);
+        $em->flush();
+
+        $notificationService->notify(
+            $application->getEntrepreneur(),
+            'Application not selected',
+            'Your application for the "' . $application->getPosting()->getSector() . '" posting was not selected this time. Keep improving your project!',
+            'INFO'
+        );
+
+        $this->addFlash('info', 'Application rejected.');
+        return $this->redirectToRoute('app_invest_my_postings');
     }
 
     #[Route('/opportunities/{id}', name: 'app_invest_opportunity_show', requirements: ['id' => '\d+'])]
@@ -210,43 +387,43 @@ class InvestmentController extends AbstractController
     ): Response
     {
         if (!$this->isCsrfTokenValid('offer_action_' . $offer->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $offer->getOpportunity()->getId()]);
         }
 
         $opportunity = $offer->getOpportunity();
         if (!$opportunity->getProject() || $opportunity->getProject()->getUser() !== $this->getUser()) {
-            $this->addFlash('danger', 'Vous ne pouvez pas gerer les offres de cette opportunite.');
+            $this->addFlash('danger', 'You cannot manage offers for this opportunity.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
         }
 
         if ($offer->getStatus() !== InvestmentOffer::STATUS_PENDING) {
-            $this->addFlash('danger', 'Seules les offres en attente peuvent etre acceptees.');
+            $this->addFlash('danger', 'Only pending offers can be accepted.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
         }
 
         $acceptedTotal = $offerRepo->sumAcceptedAmountsForOpportunity($opportunity);
         $nextAcceptedTotal = $acceptedTotal + (float) $offer->getProposedAmount();
         if (($nextAcceptedTotal - (float) $opportunity->getTargetAmount()) > 0.00001) {
-            $this->addFlash('danger', 'Le montant total des offres acceptées dépasserait l\'objectif de financement.');
-            return $this->redirectAfterOfferAction($request, $offer);
+            $this->addFlash('danger', 'Accepting this offer would exceed the funding target.');
+            return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
         }
 
         $offer->setStatus(InvestmentOffer::STATUS_ACCEPTED);
         $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
         $notificationService->notify(
             $offer->getInvestor(),
-            'Offre acceptee',
-            'Votre offre pour ' . ($opportunity->getProject()?->getTitre() ?? 'ce projet') . ' a ete acceptee. Negociez puis signez le contrat avant le paiement.',
+            'Offer accepted',
+            'Your offer for ' . ($opportunity->getProject()?->getTitre() ?? 'this project') . ' has been accepted. Negotiate and sign the contract before payment.',
             'CONTRACT',
             $contractUrl,
-            'Ouvrir le contrat'
+            'Open contract'
         );
 
         $em->flush();
 
-        $this->addFlash('success', 'Offre acceptee. L\'investisseur peut maintenant proceder au paiement.');
-        return $this->redirectAfterOfferAction($request, $offer);
+        $this->addFlash('success', 'Offer accepted. You can now start contract negotiation.');
+        return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
 
     #[Route('/offers/{id}/reject', name: 'app_invest_offer_reject_front', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -259,49 +436,39 @@ class InvestmentController extends AbstractController
     ): Response
     {
         if (!$this->isCsrfTokenValid('offer_action_' . $offer->getId(), $request->request->get('_token'))) {
-            $this->addFlash('danger', 'Jeton de securite invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $offer->getOpportunity()->getId()]);
         }
 
         $opportunity = $offer->getOpportunity();
         if (!$opportunity->getProject() || $opportunity->getProject()->getUser() !== $this->getUser()) {
-            $this->addFlash('danger', 'Vous ne pouvez pas gerer les offres de cette opportunite.');
+            $this->addFlash('danger', 'You cannot manage offers for this opportunity.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
         }
 
         if ($offer->getStatus() !== InvestmentOffer::STATUS_PENDING) {
-            $this->addFlash('danger', 'Seules les offres en attente peuvent etre refusees.');
+            $this->addFlash('danger', 'Only pending offers can be rejected.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
         }
 
         $offer->setStatus(InvestmentOffer::STATUS_REJECTED);
         $notificationService->notify(
             $offer->getInvestor(),
-            'Offre refusee',
-            'Votre offre pour ' . ($opportunity->getProject()?->getTitre() ?? 'ce projet') . ' a ete refusee.',
+            'Offer rejected',
+            'Your offer for ' . ($opportunity->getProject()?->getTitre() ?? 'this project') . ' has been rejected.',
             'DANGER'
         );
         $em->flush();
 
-        $this->addFlash('success', 'Offre refusee.');
-        return $this->redirectAfterOfferAction($request, $offer);
+        $this->addFlash('success', 'Offer rejected.');
+        return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);
     }
 
     #[Route('/entrepreneur/inbox', name: 'app_invest_entrepreneur_inbox')]
     #[IsGranted('ROLE_ENTREPRENEUR')]
-    public function entrepreneurInbox(InvestmentOfferRepository $offerRepo): Response
+    public function entrepreneurInbox(): Response
     {
-        $user = $this->getUser();
-        if (!$user instanceof \App\Entity\User) {
-            throw $this->createAccessDeniedException('Authentification requise.');
-        }
-
-        $offers = $offerRepo->findPendingForEntrepreneur($user);
-
-        return $this->render('front/investment/entrepreneur_inbox.html.twig', [
-            'offers' => $offers,
-            'pendingCount' => count($offers),
-        ]);
+        return $this->redirectToRoute('app_invest_opportunities');
     }
 
     #[Route('/opportunities/{id}/offer', name: 'app_invest_offer', methods: ['POST'])]
@@ -310,38 +477,38 @@ class InvestmentController extends AbstractController
     {
         $token = $request->request->get('_token');
         if (!$this->isCsrfTokenValid('invest_offer_' . $opp->getId(), $token)) {
-            $this->addFlash('danger', 'Jeton de sécurité invalide.');
+            $this->addFlash('danger', 'Invalid security token.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
         if ($opp->getStatus() !== InvestmentOpportunity::STATUS_OPEN) {
-            $this->addFlash('danger', 'Cette opportunité n\'est plus ouverte.');
+            $this->addFlash('danger', 'This opportunity is no longer open.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
         // Prevent entrepreneur from investing in their own project
         if ($opp->getProject() && $opp->getProject()->getUser() === $this->getUser()) {
-            $this->addFlash('danger', 'Vous ne pouvez pas investir dans votre propre projet.');
+            $this->addFlash('danger', 'You cannot invest in your own project.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
         // Prevent duplicate offers (same investor + same opportunity)
         $existingOffer = $offerRepo->findExistingOffer($this->getUser(), $opp);
         if ($existingOffer) {
-            $this->addFlash('danger', 'Vous avez déjà soumis une offre pour cette opportunité.');
+            $this->addFlash('danger', 'You have already submitted an offer for this opportunity.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
         $riskAcknowledged = $request->request->getBoolean('risk_acknowledged');
         $amount = $request->request->get('amount');
         if (!is_numeric($amount) || (float) $amount <= 0) {
-            $this->addFlash('danger', 'Le montant doit être un nombre positif.');
+            $this->addFlash('danger', 'Amount must be a positive number.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
         $remaining = (float) $opp->getTargetAmount() - $opp->getTotalFunded();
         if ((float) $amount > $remaining && $remaining > 0) {
-            $this->addFlash('danger', 'Le montant ne peut pas dépasser le reste à financer (' . number_format($remaining, 2, ',', ' ') . ' DT).');
+            $this->addFlash('danger', 'Amount cannot exceed the remaining funding target (' . number_format($remaining, 2, ',', ' ') . ' TND).');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
@@ -363,11 +530,11 @@ class InvestmentController extends AbstractController
             $em->persist($offer);
             $em->flush();
         } catch (UniqueConstraintViolationException) {
-            $this->addFlash('danger', 'Vous avez déjà soumis une offre pour cette opportunité.');
+            $this->addFlash('danger', 'You have already submitted an offer for this opportunity.');
             return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
         }
 
-        $this->addFlash('success', 'Offre soumise avec succes !');
+        $this->addFlash('success', 'Offer submitted successfully!');
         return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opp->getId()]);
     }
 
@@ -463,11 +630,11 @@ class InvestmentController extends AbstractController
             ->setMaxResults($limit)
             ->getQuery()->getResult();
         foreach ($opps as $opp) {
-            $sector = $opp->getProject()?->getSecteur() ?: 'un secteur innovant';
+            $sector = $opp->getProject()?->getSecteur() ?: 'an innovative sector';
             $events[] = [
                 'icon' => 'bi-plus-circle',
                 'type' => 'opportunity',
-                'message' => 'Une nouvelle opportunite dans ' . $sector . ' a ete publiee',
+                'message' => 'New opportunity in ' . $sector . ' published',
                 'date' => $opp->getCreatedAt(),
             ];
         }
@@ -480,11 +647,11 @@ class InvestmentController extends AbstractController
             ->setMaxResults($limit)
             ->getQuery()->getResult();
         foreach ($offers as $offer) {
-            $projectName = $offer->getOpportunity()?->getProject()?->getTitre() ?: 'un projet';
+            $projectName = $offer->getOpportunity()?->getProject()?->getTitre() ?: 'a project';
             $events[] = [
                 'icon' => 'bi-send',
                 'type' => 'offer',
-                'message' => 'Un investisseur a soumis une offre sur ' . $projectName,
+                'message' => 'An investor submitted an offer on ' . $projectName,
                 'date' => $offer->getCreatedAt(),
             ];
         }
@@ -500,7 +667,7 @@ class InvestmentController extends AbstractController
             $events[] = [
                 'icon' => 'bi-handshake',
                 'type' => 'accepted',
-                'message' => 'Une offre a ete acceptee — la negociation a commence',
+                'message' => 'An offer was accepted — negotiation has started',
                 'date' => $offer->getUpdatedAt(),
             ];
         }
@@ -615,7 +782,7 @@ class InvestmentController extends AbstractController
             ->getQuery()->getResult();
         foreach ($opps as $opp) {
             $sector = $opp->getProject()?->getSecteur() ?: 'un secteur innovant';
-            $events[] = ['dot' => '#3b82f6', 'text' => 'Nouveau projet en ' . $sector . ' recherche un financement', 'date' => $opp->getCreatedAt()];
+            $events[] = ['dot' => '#3b82f6', 'text' => 'New ' . $sector . ' project seeking funding', 'date' => $opp->getCreatedAt()];
         }
 
         // 2. Offers submitted
@@ -626,7 +793,7 @@ class InvestmentController extends AbstractController
             ->getQuery()->getResult();
         foreach ($offers as $off) {
             $sector = $off->getOpportunity()?->getProject()?->getSecteur() ?: 'un projet';
-            $events[] = ['dot' => '#94a3b8', 'text' => 'Un investisseur a soumis une offre sur un projet ' . $sector, 'date' => $off->getCreatedAt()];
+            $events[] = ['dot' => '#94a3b8', 'text' => 'An investor submitted an offer on a ' . $sector . ' project', 'date' => $off->getCreatedAt()];
         }
 
         // 3. Offers accepted
@@ -636,7 +803,7 @@ class InvestmentController extends AbstractController
             ->setMaxResults($limit)
             ->getQuery()->getResult();
         foreach ($accepted as $off) {
-            $events[] = ['dot' => '#f59e0b', 'text' => 'Une offre a ete acceptee — la negociation a commence', 'date' => $off->getUpdatedAt()];
+            $events[] = ['dot' => '#f59e0b', 'text' => 'An offer was accepted — negotiation has started', 'date' => $off->getUpdatedAt()];
         }
 
         // 4. Contracts signed
@@ -647,7 +814,7 @@ class InvestmentController extends AbstractController
             ->getQuery()->getResult();
         foreach ($contracts as $c) {
             $d = $c->getEntrepreneurSignedAt() > $c->getInvestorSignedAt() ? $c->getEntrepreneurSignedAt() : $c->getInvestorSignedAt();
-            $events[] = ['dot' => '#22c55e', 'text' => 'Un accord a ete signe entre deux parties', 'date' => $d];
+            $events[] = ['dot' => '#22c55e', 'text' => 'A deal was signed between two parties', 'date' => $d];
         }
 
         // 5. Payments completed
@@ -657,7 +824,7 @@ class InvestmentController extends AbstractController
             ->setMaxResults($limit)
             ->getQuery()->getResult();
         foreach ($paid as $off) {
-            $events[] = ['dot' => '#f59e0b', 'text' => 'Un investissement a ete finance avec succes', 'date' => $off->getPaidAt()];
+            $events[] = ['dot' => '#f59e0b', 'text' => 'An investment was successfully funded', 'date' => $off->getPaidAt()];
         }
 
         // 6. Milestones released
@@ -816,7 +983,7 @@ class InvestmentController extends AbstractController
         $offers = iterator_to_array($pagination);
 
         // ── Compute nudge ──
-        $nudge = ['message' => 'Toutes vos offres sont en bonne voie. Aucune action immediate requise.', 'link' => null, 'type' => 'success'];
+        $nudge = ['message' => 'All your offers are on track. No immediate action required.', 'link' => null, 'type' => 'success'];
         $user = $this->getUser();
 
         // Priority 1: signed contract awaiting payment
@@ -825,7 +992,7 @@ class InvestmentController extends AbstractController
             if ($off->getStatus() === 'ACCEPTED' && $c && $c->isFullySigned() && !$off->isPaid()) {
                 $projectName = $off->getOpportunity()?->getProject()?->getTitre() ?? 'un projet';
                 $nudge = [
-                    'message' => 'Vous avez un contrat signe pret pour paiement sur ' . $projectName . '. Finalisez le paiement pour financer le projet.',
+                    'message' => 'You have a signed contract ready for payment on ' . $projectName . '. Complete the payment to fund the project.',
                     'link' => $this->generateUrl('app_invest_my_offers'),
                     'type' => 'urgent',
                 ];
@@ -843,7 +1010,7 @@ class InvestmentController extends AbstractController
                     if (!$hasMySig && $hasOtherSig) {
                         $projectName = $off->getOpportunity()?->getProject()?->getTitre() ?? 'un projet';
                         $nudge = [
-                            'message' => 'Votre signature est en attente sur le contrat ' . $projectName . '. L\'accord vous attend.',
+                            'message' => 'Your signature is pending on the contract for ' . $projectName . '. The agreement is waiting for you.',
                             'link' => $this->generateUrl('app_invest_contract_show', ['id' => $off->getId()]),
                             'type' => 'warning',
                         ];
@@ -860,7 +1027,7 @@ class InvestmentController extends AbstractController
                 if ($off->getStatus() === 'ACCEPTED' && $c && $c->getLastMessageAt() === null) {
                     $projectName = $off->getOpportunity()?->getProject()?->getTitre() ?? 'un projet';
                     $nudge = [
-                        'message' => 'Vous avez une offre acceptee sur ' . $projectName . ' sans negociation demarree. Ouvrez le contrat pour commencer.',
+                        'message' => 'You have an accepted offer on ' . $projectName . ' with no negotiation started. Open the contract to begin.',
                         'link' => $this->generateUrl('app_invest_contract_show', ['id' => $off->getId()]),
                         'type' => 'info',
                     ];
@@ -875,7 +1042,7 @@ class InvestmentController extends AbstractController
                 if ($off->getStatus() === 'PENDING') {
                     $projectName = $off->getOpportunity()?->getProject()?->getTitre() ?? 'un projet';
                     $nudge = [
-                        'message' => 'Votre offre sur ' . $projectName . ' est en attente de la decision de l\'entrepreneur.',
+                        'message' => 'Your offer on ' . $projectName . ' is awaiting the entrepreneur\'s decision.',
                         'link' => null,
                         'type' => 'info',
                     ];
@@ -966,23 +1133,23 @@ class InvestmentController extends AbstractController
 
             // Build funding timeline events
             $timeline = [];
-            $timeline[] = ['date' => $offer->getCreatedAt(), 'label' => 'Offre soumise', 'icon' => 'send'];
+            $timeline[] = ['date' => $offer->getCreatedAt(), 'label' => 'Offer submitted', 'icon' => 'send'];
             if ($contract) {
-                $timeline[] = ['date' => $contract->getCreatedAt(), 'label' => 'Contrat cree', 'icon' => 'file-earmark-text'];
+                $timeline[] = ['date' => $contract->getCreatedAt(), 'label' => 'Contract created', 'icon' => 'file-earmark-text'];
                 if ($contract->getInvestorSignedAt()) {
-                    $timeline[] = ['date' => $contract->getInvestorSignedAt(), 'label' => 'Signature investisseur', 'icon' => 'pen'];
+                    $timeline[] = ['date' => $contract->getInvestorSignedAt(), 'label' => 'Investor signed', 'icon' => 'pen'];
                 }
                 if ($contract->getEntrepreneurSignedAt()) {
-                    $timeline[] = ['date' => $contract->getEntrepreneurSignedAt(), 'label' => 'Signature entrepreneur', 'icon' => 'pen'];
+                    $timeline[] = ['date' => $contract->getEntrepreneurSignedAt(), 'label' => 'Entrepreneur signed', 'icon' => 'pen'];
                 }
             }
             if ($paidAt) {
-                $timeline[] = ['date' => $paidAt, 'label' => 'Paiement effectue', 'icon' => 'credit-card'];
+                $timeline[] = ['date' => $paidAt, 'label' => 'Payment completed', 'icon' => 'credit-card'];
             }
             // Milestone release events
             foreach ($milestones as $ms) {
                 if ($ms->getReleasedAt()) {
-                    $timeline[] = ['date' => $ms->getReleasedAt(), 'label' => 'Jalon: ' . $ms->getLabel(), 'icon' => 'flag'];
+                    $timeline[] = ['date' => $ms->getReleasedAt(), 'label' => 'Milestone: ' . $ms->getLabel(), 'icon' => 'flag'];
                 }
             }
             // Future milestones (pending)
@@ -1230,41 +1397,42 @@ class InvestmentController extends AbstractController
     #[IsGranted('ROLE_ENTREPRENEUR')]
     public function createOpportunity(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, ProjetRepository $projetRepo): Response
     {
+        // Entrepreneurs seek investment on their own projects
         $projets = $projetRepo->findByUser($this->getUser());
 
         if ($request->isMethod('POST')) {
             $token = $request->request->get('_token');
             if (!$this->isCsrfTokenValid('create_opportunity', $token)) {
-                $this->addFlash('danger', 'Jeton de sécurité invalide.');
+                $this->addFlash('danger', 'Invalid security token.');
                 return $this->render('front/investment/create_opportunity.html.twig', ['projets' => $projets]);
             }
 
             $project = $em->getRepository(Projet::class)->find($request->request->get('project_id'));
-            if (!$project || $project->getUser() !== $this->getUser()) {
-                $this->addFlash('danger', 'Vous ne pouvez créer une opportunité que pour vos propres projets.');
+            if (!$project) {
+                $this->addFlash('danger', 'Project not found.');
                 return $this->render('front/investment/create_opportunity.html.twig', ['projets' => $projets]);
             }
 
             $fieldErrors = [];
             $targetAmount = $request->request->get('target_amount');
             if (!is_numeric($targetAmount) || (float) $targetAmount < 100) {
-                $fieldErrors['target_amount'] = 'Le montant cible doit être au minimum 100 DT.';
+                $fieldErrors['target_amount'] = 'The target amount must be at least 100 TND.';
             }
 
             $deadlineStr = $request->request->get('deadline');
             $deadline = null;
             if (!$deadlineStr || strtotime($deadlineStr) === false) {
-                $fieldErrors['deadline'] = 'La date limite est invalide.';
+                $fieldErrors['deadline'] = 'Invalid deadline date.';
             } else {
                 $deadline = new \DateTime($deadlineStr);
                 if ($deadline <= new \DateTime('today')) {
-                    $fieldErrors['deadline'] = 'La date limite doit être dans le futur.';
+                    $fieldErrors['deadline'] = 'Deadline must be in the future.';
                 }
             }
 
             $description = trim($request->request->get('description', ''));
             if (mb_strlen($description) < 10) {
-                $fieldErrors['description'] = 'La description doit contenir au moins 10 caractères.';
+                $fieldErrors['description'] = 'Description must be at least 10 characters.';
             }
 
             if (!empty($fieldErrors)) {
@@ -1293,7 +1461,7 @@ class InvestmentController extends AbstractController
             $em->persist($opp);
             $em->flush();
 
-            $this->addFlash('success', 'Opportunité créée avec succes !');
+            $this->addFlash('success', 'Investment opportunity created successfully!');
             return $this->redirectToRoute('app_invest_opportunities');
         }
 

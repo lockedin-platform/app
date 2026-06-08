@@ -142,12 +142,12 @@ class EconomicRiskEngine
 
     public static function getRecommendation(int $score): string
     {
-        if ($score <= 20) return 'Excellent climat economique. Investissement fortement recommande.';
-        if ($score <= self::THRESHOLD_LOW) return 'Conditions favorables. Bon moment pour investir.';
-        if ($score <= 50) return 'Risque modere. Investissement viable avec precautions.';
-        if ($score <= self::THRESHOLD_MEDIUM) return 'Prudence recommandee. Diversifiez vos investissements.';
-        if ($score <= 80) return 'Risque eleve. Investissement deconseille sauf profil agressif.';
-        return 'Risque critique. Report de l\'investissement fortement recommande.';
+        if ($score <= 20) return 'Excellent economic climate. Investment strongly recommended.';
+        if ($score <= self::THRESHOLD_LOW) return 'Favorable conditions. Good time to invest.';
+        if ($score <= 50) return 'Moderate risk. Investment viable with precautions.';
+        if ($score <= self::THRESHOLD_MEDIUM) return 'Caution advised. Diversify your investments.';
+        if ($score <= 80) return 'High risk. Investment discouraged unless you have an aggressive profile.';
+        return 'Critical risk. Postponing the investment is strongly recommended.';
     }
 
     /** @param array<string, mixed> $economicData */
@@ -157,44 +157,44 @@ class EconomicRiskEngine
         float $targetAmount,
         ?\DateTimeInterface $deadline,
     ): string {
-        $country = (string) ($economicData['countryName'] ?? $economicData['country'] ?? 'ce marche');
+        $country = (string) ($economicData['countryName'] ?? $economicData['country'] ?? 'this market');
         $inflation = (float) ($economicData['inflationRate'] ?? 0.0);
         $gdp = (float) ($economicData['gdpBillions'] ?? 0.0);
         $daysRemaining = $deadline ? (int) (new \DateTimeImmutable())->diff($deadline)->format('%r%a') : null;
         $monthsRemaining = $daysRemaining !== null ? max(0, (int) ceil($daysRemaining / 30)) : null;
 
         if ($inflation >= 8.0) {
-            $macroContext = sprintf('Ce projet opere dans un environnement inflationniste tendu (%s, %.1f%% d\'inflation)', $country, $inflation);
+            $macroContext = sprintf('This project operates in a high-inflation environment (%s, %.1f%% inflation)', $country, $inflation);
         } elseif ($inflation <= 3.0 && $gdp >= 500.0) {
-            $macroContext = sprintf('Ce projet beneficie d\'un cadre macroeconomique relativement stable (%s, inflation %.1f%%)', $country, $inflation);
+            $macroContext = sprintf('This project benefits from a relatively stable macroeconomic framework (%s, %.1f%% inflation)', $country, $inflation);
         } else {
-            $macroContext = sprintf('Ce projet evolue dans un contexte economique intermediaire (%s, inflation %.1f%%)', $country, $inflation);
+            $macroContext = sprintf('This project operates in an intermediate economic context (%s, %.1f%% inflation)', $country, $inflation);
         }
 
         if ($targetAmount >= 250000) {
-            $amountContext = sprintf('avec un objectif de financement eleve de %.0f DT', $targetAmount);
+            $amountContext = sprintf('with a high funding target of %.0f TND', $targetAmount);
         } elseif ($targetAmount >= 100000) {
-            $amountContext = sprintf('avec un ticket de financement significatif de %.0f DT', $targetAmount);
+            $amountContext = sprintf('with a significant funding ticket of %.0f TND', $targetAmount);
         } else {
-            $amountContext = sprintf('avec un besoin de financement contenu de %.0f DT', $targetAmount);
+            $amountContext = sprintf('with a contained funding need of %.0f TND', $targetAmount);
         }
 
         if ($monthsRemaining === null) {
-            $deadlineContext = 'Sans echeance clairement definie, la discipline de suivi devra etre maintenue sur la duree.';
+            $deadlineContext = 'With no clearly defined deadline, monitoring discipline must be maintained over time.';
         } elseif ($monthsRemaining <= 1) {
-            $deadlineContext = sprintf('La fenetre de levee est tres courte (%d jours restants), ce qui augmente la pression d\'execution immediate.', max(0, $daysRemaining));
+            $deadlineContext = sprintf('The fundraising window is very short (%d days remaining), increasing immediate execution pressure.', max(0, $daysRemaining));
         } elseif ($monthsRemaining <= 6) {
-            $deadlineContext = sprintf('La fenetre de levee est de %d mois, ce qui exige un pilotage actif des jalons et de la tresorerie.', $monthsRemaining);
+            $deadlineContext = sprintf('The %d-month fundraising window requires active milestone and cash flow management.', $monthsRemaining);
         } else {
-            $deadlineContext = sprintf('L\'horizon de %d mois laisse davantage de marge pour absorber les ajustements d\'execution.', $monthsRemaining);
+            $deadlineContext = sprintf('The %d-month horizon provides more room to absorb execution adjustments.', $monthsRemaining);
         }
 
         if ($score <= self::THRESHOLD_LOW) {
-            $investorProfile = 'Le profil convient plutot a un investisseur prudent recherchant une exposition raisonnablement encadree.';
+            $investorProfile = 'This profile suits a cautious investor seeking reasonably bounded exposure.';
         } elseif ($score <= self::THRESHOLD_MEDIUM) {
-            $investorProfile = 'Le dossier reste defendable pour un investisseur au profil modere, a condition de suivre les points d\'avancement de facon rigoureuse.';
+            $investorProfile = 'The case remains defensible for a moderate-risk investor, provided milestones are tracked rigorously.';
         } else {
-            $investorProfile = 'A ce niveau de risque, l\'investissement vise surtout un profil offensif capable de tolerer des retards, des renegociations et un suivi etroit.';
+            $investorProfile = 'At this risk level, the investment primarily targets an aggressive profile able to tolerate delays, renegotiations, and close monitoring.';
         }
 
         return sprintf('%s %s. %s %s', $macroContext, $amountContext, $deadlineContext, $investorProfile);

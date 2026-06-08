@@ -3,28 +3,37 @@
 {% block title %}Badges - Najahni{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-award me-2"></i>Badges</h2>
-    <a href="{{ path('app_apprentissage_cours') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Cours</a>
+<div class="nj-page-hero nj-hero-apprentissage mb-4">
+    <i class="bi bi-award nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Learning</div>
+            <h1 class="nj-ph-title mb-1">My Badges</h1>
+            <p class="nj-ph-sub">Your earned achievements and certifications</p>
+        </div>
+        <div class="nj-hero-actions">
+            <a href="{{ path('app_apprentissage_cours') }}" class="nj-action-cta cta-apprentissage"><i class="bi bi-book"></i>Browse Courses</a>
+        </div>
+    </div>
 </div>
 
 {# ===== STATS ===== #}
 {% if badges|length > 0 %}
-<div class="card border-0 shadow-sm p-3 mb-4" style="border-radius:1rem">
+<div class="nj-raised p-3 mb-4">
     <div class="d-flex gap-4 align-items-center">
         <div class="text-center">
-            <div class="fs-4 fw-bold" style="color:var(--nj-primary)">{{ userBadges|length }}</div>
-            <div class="small text-muted"><i class="bi bi-unlock me-1"></i>Débloqués</div>
+            <div class="nj-num nj-num-amber" style="font-size:1.6rem">{{ userBadges|length }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.7rem;margin-top:.2rem;letter-spacing:.04em">UNLOCKED</div>
         </div>
         <div class="vr"></div>
         <div class="text-center">
-            <div class="fs-4 fw-bold text-muted">{{ badges|length - userBadges|length }}</div>
-            <div class="small text-muted"><i class="bi bi-lock me-1"></i>Verrouillés</div>
+            <div class="nj-num" style="font-size:1.6rem;color:rgba(255,255,255,.3)">{{ badges|length - userBadges|length }}</div>
+            <div style="color:rgba(255,255,255,.4);font-size:.7rem;margin-top:.2rem;letter-spacing:.04em">LOCKED</div>
         </div>
         <div class="vr"></div>
         <div class="flex-grow-1">
             <div class="d-flex justify-content-between small mb-1">
-                <span>Progression</span>
+                <span>Progress</span>
                 <span>{{ userBadges|length }}/{{ badges|length }}</span>
             </div>
             <div class="progress" style="height:8px;border-radius:1rem">
@@ -44,7 +53,7 @@
             {# Badge statut coin #}
             {% if unlocked %}
             <span class="position-absolute top-0 end-0 m-2 badge bg-success">
-                <i class="bi bi-check-lg me-1"></i>Débloqué
+                <i class="bi bi-check-lg me-1"></i>Unlocked
             </span>
             {% else %}
             <span class="position-absolute top-0 end-0 m-2 badge bg-secondary">
@@ -66,9 +75,9 @@
                 </span>
                 <p class="text-muted small mb-2">{{ badge.description }}</p>
                 <div class="small text-muted">
-                    {% if badge.pointsRequis %}<p class="mb-0"><i class="bi bi-star me-1"></i>{{ badge.pointsRequis }} XP requis</p>{% endif %}
-                    {% if badge.coursRequis %}<p class="mb-0"><i class="bi bi-book me-1"></i>{{ badge.coursRequis }} cours requis</p>{% endif %}
-                    {% if badge.niveauRequis %}<p class="mb-0"><i class="bi bi-bar-chart me-1"></i>Niveau {{ badge.niveauRequis }}</p>{% endif %}
+                    {% if badge.pointsRequis %}<p class="mb-0"><i class="bi bi-star me-1"></i>{{ badge.pointsRequis }} XP required</p>{% endif %}
+                    {% if badge.coursRequis %}<p class="mb-0"><i class="bi bi-book me-1"></i>{{ badge.coursRequis }} course{{ badge.coursRequis > 1 ? 's' : '' }} required</p>{% endif %}
+                    {% if badge.niveauRequis %}<p class="mb-0"><i class="bi bi-bar-chart me-1"></i>Level {{ badge.niveauRequis }}</p>{% endif %}
                 </div>
             </div>
         </div>
@@ -79,7 +88,7 @@
 {% else %}
 <div class="text-center py-5">
     <div class="text-center"><i class="bi bi-trophy" style="font-size:4rem;color:var(--nj-primary)"></i></div>
-    <h4 class="fw-bold mt-3">Aucun badge disponible</h4>
+    <h4 class="fw-bold mt-3">No badges available</h4>
 </div>
 {% endif %}
 {% endblock %}

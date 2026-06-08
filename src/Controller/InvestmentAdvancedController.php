@@ -70,7 +70,7 @@ class InvestmentAdvancedController extends AbstractController
     private function buildClimateVerdict(array $ecoData): string
     {
         if (empty($ecoData)) {
-            return 'Donnees economiques indisponibles. Les indicateurs ne peuvent pas etre evalues pour le moment.';
+            return 'Economic data unavailable. Indicators cannot be evaluated at this time.';
         }
 
         $inflation = (float) ($ecoData['inflationRate'] ?? 5.0);
@@ -79,32 +79,32 @@ class InvestmentAdvancedController extends AbstractController
         $parts = [];
 
         if ($inflation >= 8.0) {
-            $parts[] = 'une inflation elevee';
+            $parts[] = 'high inflation';
         } elseif ($inflation >= 5.0) {
-            $parts[] = 'une inflation moderee';
+            $parts[] = 'moderate inflation';
         }
 
         if ($eurUsd < 1.02) {
-            $parts[] = 'un taux de change defavorable a l\'euro';
+            $parts[] = 'an unfavorable EUR exchange rate';
         } elseif ($eurUsd > 1.15) {
-            $parts[] = 'un euro fort';
+            $parts[] = 'a strong euro';
         }
 
         if ($gdp < 50) {
-            $parts[] = 'un PIB national modeste';
+            $parts[] = 'a modest national GDP';
         }
 
         if (empty($parts)) {
-            return 'Les conditions economiques actuelles sont relativement favorables aux investissements sur la plateforme.';
+            return 'Current economic conditions are relatively favorable for investments on the platform.';
         }
 
-        $joinedParts = implode(' et ', $parts);
+        $joinedParts = implode(' and ', $parts);
 
         if ($inflation >= 8.0 || $eurUsd < 1.02) {
-            return ucfirst($joinedParts) . ' creent des vents contraires pour les projets a horizon court dans les secteurs dependants des importations.';
+            return ucfirst($joinedParts) . ' create headwinds for short-horizon projects in import-dependent sectors.';
         }
 
-        return ucfirst($joinedParts) . ' invitent a une vigilance moderee sur les engagements a court terme.';
+        return ucfirst($joinedParts) . ' call for moderate caution on short-term commitments.';
     }
 
     #[Route('/economic-data', name: 'app_invest_economic_data', methods: ['GET'])]
@@ -162,8 +162,11 @@ class InvestmentAdvancedController extends AbstractController
     #[Route('/risk-analysis/{id}', name: 'app_invest_risk_analysis', requirements: ['id' => '\d+'])]
     public function riskAnalysis(InvestmentOpportunity $opp): Response
     {
+        $isOwner = $this->getUser() && $opp->getProject()?->getUser() === $this->getUser();
+
         return $this->render('front/investment/risk_analysis.html.twig', [
             'opportunity' => $opp,
+            'isOwner' => $isOwner,
         ]);
     }
 
@@ -436,7 +439,7 @@ class InvestmentAdvancedController extends AbstractController
                 (float) $opp->getTargetAmount(),
                 $opp->getDeadline()?->format('d/m/Y') ?? 'N/A',
                 ($opp->getDescription() ?? '') . sprintf(
-                    "\n\nContexte economique: pays %s, inflation %.1f%%, PIB %.1f Mrd $, EUR/USD %.4f.",
+                    "\n\nEconomic context: country %s, inflation %.1f%%, GDP %.1f Bn $, EUR/USD %.4f.",
                     $data['countryName'] ?? $country,
                     (float) ($data['inflationRate'] ?? 0),
                     (float) ($data['gdpBillions'] ?? 0),

@@ -1,77 +1,165 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Recommandations IA - {{ projet.titre }} - Najahni{% endblock %}
+{% block title %}AI Recommendations - {{ projet.titre }} - Najahni{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.rec-box {
+    padding: .9rem 1.1rem;
+    border-radius: .7rem;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.03);
+    transition: border-color .18s;
+}
+.rec-box:hover { border-color:rgba(67,97,238,.2); }
+.priority-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    padding: .9rem 1rem;
+    border-radius: .7rem;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.07);
+    transition: border-color .18s;
+}
+.priority-item:hover { border-color:rgba(67,97,238,.2); }
+.swot-cell {
+    padding: 1.1rem;
+    border-radius: .7rem;
+    border: 1px solid rgba(255,255,255,.07);
+}
+.swot-cell ul { padding-left: 1.1rem; margin: 0; }
+.swot-cell li { font-size: .84rem; line-height: 1.5; margin-bottom: .3rem; color:rgba(255,255,255,.75); }
+</style>
+{% endblock %}
 
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Retour au projet</a>
-        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-robot me-2"></i>Recommandations IA</h2>
-        <p class="text-muted mb-0">{{ projet.titre }}</p>
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-robot nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> Back to Project
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="nj-ph-eyebrow">Projects &middot; AI</div>
+                <h1 class="nj-ph-title mb-1">AI Recommendations</h1>
+                <p class="nj-ph-sub">{{ projet.titre }} &mdash; Personalized insights &amp; strategic guidance</p>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row g-4">
-    <div class="col-md-8">
-        {# Readiness Score #}
-        {% if recommendations.score_readiness is defined %}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-speedometer me-2"></i>Score de Maturité</h5>
-            <div class="row g-3">
-                {% set readiness = recommendations.score_readiness %}
-                {% for label, val in {
-                    'Investissement': readiness.investissement|default(0),
-                    'Marché': readiness.marche|default(0),
-                    'Équipe': readiness.equipe|default(0)
-                } %}
-                <div class="col-md-4">
-                    <p class="text-muted small mb-1">{{ label }}</p>
-                    <div class="progress mb-1" style="height:10px">
-                        <div class="progress-bar" style="width:{{ val }}%;background:{{ val >= 70 ? '#10b981' : (val >= 40 ? '#f59e0b' : '#ef4444') }}"></div>
-                    </div>
-                    <small class="fw-bold">{{ val }}%</small>
+{# ── Readiness Score ── #}
+{% if recommendations.score_readiness is defined %}
+{% set readiness = recommendations.score_readiness %}
+<div class="nj-raised p-4 mb-4" style="border-radius:1rem">
+    <h5 class="fw-bold mb-4"><i class="bi bi-speedometer me-2"></i>Readiness Score</h5>
+    <div class="row g-3 mb-3">
+        {% for label, val in {
+            'Investment': readiness.investissement|default(0),
+            'Market': readiness.marche|default(0),
+            'Team': readiness.equipe|default(0)
+        } %}
+        <div class="col-md-4">
+            <div class="rec-box">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-muted small fw-semibold">{{ label }}</span>
+                    <span class="fw-bold" style="color:{{ val >= 70 ? '#34d399' : (val >= 40 ? '#fbbf24' : '#f87171') }}">{{ val }}%</span>
                 </div>
-                {% endfor %}
+                <div class="progress" style="height:7px;border-radius:1rem">
+                    <div class="progress-bar" style="width:{{ val }}%;background:{{ val >= 70 ? 'linear-gradient(90deg,#059669,#34d399)' : (val >= 40 ? 'linear-gradient(90deg,#d97706,#fbbf24)' : 'linear-gradient(90deg,#dc2626,#f87171)') }};border-radius:1rem"></div>
+                </div>
             </div>
-            {% if readiness.commentaire is defined %}
-            <div class="mt-3 p-3 rounded-3" style="background:rgba(67,97,238,.05)">
-                <p class="mb-0 small"><i class="bi bi-info-circle me-1"></i>{{ readiness.commentaire }}</p>
-            </div>
-            {% endif %}
         </div>
-        {% endif %}
+        {% endfor %}
+    </div>
+    {% if readiness.commentaire is defined %}
+    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.08);border:1px solid rgba(67,97,238,.15)">
+        <p class="mb-0 small"><i class="bi bi-info-circle me-1" style="color:#818cf8"></i>{{ readiness.commentaire }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{# ── SWOT Analysis ── #}
+{% if recommendations.swot is defined %}
+{% set swot = recommendations.swot %}
+<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
+    <h5 class="fw-bold mb-4"><i class="bi bi-grid-3x3-gap me-2"></i>SWOT Analysis</h5>
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="swot-cell" style="background:rgba(16,185,129,.05);border-color:rgba(16,185,129,.2)">
+                <h6 class="fw-bold mb-3" style="color:#34d399"><i class="bi bi-plus-circle me-1"></i>Strengths</h6>
+                <ul>{% for s in swot.strengths|default([]) %}<li>{{ s }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="swot-cell" style="background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.2)">
+                <h6 class="fw-bold mb-3" style="color:#f87171"><i class="bi bi-dash-circle me-1"></i>Weaknesses</h6>
+                <ul>{% for w in swot.weaknesses|default([]) %}<li>{{ w }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="swot-cell" style="background:rgba(67,97,238,.05);border-color:rgba(67,97,238,.2)">
+                <h6 class="fw-bold mb-3" style="color:#818cf8"><i class="bi bi-arrow-up-right-circle me-1"></i>Opportunities</h6>
+                <ul>{% for o in swot.opportunities|default([]) %}<li>{{ o }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="swot-cell" style="background:rgba(245,158,11,.05);border-color:rgba(245,158,11,.2)">
+                <h6 class="fw-bold mb-3" style="color:#fbbf24"><i class="bi bi-exclamation-triangle me-1"></i>Threats</h6>
+                <ul>{% for t in swot.threats|default([]) %}<li>{{ t }}</li>{% endfor %}</ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row g-4">
+    <div class="col-lg-8">
 
         {# Priority Actions #}
         {% if recommendations.actions_prioritaires is defined %}
         <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-list-check me-2"></i>Actions Prioritaires</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-list-check me-2"></i>Priority Actions</h5>
+            <div class="d-flex flex-column gap-2">
             {% for action in recommendations.actions_prioritaires %}
-            <div class="d-flex align-items-start mb-3 p-3 rounded-3" style="background:rgba({{ action.priorite == 'haute' ? '239,68,68' : (action.priorite == 'moyenne' ? '245,158,11' : '16,185,129') }},.05)">
-                <span class="badge me-3 {{ action.priorite == 'haute' ? 'bg-danger' : (action.priorite == 'moyenne' ? 'bg-warning text-dark' : 'bg-success') }}">
+            <div class="priority-item">
+                <span class="badge flex-shrink-0 px-2 py-1" style="font-size:.67rem;{{ action.priorite == 'haute' ? 'background:rgba(239,68,68,.18);color:#f87171;border:1px solid rgba(239,68,68,.3)' : (action.priorite == 'moyenne' ? 'background:rgba(245,158,11,.18);color:#fbbf24;border:1px solid rgba(245,158,11,.3)' : 'background:rgba(16,185,129,.18);color:#34d399;border:1px solid rgba(16,185,129,.3)') }}">
                     {{ action.priorite|upper }}
                 </span>
-                <div>
-                    <p class="fw-semibold mb-1">{{ action.action }}</p>
-                    <small class="text-muted"><i class="bi bi-clock me-1"></i>{{ action.delai }}</small>
+                <div class="flex-grow-1">
+                    <p class="fw-semibold mb-1 small">{{ action.action }}</p>
+                    <small style="color:rgba(255,255,255,.4)"><i class="bi bi-clock me-1"></i>{{ action.delai }}</small>
                 </div>
             </div>
             {% endfor %}
+            </div>
         </div>
         {% endif %}
 
-        {# KPIs to Track #}
+        {# KPIs #}
         {% if recommendations.kpi_a_suivre is defined %}
         <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>KPIs à Suivre</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>KPIs to Track</h5>
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead><tr><th>Indicateur</th><th>Objectif</th><th>Fréquence</th></tr></thead>
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Indicator</th>
+                            <th>Target</th>
+                            <th>Frequency</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {% for kpi in recommendations.kpi_a_suivre %}
                         <tr>
-                            <td class="fw-semibold">{{ kpi.kpi }}</td>
-                            <td><span class="badge bg-primary bg-opacity-10 text-primary">{{ kpi.objectif }}</span></td>
-                            <td><span class="badge bg-info bg-opacity-10 text-info">{{ kpi.frequence }}</span></td>
+                            <td class="fw-semibold small">{{ kpi.kpi }}</td>
+                            <td><span class="badge" style="background:rgba(67,97,238,.15);color:#a5b4fc;border:1px solid rgba(67,97,238,.2)">{{ kpi.objectif }}</span></td>
+                            <td><span class="badge" style="background:rgba(6,182,212,.1);color:#67e8f9;border:1px solid rgba(6,182,212,.2)">{{ kpi.frequence }}</span></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -79,23 +167,46 @@
             </div>
         </div>
         {% endif %}
+
+        {# Similar Projects #}
+        {% if similarProjects|length > 0 %}
+        <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
+            <h5 class="fw-bold mb-3"><i class="bi bi-collection me-2"></i>Similar Projects</h5>
+            <div class="d-flex flex-column gap-2">
+            {% for p in similarProjects %}
+            <div class="d-flex justify-content-between align-items-center p-2 rounded-3" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                <span class="small fw-semibold">{{ p.titre|length > 45 ? p.titre|slice(0,45) ~ '…' : p.titre }}</span>
+                <span class="badge" style="background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.2)">{{ p.scoreGlobal|number_format(1) }}</span>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
     </div>
 
-    <div class="col-md-4">
-        {# Mentor Profile #}
+    <div class="col-lg-4">
+
+        {# Ideal Mentor Profile #}
         {% if recommendations.mentor_profile is defined %}
         <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-mortarboard me-2"></i>Profil Mentor Idéal</h5>
-            <p><strong>Expertise :</strong> {{ recommendations.mentor_profile.expertise_requise }}</p>
-            <p><strong>Expérience :</strong> {{ recommendations.mentor_profile.experience_secteur }}</p>
-            <h6 class="fw-semibold mt-3">Compétences :</h6>
-            <ul class="mb-3">
+            <h5 class="fw-bold mb-3"><i class="bi bi-mortarboard me-2"></i>Ideal Mentor</h5>
+            <div class="rec-box mb-2">
+                <p class="text-muted small mb-1">Expertise Required</p>
+                <p class="small fw-semibold mb-0">{{ recommendations.mentor_profile.expertise_requise }}</p>
+            </div>
+            <div class="rec-box mb-3">
+                <p class="text-muted small mb-1">Sector Experience</p>
+                <p class="small fw-semibold mb-0">{{ recommendations.mentor_profile.experience_secteur }}</p>
+            </div>
+            <p class="text-muted small fw-semibold mb-2">Key Skills</p>
+            <div class="d-flex flex-wrap gap-1 mb-3">
                 {% for comp in recommendations.mentor_profile.competences %}
-                <li>{{ comp }}</li>
+                <span class="badge" style="background:rgba(67,97,238,.1);color:#a5b4fc;border:1px solid rgba(67,97,238,.15);font-size:.72rem">{{ comp }}</span>
                 {% endfor %}
-            </ul>
+            </div>
             <a href="{{ path('app_mentorat_requests') }}" class="btn btn-outline-primary btn-sm w-100">
-                <i class="bi bi-search me-1"></i>Trouver un mentor
+                <i class="bi bi-search me-1"></i>Find a Mentor
             </a>
         </div>
         {% endif %}
@@ -103,45 +214,41 @@
         {# Investor Profile #}
         {% if recommendations.investor_profile is defined %}
         <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin me-2"></i>Profil Investisseur</h5>
-            <p><strong>Type :</strong> {{ recommendations.investor_profile.type_investisseur }}</p>
-            <p><strong>Montant :</strong> {{ recommendations.investor_profile.montant_recherche }}</p>
-            <h6 class="fw-semibold mt-3">Critères :</h6>
-            <ul class="mb-3">
+            <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin me-2"></i>Ideal Investor</h5>
+            <div class="rec-box mb-2">
+                <p class="text-muted small mb-1">Investor Type</p>
+                <p class="small fw-semibold mb-0">{{ recommendations.investor_profile.type_investisseur }}</p>
+            </div>
+            <div class="rec-box mb-3">
+                <p class="text-muted small mb-1">Amount Sought</p>
+                <p class="small fw-semibold mb-0">{{ recommendations.investor_profile.montant_recherche }}</p>
+            </div>
+            <p class="text-muted small fw-semibold mb-2">Key Criteria</p>
+            <div class="d-flex flex-wrap gap-1 mb-3">
                 {% for c in recommendations.investor_profile.criteres %}
-                <li>{{ c }}</li>
+                <span class="badge" style="background:rgba(16,185,129,.1);color:#6ee7b7;border:1px solid rgba(16,185,129,.15);font-size:.72rem">{{ c }}</span>
                 {% endfor %}
-            </ul>
+            </div>
             <a href="{{ path('app_invest_opportunities') }}" class="btn btn-outline-success btn-sm w-100">
-                <i class="bi bi-graph-up-arrow me-1"></i>Voir les investissements
+                <i class="bi bi-graph-up-arrow me-1"></i>Browse Investments
             </a>
         </div>
         {% endif %}
 
-        {# Resources #}
+        {# Suggested Resources #}
         {% if recommendations.ressources_suggerees is defined %}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-star me-2"></i>Ressources Suggérées</h5>
-            <ul class="list-unstyled mb-0">
+        <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
+            <h5 class="fw-bold mb-3"><i class="bi bi-bookmark-star me-2"></i>Suggested Resources</h5>
+            <ul class="list-unstyled mb-0 d-flex flex-column gap-2">
                 {% for res in recommendations.ressources_suggerees %}
-                <li class="mb-2"><i class="bi bi-arrow-right-circle me-1" style="color:var(--nj-primary)"></i>{{ res }}</li>
+                <li class="small p-2 rounded-3" style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)">
+                    <i class="bi bi-arrow-right-circle me-1" style="color:var(--nj-primary)"></i>{{ res }}
+                </li>
                 {% endfor %}
             </ul>
         </div>
         {% endif %}
 
-        {# Similar Projects #}
-        {% if similarProjects|length > 0 %}
-        <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-collection me-2"></i>Projets Similaires</h5>
-            {% for p in similarProjects %}
-            <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="small">{{ p.titre|length > 20 ? p.titre|slice(0,20) ~ '...' : p.titre }}</span>
-                <span class="badge bg-success bg-opacity-10 text-success">{{ p.scoreGlobal|number_format(1) }}</span>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
     </div>
 </div>
 {% endblock %}

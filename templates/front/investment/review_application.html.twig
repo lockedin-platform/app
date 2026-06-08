@@ -1,0 +1,155 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block title %}Review Application — Najahni{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center g-4">
+    <div class="col-12 col-lg-9">
+
+        <a href="{{ path('app_invest_my_postings') }}" class="d-inline-flex align-items-center gap-1 text-muted text-decoration-none mb-4" style="font-size:.88rem">
+            <i class="bi bi-arrow-left"></i> Back to my postings
+        </a>
+
+        {% for type, messages in app.flashes %}
+            {% for msg in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show mb-4" role="alert">
+                    {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        {# Status banner #}
+        {% if application.status == 'OFFER_MADE' %}
+            <div class="alert border-0 mb-4" style="background:rgba(34,197,94,.1);border-radius:.75rem">
+                <i class="bi bi-check-circle-fill me-2 text-success"></i>
+                You have already made an investment offer for this project. <a href="{{ path('app_invest_my_offers') }}" class="fw-semibold">View your offers →</a>
+            </div>
+        {% elseif application.status == 'REJECTED' %}
+            <div class="alert alert-secondary mb-4" style="border-radius:.75rem">
+                <i class="bi bi-x-circle me-2"></i>This application has been rejected.
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+
+            {# Entrepreneur & Project Info #}
+            <div class="col-12 col-md-5">
+                <div class="card border-0 shadow-sm h-100" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-4">
+                            <i class="bi bi-person-circle me-2" style="color:var(--nj-primary)"></i>Entrepreneur
+                        </h5>
+
+                        <div class="d-flex align-items-center gap-3 mb-4">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:52px;height:52px;background:var(--nj-gradient);font-size:1.1rem;flex-shrink:0">
+                                {{ application.entrepreneur.firstname|slice(0,1)|upper }}{{ application.entrepreneur.lastname|slice(0,1)|upper }}
+                            </div>
+                            <div>
+                                <div class="fw-bold">{{ application.entrepreneur.firstname }} {{ application.entrepreneur.lastname }}</div>
+                                <div class="text-muted" style="font-size:.82rem">{{ application.entrepreneur.email }}</div>
+                                {% if application.entrepreneur.companyName %}
+                                    <div class="text-muted" style="font-size:.82rem"><i class="bi bi-building me-1"></i>{{ application.entrepreneur.companyName }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if application.entrepreneur.bio %}
+                            <p class="text-muted mb-4" style="font-size:.87rem;line-height:1.5">{{ application.entrepreneur.bio }}</p>
+                        {% endif %}
+
+                        <h6 class="fw-bold mb-3">
+                            <i class="bi bi-kanban me-2" style="color:var(--nj-primary)"></i>Project: {{ application.project.titre }}
+                        </h6>
+
+                        {% if application.project.secteur %}
+                            <span class="badge bg-secondary rounded-pill mb-2" style="font-size:.78rem">{{ application.project.secteur }}</span>
+                        {% endif %}
+
+                        {% if application.project.statut %}
+                            <span class="badge {{ application.project.statut == 'PUBLIE' ? 'bg-success' : 'bg-warning text-dark' }} rounded-pill mb-2 ms-1" style="font-size:.78rem">
+                                {{ application.project.statut }}
+                            </span>
+                        {% endif %}
+
+                        {% if application.project.description %}
+                            <p class="text-muted mt-2" style="font-size:.87rem;line-height:1.5">{{ application.project.description }}</p>
+                        {% endif %}
+
+                        <div class="text-muted mt-3" style="font-size:.8rem">
+                            <i class="bi bi-calendar3 me-1"></i>Applied {{ application.createdAt|date('M d, Y') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Cover Message + Actions #}
+            <div class="col-12 col-md-7">
+                <div class="card border-0 shadow-sm mb-4" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-chat-quote me-2" style="color:var(--nj-primary)"></i>Cover Message
+                        </h5>
+                        <div class="p-3 rounded" style="background:rgba(99,102,241,.06);border-left:3px solid var(--nj-primary);font-size:.9rem;line-height:1.7;white-space:pre-line">{{ application.coverMessage }}</div>
+                    </div>
+                </div>
+
+                {# Posting context #}
+                <div class="card border-0 shadow-sm mb-4" style="border-radius:1rem;background:var(--nj-card-bg)">
+                    <div class="card-body p-4">
+                        <h6 class="fw-semibold mb-2 text-muted" style="font-size:.82rem;text-transform:uppercase;letter-spacing:.05em">Your Posting</h6>
+                        <div class="fw-bold mb-1">{{ application.posting.sector }}</div>
+                        <div class="text-muted" style="font-size:.88rem">
+                            Budget: {{ application.posting.budgetMin|number_format(0, ',', ' ') }} – {{ application.posting.budgetMax|number_format(0, ',', ' ') }} TND
+                        </div>
+                    </div>
+                </div>
+
+                {# Actions #}
+                {% if application.status != 'OFFER_MADE' and application.status != 'REJECTED' %}
+                    <div class="card border-0 shadow-sm" style="border-radius:1rem;background:var(--nj-card-bg)">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-4">
+                                <i class="bi bi-hand-thumbs-up me-2" style="color:var(--nj-primary)"></i>Your Decision
+                            </h5>
+
+                            <form method="POST" action="{{ path('app_invest_make_offer_from_app', {id: application.id}) }}" class="mb-4">
+                                <input type="hidden" name="_token" value="{{ csrf_token('make_offer_app_' ~ application.id) }}">
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Investment Amount (TND) <span class="text-danger">*</span></label>
+                                    <p class="text-muted mb-2" style="font-size:.83rem">
+                                        Your budget range: {{ application.posting.budgetMin|number_format(0, ',', ' ') }} – {{ application.posting.budgetMax|number_format(0, ',', ' ') }} TND
+                                    </p>
+                                    <div class="input-group">
+                                        <input type="number" name="amount" class="form-control"
+                                            value="{{ application.posting.budgetMin }}"
+                                            min="1" max="{{ application.posting.budgetMax }}" step="1" required>
+                                        <span class="input-group-text">TND</span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn w-100 fw-semibold py-2" style="background:var(--nj-gradient);color:#fff">
+                                    <i class="bi bi-rocket-takeoff-fill me-2"></i>Prepare Investment Offer
+                                </button>
+                                <p class="text-muted mt-2 mb-0" style="font-size:.78rem">
+                                    This will create a formal investment offer and start the contract negotiation process.
+                                </p>
+                            </form>
+
+                            <hr>
+
+                            <form method="POST" action="{{ path('app_invest_reject_application', {id: application.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('reject_app_' ~ application.id) }}">
+                                <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('Are you sure you want to reject this application?')">
+                                    <i class="bi bi-x-circle me-1"></i>Pass on This Application
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

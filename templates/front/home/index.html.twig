@@ -1,18 +1,12 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Accueil - Najahni{% endblock %}
+{% block title %}Home - Najahni{% endblock %}
 
-{% block body_attributes %}data-page="home"{% endblock %}
+{% block body_attributes %}data-page="home" data-bs-theme="dark"{% endblock %}
 
 {% block stylesheets %}
 <style>
 main.container-fluid { padding: 0 !important; }
-body {
-    background:
-        radial-gradient(circle at 18% 10%, rgba(139, 184, 255, .18), transparent 28%),
-        radial-gradient(circle at 86% 4%, rgba(245, 158, 11, .12), transparent 22%),
-        linear-gradient(180deg, #f5f8fc 0%, #edf2f8 38%, #f7f9fc 100%);
-}
 
 .nj-audience-section {
     padding: 4rem 0 2rem;
@@ -35,8 +29,13 @@ body {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity .5s ease, transform .5s ease, box-shadow .25s ease;
+    animation: audienceCardIn 0.6s ease 0.5s both;
+    display: flex;
+    flex-direction: column;
 }
-.nj-audience-card.revealed { opacity: 1; transform: translateY(0); }
+.nj-audience-card .btn { margin-top: auto; }
+@keyframes audienceCardIn { to { opacity: 1; transform: translateY(0); } }
+.nj-audience-card.revealed { animation: none; opacity: 1; transform: translateY(0); }
 .nj-audience-card:hover { box-shadow: 0 24px 52px rgba(15, 23, 42, .12); }
 .nj-audience-icon {
     width: 56px;
@@ -72,7 +71,7 @@ body {
     --hero-progress: 0;
     --hero-exit-progress: 0;
     position: relative;
-    min-height: 172vh;
+    min-height: 100vh;
     overflow: hidden;
     background:
         radial-gradient(circle at 16% 18%, rgba(103, 232, 249, .16), transparent 24%),
@@ -162,8 +161,6 @@ body {
     grid-template-columns: minmax(0, 1.04fr) minmax(420px, .96fr);
     gap: 2.75rem;
     align-items: center;
-    position: sticky;
-    top: 0;
 }
 .nj-hero-copy {
     position: relative;
@@ -259,18 +256,20 @@ body {
     flex-wrap: wrap;
     margin-bottom: 1.35rem;
 }
+/* light-mode: background: linear-gradient(135deg, #7c3aed, #3b82f6 56%, #67e8f9 120%); box-shadow: 0 18px 40px rgba(59,130,246,.28); */
 .btn-hero-primary {
-    background: linear-gradient(135deg, #7c3aed, #3b82f6 56%, #67e8f9 120%);
-    border: none;
+    background: rgba(255,255,255,.06);
+    border: 1.5px solid rgba(255,255,255,.18);
     color: #fff;
     font-weight: 700;
     font-size: 1rem;
     padding: .85rem 1.9rem;
     border-radius: .9rem;
-    transition: transform .2s, box-shadow .2s;
-    box-shadow: 0 18px 40px rgba(59,130,246,.28);
+    transition: transform .2s, box-shadow .2s, background .2s, border-color .2s;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 20px rgba(0,0,0,.25);
 }
-.btn-hero-primary:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(124,58,237,.45); color: #fff; }
+.btn-hero-primary:hover { transform: translateY(-3px); background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.35); color: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.35); }
 .btn-hero-secondary {
     background: rgba(255,255,255,.02);
     border: 1px solid rgba(255,255,255,.18);
@@ -527,8 +526,9 @@ body {
 .nj-stage-chip-a span { background: #67e8f9; }
 .nj-stage-chip-b { right: 8%; bottom: 17%; }
 .nj-stage-chip-b span { background: #f59e0b; }
-.nj-stage-chip-c { left: 14%; top: 56%; }
+.nj-stage-chip-c { left: 12%; top: 44%; }
 .nj-stage-chip-c span { background: #a855f7; }
+
 .nj-scroll-indicator {
     position: absolute;
     bottom: 1.8rem;
@@ -629,8 +629,10 @@ body {
     transform: translate3d(0, calc((1 - var(--ticker-progress)) * 42px), 0) scale(calc(.94 + (var(--ticker-progress) * .06)));
     filter: blur(calc((1 - var(--ticker-progress)) * 8px));
     transition: opacity .4s ease, transform .18s linear, filter .18s linear;
+    animation: tickerIn 0.5s ease 0.8s both;
 }
-.nj-ticker.revealed { opacity: calc(.25 + (var(--ticker-progress) * .75)); }
+@keyframes tickerIn { to { opacity: 0.8; transform: translate3d(0,0,0) scale(1); filter: blur(0); } }
+.nj-ticker.revealed { animation: none; opacity: calc(.25 + (var(--ticker-progress) * .75)); }
 .nj-ticker-track {
     display: flex;
     align-items: center;
@@ -1247,100 +1249,134 @@ body {
     }
     .nj-ticker-track { animation-duration: .01ms; animation-iteration-count: 1; transform: none; }
 }
+
+/* ── Hero: always dark regardless of theme ── */
+.nj-hero, .nj-hero * { color-scheme: dark; }
+.nj-stat-pill { background: rgba(255,255,255,.12) !important; color: #fff !important; border-color: rgba(255,255,255,.18) !important; }
+[data-bs-theme="light"] .nj-stat-pill { background: rgba(255,255,255,.88) !important; color: #0f172a !important; border-color: rgba(255,255,255,.95) !important; }
+.nj-hero-lead { color: rgba(233,240,255,.76) !important; }
+.nj-hero-title { color: #fff !important; }
+.nj-hero-meta-pill { color: rgba(255,255,255,.74) !important; background: rgba(255,255,255,.06) !important; }
+.nj-hero-stat { color: rgba(255,255,255,.9) !important; }
+.nj-hero-stat .stat-num { color: #fff !important; }
+.nj-hero-stat .stat-label { color: rgba(255,255,255,.55) !important; }
+.nj-hero-kicker { color: rgba(255,255,255,.78) !important; }
+
+/* ── Audience section: light-mode friendly ── */
+[data-bs-theme="light"] .nj-audience-section {
+    background: linear-gradient(180deg, #eef2ff 0%, #e8edf8 100%) !important;
+}
+[data-bs-theme="light"] .nj-audience-section h3 { color: #0f172a !important; }
+[data-bs-theme="light"] .nj-audience-section .text-muted { color: #475569 !important; }
+[data-bs-theme="light"] .nj-audience-card {
+    background: #ffffff !important;
+    border: 1px solid rgba(67,97,238,.15) !important;
+    box-shadow: 0 4px 20px rgba(67,97,238,.08) !important;
+    color: #1e293b !important;
+}
+[data-bs-theme="light"] .nj-audience-card h4,
+[data-bs-theme="light"] .nj-audience-card strong { color: #0f172a !important; font-size: 1.1rem; }
+[data-bs-theme="light"] .nj-audience-card p { color: #475569 !important; }
+[data-bs-theme="light"] .nj-audience-points li { color: #475569 !important; }
+[data-bs-theme="light"] .nj-audience-points li i { color: var(--nj-primary) !important; }
+[data-bs-theme="light"] .nj-audience-icon { background: rgba(67,97,238,.1) !important; }
+[data-bs-theme="light"] .nj-audience-icon i { color: var(--nj-primary) !important; }
 </style>
 {% endblock %}
 
 {% block main %}
+{# Force dark mode on html element before Bootstrap theme loader fires #}
+<script>document.documentElement.setAttribute('data-bs-theme','dark');</script>
 {% set isGuest = not is_granted('ROLE_USER') %}
 {% set modules = [
     {
         icon: "bi-cash-stack",
-        eyebrow: "Capital en mouvement",
+        eyebrow: "Active capital",
         gradient: "linear-gradient(140deg, rgba(30, 64, 175, .94), rgba(14, 116, 144, .86) 56%, rgba(15, 23, 42, .92) 100%)",
         surface: "rgba(59, 130, 246, .16)",
         glow: "radial-gradient(circle, rgba(59,130,246,.28), transparent 68%)",
         accent: "#60a5fa",
-        title: "Trouvez le capital qui correspond au bon signal.",
-        desc: "Publiez une opportunite claire, structurez l'offre, negociez dans un cadre propre et faites avancer la discussion jusqu'au contrat.",
-        stat: platformStats.openOpportunities ~ " opportunites actives",
-        secondary: platformStats.totalInvestors ~ " investisseurs a l'affut",
-        cta: "Ouvrir les opportunites",
+        title: "Find the capital that matches the right signal.",
+        desc: "Post a clear opportunity, structure the offer, negotiate in a clean framework and advance the discussion through to contract.",
+        stat: platformStats.openOpportunities ~ " active opportunities",
+        secondary: platformStats.totalInvestors ~ " investors on the lookout",
+        cta: "Explore opportunities",
         route: path('app_invest_opportunities')
     },
     {
         icon: "bi-rocket-takeoff",
-        eyebrow: "Execution structuree",
+        eyebrow: "Structured execution",
         gradient: "linear-gradient(140deg, rgba(194, 65, 12, .92), rgba(234, 88, 12, .82) 56%, rgba(51, 25, 8, .94) 100%)",
         surface: "rgba(249, 115, 22, .16)",
         glow: "radial-gradient(circle, rgba(249,115,22,.22), transparent 70%)",
         accent: "#fb923c",
-        title: "Transformez une idee en projet lisible, solide et diffusable.",
-        desc: "Cadrez la proposition, suivez les briques importantes, rendez le projet visible et gardez le momentum quand l'attention arrive.",
-        stat: platformStats.totalProjects ~ " projets en cours",
-        secondary: platformStats.activeProjects ~ " projets encore actifs",
-        cta: "Entrer dans mes projets",
+        title: "Turn an idea into a readable, solid and shareable project.",
+        desc: "Frame the proposition, track key milestones, make the project visible and keep momentum when attention arrives.",
+        stat: platformStats.totalProjects ~ " projects in progress",
+        secondary: platformStats.activeProjects ~ " projects still active",
+        cta: "Enter my projects",
         route: path('app_projet_index')
     },
     {
         icon: "bi-people-fill",
-        eyebrow: "Energie communautaire",
+        eyebrow: "Community energy",
         gradient: "linear-gradient(140deg, rgba(88, 28, 135, .94), rgba(109, 40, 217, .84) 54%, rgba(24, 24, 51, .94) 100%)",
         surface: "rgba(139, 92, 246, .16)",
         glow: "radial-gradient(circle, rgba(168,85,247,.24), transparent 70%)",
         accent: "#c084fc",
-        title: "Faites circuler les retours, les contacts et la traction sociale.",
-        desc: "Najahni ne laisse pas les projets seuls. La communaute apporte de la visibilite, des retours et un contexte qui fait gagner du temps.",
-        stat: platformStats.totalUsers ~ " membres actifs",
-        secondary: platformStats.totalEntrepreneurs ~ " entrepreneurs presents",
-        cta: "Voir la communaute",
+        title: "Circulate feedback, contacts and social traction.",
+        desc: "Najahni doesn't leave projects alone. The community brings visibility, feedback and context that saves time.",
+        stat: platformStats.totalUsers ~ " active members",
+        secondary: platformStats.totalEntrepreneurs ~ " entrepreneurs present",
+        cta: "See the community",
         route: path('app_community_posts')
     },
     {
         icon: "bi-mortarboard",
-        eyebrow: "Mentorat utile",
+        eyebrow: "Useful mentoring",
         gradient: "linear-gradient(140deg, rgba(6, 95, 70, .94), rgba(13, 148, 136, .82) 54%, rgba(6, 32, 33, .94) 100%)",
         surface: "rgba(20, 184, 166, .16)",
         glow: "radial-gradient(circle, rgba(20,184,166,.2), transparent 70%)",
         accent: "#2dd4bf",
-        title: "Activez la bonne personne au bon moment du parcours.",
-        desc: "Les mentors interviennent quand la question est reelle: clarifier une offre, debloquer une etape, preparer une decision.",
-        stat: platformStats.totalMentorsAvail ~ " mentors disponibles",
-        secondary: platformStats.totalSessions ~ " sessions deja menees",
-        cta: "Trouver un mentor",
+        title: "Activate the right person at the right moment in the journey.",
+        desc: "Mentors step in when the question is real: clarify an offer, unblock a step, prepare a decision.",
+        stat: platformStats.totalMentorsAvail ~ " mentors available",
+        secondary: platformStats.totalSessions ~ " sessions already conducted",
+        cta: "Find a mentor",
         route: path('app_mentorat_requests')
     },
     {
-        icon: "bi-book-half",
-        eyebrow: "Competences qui accelerent",
-        gradient: "linear-gradient(140deg, rgba(157, 23, 77, .94), rgba(236, 72, 153, .82) 54%, rgba(58, 12, 35, .94) 100%)",
-        surface: "rgba(236, 72, 153, .16)",
-        glow: "radial-gradient(circle, rgba(236,72,153,.22), transparent 70%)",
-        accent: "#f472b6",
-        title: "Apprenez exactement ce qui renforce la qualite du deal.",
-        desc: "Les contenus donnent de la profondeur au projet: pitch, negociation, posture, structuration et execution entrepreneuriale.",
-        stat: platformStats.totalCours ~ " cours disponibles",
-        secondary: platformStats.totalUsers ~ " profils qui peuvent monter en niveau",
-        cta: "Lancer un parcours",
-        route: path('app_apprentissage_cours')
+        icon: "bi-people-fill",
+        eyebrow: "Co-founders & Partners",
+        gradient: "linear-gradient(140deg, rgba(67, 56, 202, .94), rgba(99, 102, 241, .82) 54%, rgba(17, 24, 39, .94) 100%)",
+        surface: "rgba(99, 102, 241, .16)",
+        glow: "radial-gradient(circle, rgba(99,102,241,.24), transparent 70%)",
+        accent: "#818cf8",
+        title: "Find the right co-founder, partner, or collaborator.",
+        desc: "AI-guided matching connects you with the people who complement your skills, share your vision, and accelerate your deal.",
+        stat: platformStats.totalUsers ~ " profiles to explore",
+        secondary: "AI-powered compatibility matching",
+        cta: "Find co-founders",
+        route: path('app_team_matcher_index')
     },
     {
         icon: "bi-person-vcard",
-        eyebrow: "Identite lisible",
+        eyebrow: "Readable identity",
         gradient: "linear-gradient(140deg, rgba(161, 98, 7, .94), rgba(245, 158, 11, .84) 54%, rgba(47, 32, 7, .94) 100%)",
         surface: "rgba(245, 158, 11, .16)",
         glow: "radial-gradient(circle, rgba(245,158,11,.2), transparent 70%)",
         accent: "#fbbf24",
-        title: "Faites de votre profil un point d'entree qui inspire confiance.",
-        desc: "La plateforme assemble reputation, activite, accompagnement et trajectoire pour donner une lecture immediate de votre presence.",
-        stat: platformStats.totalUsers ~ " profils visibles",
-        secondary: platformStats.fundedDeals ~ " deals comme preuve sociale",
-        cta: "Ouvrir mon profil",
+        title: "Make your profile an entry point that inspires trust.",
+        desc: "The platform assembles reputation, activity, mentoring and trajectory to give an immediate read of your presence.",
+        stat: platformStats.totalUsers ~ " visible profiles",
+        secondary: platformStats.fundedDeals ~ " deals as social proof",
+        cta: "Open my profile",
         route: path('app_profile')
     }
 ] %}
 {% set closingRoute = is_granted('ROLE_ADMIN') ? path('admin_dashboard') : path('app_projet_index') %}
 
-<section class="nj-hero" id="njHero">
+<section class="nj-hero" id="njHero" data-bs-theme="dark">
     <div class="nj-hero-grid"></div>
     <div class="nj-hero-orb nj-hero-orb-a"></div>
     <div class="nj-hero-orb nj-hero-orb-b"></div>
@@ -1350,56 +1386,56 @@ body {
         <div class="nj-hero-copy">
             <div class="nj-hero-kicker">
                 <span class="nj-hero-kicker-dot"></span>
-                Ecosysteme startup tunisien
+                Tunisian Startup Ecosystem
             </div>
 
             <div class="nj-stat-pill" id="heroPill">
-                <span id="heroPillText">{{ platformStats.activeProjects }} projets actifs</span>
+                <span id="heroPillText">{{ platformStats.activeProjects }} active projects</span>
             </div>
 
             {% if isGuest %}
                 <h1 class="nj-hero-title">
-                    <span class="nj-hero-title-line">Une plateforme qui donne</span>
-                    <span class="nj-hero-title-line nj-hero-title-accent">de la profondeur a votre ambition.</span>
+                    <span class="nj-hero-title-line">A platform that gives</span>
+                    <span class="nj-hero-title-line nj-hero-title-accent">depth to your ambition.</span>
                 </h1>
-                <p class="lead nj-hero-lead">Najahni connecte financement, mentorat, apprentissage et communaute dans une seule experience pensee pour faire passer un projet du signal faible au deal concret.</p>
+                <p class="lead nj-hero-lead">Najahni connects funding, mentoring and community in one experience designed to take a project from weak signal to concrete deal.</p>
             {% else %}
                 <h1 class="nj-hero-title">
-                    <span class="nj-hero-title-line">Pilotez vos projets avec</span>
-                    <span class="nj-hero-title-line nj-hero-title-accent">un deal flow visible et vivant.</span>
+                    <span class="nj-hero-title-line">Steer your projects with</span>
+                    <span class="nj-hero-title-line nj-hero-title-accent">a visible and vibrant deal flow.</span>
                 </h1>
-                <p class="lead nj-hero-lead">Suivez les opportunites, activez des mentors, exposez vos projets et faites circuler l'energie de l'ecosysteme depuis un seul cockpit.</p>
+                <p class="lead nj-hero-lead">Track opportunities, activate mentors, expose your projects and circulate ecosystem energy from a single cockpit.</p>
             {% endif %}
 
             <div class="nj-hero-actions">
                 {% if app.user %}
-                    <a href="{{ path('app_projet_index') }}" class="btn btn-hero-primary">Mes Projets</a>
-                    <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Opportunites d'investissement</a>
+                    <a href="{{ path('app_projet_index') }}" class="btn btn-hero-primary">My Projects</a>
+                    <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Investment Opportunities</a>
                 {% else %}
-                    <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Rejoindre Najahni - c'est gratuit</a>
-                    <a href="{{ path('app_login') }}" class="btn btn-hero-secondary">Se connecter</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Join Najahni - it's free</a>
+                    <a href="{{ path('app_login') }}" class="btn btn-hero-secondary">Sign In</a>
                 {% endif %}
             </div>
 
             <div class="nj-hero-meta">
-                <span class="nj-hero-meta-pill"><i class="bi bi-graph-up-arrow"></i> Investissement</span>
-                <span class="nj-hero-meta-pill"><i class="bi bi-people-fill"></i> Communaute</span>
-                <span class="nj-hero-meta-pill"><i class="bi bi-mortarboard"></i> Mentorat</span>
-                <span class="nj-hero-meta-pill"><i class="bi bi-book-half"></i> Apprentissage</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-graph-up-arrow"></i> Investment</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-people-fill"></i> Community</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-mortarboard"></i> Mentoring</span>
+                <span class="nj-hero-meta-pill"><i class="bi bi-people-fill"></i> Co-founders</span>
             </div>
 
             <div class="nj-hero-stats">
                 <div class="nj-hero-stat">
                     <span class="stat-num" data-count="{{ platformStats.activeProjects }}">0</span>
-                    <span class="stat-label">Projets actifs</span>
+                    <span class="stat-label">Active projects</span>
                 </div>
                 <div class="nj-hero-stat">
                     <span class="stat-num" data-count="{{ platformStats.totalInvestors }}">0</span>
-                    <span class="stat-label">Investisseurs</span>
+                    <span class="stat-label">Investors</span>
                 </div>
                 <div class="nj-hero-stat">
                     <span class="stat-num" data-count="{{ platformStats.fundedDeals }}">0</span>
-                    <span class="stat-label">Deals finances</span>
+                    <span class="stat-label">Funded deals</span>
                 </div>
             </div>
         </div>
@@ -1414,15 +1450,10 @@ body {
                 <div class="nj-stage-badge nj-stage-badge-a">Immersive deal map</div>
                 <div class="nj-stage-badge nj-stage-badge-b">Tunisian founder signal</div>
 
-                <div class="nj-stage-beacon">
-                    <span class="nj-stage-beacon-core"></span>
-                    <span class="nj-stage-beacon-label">Live startup pulse</span>
-                </div>
-
                 <article class="nj-stage-card nj-stage-card-main">
                     <span class="nj-stage-card-eyebrow">Open pipeline</span>
                     <strong>{{ platformStats.openOpportunities }}</strong>
-                    <p>opportunites en cours de discussion sur la plateforme.</p>
+                    <p>opportunities currently in discussion on the platform.</p>
                     <div class="nj-stage-bars">
                         <span style="--bar-size:92%"></span>
                         <span style="--bar-size:78%"></span>
@@ -1432,17 +1463,17 @@ body {
 
                 <article class="nj-stage-card nj-stage-card-secondary">
                     <span class="nj-stage-card-eyebrow">Latest momentum</span>
-                    <h3>{{ platformStats.latestProjectName ? platformStats.latestProjectName : 'Projet en vedette' }}</h3>
-                    <p>{{ platformStats.latestProjectSector ? platformStats.latestProjectSector : 'Ecosysteme tunisien' }}</p>
+                    <h3>{{ platformStats.latestProjectName ? platformStats.latestProjectName : 'Featured Project' }}</h3>
+                    <p>{{ platformStats.latestProjectSector ? platformStats.latestProjectSector : 'Tunisian Ecosystem' }}</p>
                 </article>
 
                 <article class="nj-stage-card nj-stage-card-tertiary">
                     <span class="nj-stage-card-eyebrow">Platform reach</span>
-                    <p>Un reseau qui connecte des acteurs differents au bon moment.</p>
+                    <p>A network connecting the right actors at the right moment.</p>
                     <div class="nj-stage-metric-grid">
                         <div>
                             <strong>{{ platformStats.totalUsers }}</strong>
-                            <span>Membres</span>
+                            <span>Members</span>
                         </div>
                         <div>
                             <strong>{{ platformStats.totalMentorsAvail }}</strong>
@@ -1459,15 +1490,19 @@ body {
                     </div>
                 </article>
 
-                <div class="nj-stage-chip nj-stage-chip-a"><span></span>{{ platformStats.totalUsers }} membres actifs</div>
-                <div class="nj-stage-chip nj-stage-chip-b"><span></span>{{ platformStats.fundedDeals }} deals finances</div>
-                <div class="nj-stage-chip nj-stage-chip-c"><span></span>{{ platformStats.totalMentorsAvail }} mentors mobilisables</div>
+                <div class="nj-stage-chip nj-stage-chip-a"><span></span>{{ platformStats.totalUsers }} active members</div>
+                {% if platformStats.fundedDeals > 0 %}
+                <div class="nj-stage-chip nj-stage-chip-b"><span></span>{{ platformStats.fundedDeals }} funded deals</div>
+                {% endif %}
+                {% if platformStats.totalMentorsAvail > 0 %}
+                <div class="nj-stage-chip nj-stage-chip-c"><span></span>{{ platformStats.totalMentorsAvail }} mentors available</div>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <div class="nj-scroll-indicator">
-        <div>Explorer</div>
+        <div>Explore</div>
         <i class="bi bi-chevron-down" style="font-size:1.5rem"></i>
     </div>
 </section>
@@ -1476,8 +1511,8 @@ body {
 <section class="nj-audience-section">
     <div class="container">
         <div class="text-center mb-4">
-            <h3 class="fw-bold mb-2">Pourquoi rejoindre Najahni ?</h3>
-            <p class="text-muted mb-0">Trois profils, trois raisons concretes d'entrer dans l'ecosysteme.</p>
+            <h3 class="fw-bold mb-2">Why join Najahni?</h3>
+            <p class="text-muted mb-0">Three profiles, three concrete reasons to enter the ecosystem.</p>
         </div>
         <div class="row g-4">
             <div class="col-lg-4">
@@ -1485,14 +1520,14 @@ body {
                     <div class="nj-audience-icon" style="background:rgba(67,97,238,.12);color:var(--nj-primary)">
                         <i class="bi bi-rocket-takeoff"></i>
                     </div>
-                    <h4>Pour les entrepreneurs</h4>
-                    <p>Donnez une structure a votre projet, rendez-le visible, et avancez avec de vrais relais pour financer et accelerer son execution.</p>
+                    <h4>For entrepreneurs</h4>
+                    <p>Give structure to your project, make it visible, and move forward with real support to fund and accelerate its execution.</p>
                     <ul class="nj-audience-points">
-                        <li><i class="bi bi-check-circle-fill"></i><span>Publiez un projet clair et credible</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Accedez a des investisseurs et des mentors</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Faites progresser votre projet avec des outils concrets</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Publish a clear, credible project</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Connect with investors and mentors</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Advance your project with concrete tools</span></li>
                     </ul>
-                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Creer mon compte gratuitement</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Create my account for free</a>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -1500,14 +1535,14 @@ body {
                     <div class="nj-audience-icon" style="background:rgba(114,9,183,.12);color:var(--nj-accent)">
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
-                    <h4>Pour les investisseurs</h4>
-                    <p>Reperez des opportunites reelles, evaluez les projets plus vite, et entrez en relation avec des porteurs qui ont besoin d'un partenaire solide.</p>
+                    <h4>For investors</h4>
+                    <p>Spot real opportunities, evaluate projects faster, and connect with founders who need a solid partner.</p>
                     <ul class="nj-audience-points">
-                        <li><i class="bi bi-check-circle-fill"></i><span>Consultez des opportunites entrepreneuriales</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Negociez des offres dans un cadre structure</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Suivez des deals finances sur une meme plateforme</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Browse entrepreneurial opportunities</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Negotiate offers in a structured framework</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Track funded deals on a single platform</span></li>
                     </ul>
-                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Rejoindre comme investisseur</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Join as an investor</a>
                 </div>
             </div>
             <div class="col-lg-4">
@@ -1515,14 +1550,14 @@ body {
                     <div class="nj-audience-icon" style="background:rgba(6,214,160,.16);color:var(--nj-success)">
                         <i class="bi bi-mortarboard"></i>
                     </div>
-                    <h4>Pour les mentors</h4>
-                    <p>Partagez votre experience avec des entrepreneurs qui avancent, accompagnez des projets utiles, et rendez votre expertise visible la ou elle compte.</p>
+                    <h4>For mentors</h4>
+                    <p>Share your experience with entrepreneurs who are moving forward, support meaningful projects, and make your expertise visible where it matters.</p>
                     <ul class="nj-audience-points">
-                        <li><i class="bi bi-check-circle-fill"></i><span>Recevez des demandes d'accompagnement</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Intervenez la ou votre experience a de la valeur</span></li>
-                        <li><i class="bi bi-check-circle-fill"></i><span>Contribuez a l'ecosysteme entrepreneurial tunisien</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Receive mentoring requests</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Intervene where your experience has real value</span></li>
+                        <li><i class="bi bi-check-circle-fill"></i><span>Contribute to the Tunisian entrepreneurial ecosystem</span></li>
                     </ul>
-                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Devenir mentor sur Najahni</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-nj w-100">Become a mentor on Najahni</a>
                 </div>
             </div>
         </div>
@@ -1530,172 +1565,95 @@ body {
 </section>
 {% endif %}
 
-<section class="nj-signal-section" id="signalChapter">
+<section data-bs-theme="dark" style="position:relative;z-index:3;padding:4rem 0;background:linear-gradient(180deg,#06101f 0%,#0a1220 100%)">
     <div class="container">
-        <div class="nj-signal-shell">
-            <div class="nj-chapter-label is-dark" id="signalLabel">
-                <span class="nj-chapter-index">Chapitre 2</span>
-                <span class="nj-chapter-text">Activite en temps reel</span>
-                <span class="nj-chapter-cursor"></span>
+        <div class="text-center mb-5">
+            <div style="display:inline-flex;align-items:center;gap:.6rem;padding:.45rem 1rem;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.2rem">
+                <span style="width:6px;height:6px;border-radius:50%;background:#67e8f9;box-shadow:0 0 8px rgba(103,232,249,.6)"></span>
+                Six modules, one ecosystem
             </div>
-            <p class="nj-signal-intro">Le flux ne se contente pas de faire joli. Il montre que la plateforme respire, bouge et relie des actions humaines a des signaux concrets.</p>
-
-            {% if activityFeed|length > 0 %}
-                <div class="nj-ticker" id="njTicker">
-                    <div class="nj-ticker-track" id="tickerTrack">
-                        {% for event in activityFeed %}
-                            <span class="nj-ticker-item">
-                                <span class="nj-ticker-dot {{ event.type }}"></span>
-                                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
-                            </span>
-                        {% endfor %}
-                        {% for event in activityFeed %}
-                            <span class="nj-ticker-item">
-                                <span class="nj-ticker-dot {{ event.type }}"></span>
-                                {{ event.text }} &middot; <span style="opacity:.5">{{ event.ago }}</span>
-                            </span>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% else %}
-                <div class="nj-signal-empty">Le flux reprendra des qu'une nouvelle activite sera enregistree sur la plateforme.</div>
-            {% endif %}
-        </div>
-    </div>
-</section>
-
-<section class="nj-journey" id="journeyWrapper">
-    <div class="nj-journey-sticky">
-        <div class="nj-journey-head">
-            <div class="nj-chapter-label is-dark" id="journeyLabel">
-                <span class="nj-chapter-index">Chapitre 3</span>
-                <span class="nj-chapter-text">Parcours fondateur</span>
-                <span class="nj-chapter-cursor"></span>
-            </div>
-            <p class="nj-journey-note">Six ecrans, un seul mouvement: l'idee devient projet, le projet devient relation, la relation devient traction.</p>
+            <h2 class="fw-bold text-white mb-2" style="font-size:clamp(1.8rem,4vw,2.8rem);letter-spacing:-.03em">Everything your project needs to move forward</h2>
+            <p style="color:rgba(226,232,240,.62);max-width:38rem;margin:0 auto;font-size:1rem;line-height:1.7">From the first idea to a signed deal — funding, mentoring, community and co-founders all in one place.</p>
         </div>
 
-        <div class="nj-journey-track" id="journeyTrack">
+        <div class="row g-3">
             {% for m in modules %}
-                <article class="nj-journey-slide" data-journey-slide style="--slide-glow: {{ m.glow }}; --slide-gradient: {{ m.gradient }}; --slide-accent: {{ m.accent }}; --slide-surface: {{ m.surface }};">
-                    <div class="nj-journey-slide-inner">
-                        <div class="nj-journey-panel">
-                            <div class="nj-journey-topline">
-                                <span class="nj-journey-index">{{ '%02d'|format(loop.index) }}</span>
-                                <span class="nj-journey-step">{{ m.eyebrow }}</span>
-                            </div>
-                            <div class="nj-journey-icon"><i class="bi {{ m.icon }}"></i></div>
-                            <h3>{{ m.title }}</h3>
-                            <p>{{ m.desc }}</p>
-                            <div class="nj-journey-metrics">
-                                <span>{{ m.stat }}</span>
-                                <span>{{ m.secondary }}</span>
-                            </div>
-                            <a href="{{ m.route }}" class="nj-journey-cta">{{ m.cta }} <i class="bi bi-arrow-right"></i></a>
-                        </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <a href="{{ m.route }}" class="text-decoration-none d-block h-100" style="border-radius:1.25rem;background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.1);padding:1.6rem 1.5rem;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;color:inherit" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='{{ m.accent }}55';this.style.boxShadow='0 16px 40px rgba(0,0,0,.3)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,.1)';this.style.boxShadow=''">
+                    <div style="width:44px;height:44px;border-radius:.9rem;background:{{ m.surface }};border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;margin-bottom:1.1rem;font-size:1.25rem;color:{{ m.accent }}">
+                        <i class="bi {{ m.icon }}"></i>
                     </div>
-                </article>
+                    <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.14em;color:{{ m.accent }};font-weight:700;margin-bottom:.45rem">{{ m.eyebrow }}</div>
+                    <div class="fw-bold text-white mb-2" style="font-size:.98rem;line-height:1.35">{{ m.title }}</div>
+                    <div style="font-size:.83rem;color:rgba(255,255,255,.55);line-height:1.6">{{ m.desc }}</div>
+                    <div style="margin-top:1rem;font-size:.8rem;font-weight:600;color:{{ m.accent }}">{{ m.cta }} →</div>
+                </a>
+            </div>
             {% endfor %}
         </div>
 
-        <div class="nj-journey-dots" aria-hidden="true">
-            {% for m in modules %}
-                <span class="nj-journey-dot" data-journey-dot style="--dot-color: {{ m.accent }}"></span>
-            {% endfor %}
+        {% if activityFeed|length > 0 %}
+        <div style="margin-top:2.5rem;height:50px;overflow:hidden;border-radius:999px;border:1px solid rgba(148,163,184,.14);background:rgba(10,18,41,.8);backdrop-filter:blur(8px);position:relative">
+            <div style="display:flex;align-items:center;height:100%;width:max-content;animation:tickerScroll 55s linear infinite">
+                {% for event in activityFeed %}
+                    <span style="display:inline-flex;align-items:center;gap:.45rem;padding:0 1.6rem;white-space:nowrap;color:rgba(255,255,255,.65);font-size:.8rem">
+                        <span style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:{% if event.type == 'investment' %}#06d6a0{% elseif event.type == 'project' %}#3b82f6{% elseif event.type == 'mentorship' %}#f59e0b{% elseif event.type == 'community' %}#a855f7{% else %}#94a3b8{% endif %}"></span>
+                        {{ event.text }} &middot; <span style="opacity:.45">{{ event.ago }}</span>
+                    </span>
+                {% endfor %}
+                {% for event in activityFeed %}
+                    <span style="display:inline-flex;align-items:center;gap:.45rem;padding:0 1.6rem;white-space:nowrap;color:rgba(255,255,255,.65);font-size:.8rem">
+                        <span style="width:6px;height:6px;border-radius:50%;flex-shrink:0;background:{% if event.type == 'investment' %}#06d6a0{% elseif event.type == 'project' %}#3b82f6{% elseif event.type == 'mentorship' %}#f59e0b{% elseif event.type == 'community' %}#a855f7{% else %}#94a3b8{% endif %}"></span>
+                        {{ event.text }} &middot; <span style="opacity:.45">{{ event.ago }}</span>
+                    </span>
+                {% endfor %}
+            </div>
         </div>
+        {% endif %}
     </div>
 </section>
 
-<section class="nj-social-proof" id="proofChapter">
+
+<section data-bs-theme="dark" style="position:relative;z-index:3;padding:5rem 0;background:linear-gradient(180deg,#0a1220 0%,#040816 100%)">
     <div class="container">
-        <div class="nj-chapter-label" id="proofLabel">
-            <span class="nj-chapter-index">Chapitre 4</span>
-            <span class="nj-chapter-text">Impact mesurable</span>
-            <span class="nj-chapter-cursor"></span>
-        </div>
-        <p class="nj-proof-intro">Quand le mouvement est bon, il laisse des traces. Les chiffres ci-dessous doivent se sentir comme des resonances, pas comme des cases a cocher.</p>
-
-        <div class="nj-impact-grid" id="impactGrid">
-            <div class="nj-impact-card">
-                <span class="nj-impact-num" data-count="{{ platformStats.totalEntrepreneurs }}">0</span>
-                <div class="nj-impact-label">Entrepreneurs</div>
-                <div class="nj-impact-sub">ont cree leur projet sur Najahni</div>
-            </div>
-            <div class="nj-impact-card">
-                <span class="nj-impact-num" data-count="{{ platformStats.totalInvestors }}">0</span>
-                <div class="nj-impact-label">Investisseurs</div>
-                <div class="nj-impact-sub">cherchent activement des opportunites</div>
-            </div>
-            <div class="nj-impact-card">
-                <span class="nj-impact-num" data-count="{{ platformStats.fundedDeals }}">0</span>
-                <div class="nj-impact-label">Deals</div>
-                <div class="nj-impact-sub">finances avec succes sur la plateforme</div>
-            </div>
-            <div class="nj-impact-card">
-                <span class="nj-impact-num" data-count="{{ platformStats.totalSessions }}">0</span>
-                <div class="nj-impact-label">Sessions</div>
-                <div class="nj-impact-sub">de mentorat realisees</div>
-            </div>
-        </div>
-
-        <div class="nj-strengths" id="strengthsGrid">
-            <div class="nj-strength-card" style="transition-delay:0ms">
-                <i class="bi bi-file-earmark-lock2"></i>
-                <h6>Contrats signes numeriquement</h6>
-                <p>SHA-256 signature electronique integree</p>
-            </div>
-            <div class="nj-strength-card" style="transition-delay:80ms">
-                <i class="bi bi-shield-check"></i>
-                <h6>Paiement Stripe securise</h6>
-                <p>Transactions protegees et tracees</p>
-            </div>
-            <div class="nj-strength-card" style="transition-delay:160ms">
-                <i class="bi bi-cpu"></i>
-                <h6>IA integree au workflow</h6>
-                <p>Analyse de risque et matching automatise</p>
-            </div>
-            <div class="nj-strength-card" style="transition-delay:240ms">
-                <i class="bi bi-geo-alt"></i>
-                <h6>100% Tunisien</h6>
-                <p>Concu pour l'ecosysteme entrepreneurial local</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="nj-closing-section">
-    <div class="container">
-        <div class="nj-closing" id="njClosing">
-            <div class="nj-closing-shell">
-                <div class="nj-closing-copy">
-                    <div class="nj-chapter-label is-dark" id="closingLabel">
-                        <span class="nj-chapter-index">Chapitre 5</span>
-                        <span class="nj-chapter-text">Plateforme complete</span>
-                        <span class="nj-chapter-cursor"></span>
+        <div style="border-radius:2rem;background:radial-gradient(circle at 15% 50%,rgba(67,97,238,.18),transparent 40%),radial-gradient(circle at 85% 50%,rgba(114,9,183,.14),transparent 40%),linear-gradient(135deg,#0d1425 0%,#111827 100%);border:1px solid rgba(255,255,255,.1);padding:clamp(2.5rem,6vw,4rem);display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center" class="flex-wrap">
+            <div>
+                {% if isGuest %}
+                    <div style="display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .9rem;border-radius:999px;background:rgba(67,97,238,.15);border:1px solid rgba(67,97,238,.3);color:#818cf8;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.4rem">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#818cf8;animation:beaconPulse 2s ease-in-out infinite"></span>
+                        Free to join
                     </div>
-
-                    {% if isGuest %}
-                        <h2>Entrez dans une plateforme ou le financement, l'accompagnement et la traction avancent ensemble.</h2>
-                        <p>La derniere section doit donner envie de cliquer maintenant. Elle reprend la tension du hero, mais avec une promesse plus mature et plus concrete.</p>
-                        <div class="nj-closing-actions">
-                            <a href="{{ path('app_register') }}" class="btn btn-hero-primary">Creer mon compte gratuitement</a>
-                            <a href="{{ path('app_login') }}" class="btn btn-hero-secondary">Se connecter</a>
-                        </div>
-                    {% else %}
-                        <h2>Tout ce dont votre projet a besoin est deja dans la boucle. Il ne reste qu'a relancer le mouvement.</h2>
-                        <p>Le bug de routage est corrige: un utilisateur connecte repart maintenant vers un espace utile, et non plus vers l'inscription.</p>
-                        <div class="nj-closing-actions">
-                            <a href="{{ closingRoute }}" class="btn btn-hero-primary">{% if is_granted('ROLE_ADMIN') %}Ouvrir le tableau de bord{% else %}Retourner a mes projets{% endif %}</a>
-                            <a href="{{ path('app_invest_opportunities') }}" class="btn btn-hero-secondary">Explorer les opportunites</a>
-                        </div>
-                    {% endif %}
+                    <h2 class="text-white fw-bold mb-3" style="font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.15;letter-spacing:-.03em;max-width:28rem">Your launchpad is ready. Your network is waiting.</h2>
+                    <p style="color:rgba(226,232,240,.65);max-width:32rem;line-height:1.75;margin-bottom:2rem">Join entrepreneurs, investors and mentors building Tunisia's next generation of ventures. No credit card. No commitment. Just momentum.</p>
+                    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+                        <a href="{{ path('app_register') }}" class="btn fw-bold px-4 py-3" style="background:var(--nj-gradient);color:#fff;border-radius:.9rem;font-size:.95rem;border:none">Create my account — it's free</a>
+                        <a href="{{ path('app_login') }}" class="btn fw-semibold px-4 py-3" style="background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:.9rem;font-size:.95rem">Sign in</a>
+                    </div>
+                {% else %}
+                    <div style="display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .9rem;border-radius:999px;background:rgba(6,214,160,.1);border:1px solid rgba(6,214,160,.25);color:#06d6a0;font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.4rem">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#06d6a0"></span>
+                        All systems active
+                    </div>
+                    <h2 class="text-white fw-bold mb-3" style="font-size:clamp(1.7rem,4vw,2.6rem);line-height:1.15;letter-spacing:-.03em;max-width:28rem">Everything is live. Pick up where you left off.</h2>
+                    <p style="color:rgba(226,232,240,.65);max-width:32rem;line-height:1.75;margin-bottom:2rem">Your projects, investment opportunities, mentors and co-founders are all here and ready. One click to resume.</p>
+                    <div style="display:flex;gap:.8rem;flex-wrap:wrap">
+                        <a href="{{ closingRoute }}" class="btn fw-bold px-4 py-3" style="background:var(--nj-gradient);color:#fff;border-radius:.9rem;font-size:.95rem;border:none">{% if is_granted('ROLE_ADMIN') %}Open dashboard{% else %}Go to my projects{% endif %}</a>
+                        <a href="{{ path('app_invest_opportunities') }}" class="btn fw-semibold px-4 py-3" style="background:rgba(255,255,255,.06);color:#fff;border:1px solid rgba(255,255,255,.18);border-radius:.9rem;font-size:.95rem">Browse opportunities</a>
+                    </div>
+                {% endif %}
+            </div>
+            <div style="display:flex;flex-direction:column;gap:1rem;min-width:180px" class="d-none d-md-flex">
+                <div style="padding:1rem 1.2rem;border-radius:1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);text-align:center">
+                    <div class="fw-bold text-white" style="font-size:1.8rem;line-height:1">{{ platformStats.totalUsers }}</div>
+                    <div style="font-size:.72rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem">Members</div>
                 </div>
-
-                <div class="nj-closing-visual" aria-hidden="true">
-                    <div class="nj-closing-core"></div>
-                    <div class="nj-closing-chip nj-closing-chip-a"><span></span>{{ platformStats.totalUsers }} membres relies</div>
-                    <div class="nj-closing-chip nj-closing-chip-b"><span></span>{{ platformStats.openOpportunities }} signaux chauds</div>
-                    <div class="nj-closing-chip nj-closing-chip-c"><span></span>{{ platformStats.totalSessions }} sessions activees</div>
+                <div style="padding:1rem 1.2rem;border-radius:1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);text-align:center">
+                    <div class="fw-bold text-white" style="font-size:1.8rem;line-height:1">{{ platformStats.openOpportunities }}</div>
+                    <div style="font-size:.72rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem">Open deals</div>
+                </div>
+                <div style="padding:1rem 1.2rem;border-radius:1rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);text-align:center">
+                    <div class="fw-bold text-white" style="font-size:1.8rem;line-height:1">{{ platformStats.totalSessions }}</div>
+                    <div style="font-size:.72rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-top:.3rem">Sessions</div>
                 </div>
             </div>
         </div>
@@ -1704,10 +1662,10 @@ body {
 
 <script type="application/json" id="homeExperienceData">{{ {
     pillItems: [
-        platformStats.activeProjects ~ ' projets actifs',
-        platformStats.totalInvestors ~ ' investisseurs engages',
-        platformStats.totalMentorsAvail ~ ' mentors disponibles',
-        platformStats.fundedDeals ~ ' deals finances'
+        platformStats.activeProjects ~ ' active projects',
+        platformStats.totalInvestors ~ ' investors engaged',
+        platformStats.totalMentorsAvail ~ ' mentors available',
+        platformStats.fundedDeals ~ ' funded deals'
     ]
 }|json_encode|raw }}</script>
 {% endblock %}

@@ -1,11 +1,11 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Historique de connexion - Najahni{% endblock %}
+{% block title %}Login History - Najahni{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Historique de connexion</h2>
-    <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Retour</a>
+    <h2 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Login History</h2>
+    <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back</a>
 </div>
 
 {% if history|length > 0 %}
@@ -14,11 +14,11 @@
         <table class="table table-nj mb-0">
             <thead>
                 <tr>
-                    <th>Date & Heure</th>
-                    <th>Méthode</th>
-                    <th>Adresse IP</th>
-                    <th>Appareil</th>
-                    <th>Statut</th>
+                    <th>Date & Time</th>
+                    <th>Method</th>
+                    <th>IP Address</th>
+                    <th>Device</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -31,7 +31,7 @@
                         {% elseif entry.loginMethod == 'FACE_ID' %}
                             <span class="badge" style="background:var(--nj-accent)"><i class="bi bi-person-bounding-box me-1"></i>Face ID</span>
                         {% else %}
-                            <span class="badge bg-secondary"><i class="bi bi-key me-1"></i>Email/Mot de passe</span>
+                            <span class="badge bg-secondary"><i class="bi bi-key me-1"></i>Email/Password</span>
                         {% endif %}
                     </td>
                     <td><code class="small">{{ entry.ipAddress }}</code></td>
@@ -40,9 +40,9 @@
                     </td>
                     <td>
                         {% if entry.success %}
-                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Succès</span>
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Success</span>
                         {% else %}
-                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Échec</span>
+                            <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Failed</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -54,8 +54,8 @@
 {% else %}
     <div class="empty-state">
         <div class="empty-icon">📋</div>
-        <h4>Aucun historique</h4>
-        <p>Aucune connexion enregistrée.</p>
+        <h4>No history</h4>
+        <p>No sign-ins recorded.</p>
     </div>
 {% endif %}
 {% endblock %}

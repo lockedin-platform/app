@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(php --version)",
+      "Bash(composer --version)",
+      "Bash(php bin/console about)",
+      "Bash(curl -s http://localhost:8000/)",
+      "Bash(php bin/console doctrine:query:sql \"SELECT sql FROM sqlite_master WHERE name IN \\('projet','investment_opportunity','events','cours','mentor_availability','posts'\\)\")",
+      "Bash(php bin/console doctrine:query:sql \"SELECT sql FROM sqlite_master WHERE name IN \\('donnees_business','investment_offer','mentorship_session','mentor_availability'\\)\")",
+      "PowerShell(php \"C:\\\\Users\\\\mahdi\\\\Desktop\\\\Najahni-symfony\\\\check_offer.php\")",
+      "PowerShell(php \"C:\\\\Users\\\\mahdi\\\\Desktop\\\\Najahni-symfony\\\\reset_offer.php\")",
+      "Bash(php bin/console debug:router --env=dev)",
+      "Bash(php bin/console debug:container --env=dev App\\\\\\\\Controller\\\\\\\\InvestmentController)",
+      "Bash(php bin/console debug:container --env=dev App\\\\\\\\Controller\\\\\\\\TeamMatcherController)",
+      "Bash(php bin/console debug:container --env=dev App\\\\\\\\Repository\\\\\\\\InvestorPostingRepository)",
+      "Bash(php bin/console debug:container --env=dev App\\\\\\\\Repository\\\\\\\\InvestorApplicationRepository)",
+      "Bash(php bin/console cache:clear --env=dev)",
+      "Bash(php -l src/Service/Investment/InvestmentChatbotService.php)",
+      "Bash(php -l \"c:\\\\Users\\\\mahdi\\\\Desktop\\\\Najahni-symfony\\\\src\\\\Controller\\\\ProfileController.php\")",
+      "Bash(php bin/console debug:router)",
+      "Bash(php bin/console security:hash-password \"Karim2024!\")",
+      "Bash(php bin/console dbal:run-sql \"SELECT id, status, investor_posting_id, applicant_id FROM investment_application WHERE applicant_id = 2\")",
+      "Bash(php bin/console dbal:run-sql \"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%invest%'\")",
+      "Bash(php bin/console dbal:run-sql \"SELECT id, status, investor_posting_id, applicant_id FROM investor_application WHERE applicant_id = 2\")",
+      "Bash(php bin/console dbal:run-sql \"PRAGMA table_info\\(investor_application\\)\")"
+    ]
+  }
+}

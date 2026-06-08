@@ -3,29 +3,36 @@
 {% block body %}
 {# Announcement Bar #}
 <div class="nj-announce-bar" id="njAnnounceBar">
-    <span class="nj-announce-msg active">Najahni connecte entrepreneurs et investisseurs en Tunisie</span>
-    <span class="nj-announce-msg">Nouveau : Contrats sign&eacute;s num&eacute;riquement avec SHA-256</span>
-    <span class="nj-announce-msg">Rejoignez {{ njPlatformUserCount|default(0)|number_format(0, ',', ' ') }} membres actifs sur la plateforme</span>
-    <button class="nj-announce-close" id="njAnnounceClose" aria-label="Fermer"><i class="bi bi-x"></i></button>
+    <span class="nj-announce-msg active">Najahni connects entrepreneurs and investors in Tunisia</span>
+    <span class="nj-announce-msg">New: Contracts digitally signed with SHA-256</span>
+    <span class="nj-announce-msg">Join {{ njPlatformUserCount|default(0)|number_format(0, ',', ' ') }} active members on the platform</span>
+    <button class="nj-announce-close" id="njAnnounceClose" aria-label="Close"><i class="bi bi-x"></i></button>
 </div>
 
 {# Top Navbar #}
 <nav class="navbar navbar-expand-lg navbar-nj navbar-dark sticky-top">
     <div class="container-fluid px-4">
-        <a class="navbar-brand nj-brand-gradient" href="{{ path('app_home') }}">Najahni</a>
+        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ path('app_home') }}">
+            <span class="nj-brand-gradient">Najahni</span>
+        </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_home' ? 'active' }}" href="{{ path('app_home') }}"><i class="bi bi-house-door me-1"></i>Accueil</a></li>
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_community' ? 'active' }}" href="{{ path('app_community_posts') }}"><i class="bi bi-people me-1"></i>Communauté</a></li>
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_projet' ? 'active' }}" href="{{ path('app_projet_index') }}"><i class="bi bi-kanban me-1"></i>Projets</a></li>
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_invest' ? 'active' }}" href="{{ path('app_invest_opportunities') }}"><i class="bi bi-graph-up-arrow me-1"></i>Investissement</a></li>
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_mentorat' ? 'active' }}" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-mortarboard me-1"></i>Mentorat</a></li>
-                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_apprentissage' ? 'active' }}" href="{{ path('app_apprentissage_cours') }}"><i class="bi bi-book me-1"></i>Apprentissage</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_home' ? 'active' }}" href="{{ path('app_home') }}"><i class="bi bi-house-door me-1"></i>Home</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_community' ? 'active' }}" href="{{ path('app_community_posts') }}"><i class="bi bi-people me-1"></i>Community</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_projet' ? 'active' }}" href="{{ path('app_projet_index') }}"><i class="bi bi-kanban me-1"></i>Projects</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_invest' ? 'active' }}" href="{{ path('app_invest_opportunities') }}"><i class="bi bi-graph-up-arrow me-1"></i>Investment</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_mentorat' ? 'active' }}" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-mortarboard me-1"></i>Mentoring</a></li>
+                <li class="nav-item"><a class="nav-link {{ app.request.attributes.get('_route') starts with 'app_team_matcher' ? 'active' }}" href="{{ path('app_team_matcher_index') }}"><i class="bi bi-people-fill me-1"></i>Co-founders & Partners</a></li>
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item me-1 d-flex align-items-center">
+                    <button class="nj-theme-btn" id="themeToggle" title="Toggle light/dark mode">
+                        <i class="bi bi-sun-fill" id="themeIcon"></i>
+                    </button>
+                </li>
                 {% if app.user %}
                 {% if is_granted('ROLE_ADMIN') %}
                 <li class="nav-item"><a class="nav-link" href="{{ path('admin_dashboard') }}"><i class="bi bi-shield-lock me-1"></i>Admin</a></li>
@@ -38,13 +45,13 @@
                     <div class="dropdown-menu dropdown-menu-end p-0 shadow-lg" style="width:360px;max-height:440px;border-radius:1rem;overflow:hidden">
                         <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom" style="background:var(--nj-gradient)">
                             <span class="fw-bold text-white small">Notifications</span>
-                            <button class="btn btn-sm btn-link text-white text-decoration-none p-0" id="notifReadAll" style="font-size:.75rem">Tout marquer lu</button>
+                            <button class="btn btn-sm btn-link text-white text-decoration-none p-0" id="notifReadAll" style="font-size:.75rem">Mark all read</button>
                         </div>
                         <div id="notifList" style="max-height:340px;overflow-y:auto">
-                            <div class="text-center text-muted small py-4">Chargement...</div>
+                            <div class="text-center text-muted small py-4">Loading...</div>
                         </div>
                         <div class="border-top text-center py-2">
-                            <a href="{{ path('app_profile_notifications') }}" class="small text-decoration-none" style="color:var(--nj-primary)">Voir toutes les notifications</a>
+                            <a href="{{ path('app_profile_notifications') }}" class="small text-decoration-none" style="color:var(--nj-primary)">View all notifications</a>
                         </div>
                     </div>
                 </li>
@@ -53,15 +60,15 @@
                         <i class="bi bi-person-circle me-1"></i>{{ app.user.firstname }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{{ path('app_invest_my_contracts') }}"><i class="bi bi-file-earmark-text me-2"></i>Mes Contrats</a></li>
-                        <li><a class="dropdown-item" href="{{ path('app_profile') }}"><i class="bi bi-person me-2"></i>Mon Profil</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_invest_my_contracts') }}"><i class="bi bi-file-earmark-text me-2"></i>My Contracts</a></li>
+                        <li><a class="dropdown-item" href="{{ path('app_profile') }}"><i class="bi bi-person me-2"></i>My Profile</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Déconnexion</a></li>
+                        <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="bi bi-box-arrow-right me-2"></i>Sign Out</a></li>
                     </ul>
                 </li>
                 {% else %}
-                <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="bi bi-box-arrow-in-right me-1"></i>Connexion</a></li>
-                <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal"><i class="bi bi-person-plus me-1"></i>Inscription</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal"><i class="bi bi-box-arrow-in-right me-1"></i>Sign In</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal"><i class="bi bi-person-plus me-1"></i>Register</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -71,6 +78,8 @@
 <main class="container-fluid py-4 px-4 fade-in" style="min-height:calc(100vh - 200px)">
     {% block main %}{% endblock %}
 </main>
+
+{% block modals %}{% endblock %}
 
 {% if not app.user %}
 {% set recaptcha_on = recaptcha_site_key is not empty and recaptcha_site_key not in ['your_recaptcha_site_key', 'your_recaptcha_secret_key'] %}
@@ -84,17 +93,17 @@
                 <div class="col-md-5 d-none d-md-block position-relative" style="min-height:650px">
                     <img src="{{ asset('uploads/auth-banner.avif') }}" alt="" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit:cover">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background:linear-gradient(0deg,rgba(58,12,163,.85) 0%,rgba(67,97,238,.4) 50%,transparent 100%)">
-                        <h4 class="text-white fw-bold mb-2">Bienvenue sur Najahni</h4>
-                        <p class="text-white small opacity-90 mb-0">Connectez-vous pour accéder à votre espace personnel et développer vos projets.</p>
+                        <h4 class="text-white fw-bold mb-2">Welcome to Najahni</h4>
+                        <p class="text-white small opacity-90 mb-0">Sign in to access your personal space and grow your projects.</p>
                     </div>
                 </div>
                 {# Right — Form #}
                 <div class="col-md-7">
                     <div class="p-4 p-md-5 position-relative">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
-                            <h3 class="fw-bold" id="loginModalLabel" style="font-size:1.65rem">Connexion</h3>
-                            <p class="text-muted small">Accédez à votre espace Najahni</p>
+                            <h3 class="fw-bold" id="loginModalLabel" style="font-size:1.65rem">Sign In</h3>
+                            <p class="text-muted small">Access your Najahni account</p>
                         </div>
                         <div class="alert alert-danger d-none rounded-3 py-2" id="loginError" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i><span></span>
@@ -104,11 +113,11 @@
                                 <label class="form-label fw-semibold small">Email</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="_username" class="form-control border-start-0 ps-0" placeholder="votre@email.com" required autofocus>
+                                    <input type="email" name="_username" class="form-control border-start-0 ps-0" placeholder="your@email.com" required autofocus>
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label fw-semibold small">Mot de passe</label>
+                                <label class="form-label fw-semibold small">Password</label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock"></i></span>
                                     <input type="password" name="_password" id="loginModalPw" class="form-control border-start-0 border-end-0 ps-0" placeholder="••••••••" required>
@@ -120,9 +129,9 @@
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="_remember_me" id="rememberMeModal">
-                                    <label class="form-check-label small" for="rememberMeModal">Se souvenir de moi</label>
+                                    <label class="form-check-label small" for="rememberMeModal">Remember me</label>
                                 </div>
-                                <a href="{{ path('app_forgot_password') }}" class="small text-decoration-none" style="color:var(--nj-primary)">Mot de passe oublié ?</a>
+                                <a href="{{ path('app_forgot_password') }}" class="small text-decoration-none" style="color:var(--nj-primary)">Forgot password?</a>
                             </div>
                             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                             {% if recaptcha_on %}
@@ -131,23 +140,23 @@
                             </div>
                             {% endif %}
                             <button type="submit" class="btn btn-nj w-100 py-2 mb-3">
-                                <i class="bi bi-box-arrow-in-right me-2"></i>Se connecter
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
                             </button>
                         </form>
                         <div class="d-flex align-items-center my-2">
-                            <hr class="flex-grow-1"><span class="px-3 text-muted small">ou</span><hr class="flex-grow-1">
+                            <hr class="flex-grow-1"><span class="px-3 text-muted small">or</span><hr class="flex-grow-1">
                         </div>
                         <div class="d-grid gap-2 mb-3">
                             <a href="{{ path('app_google_connect') }}" class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-center" style="border-radius:.75rem">
                                 <svg width="18" height="18" viewBox="0 0 24 24" class="me-2"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                                Continuer avec Google
+                                Continue with Google
                             </a>
                             <a href="{{ path('app_face_login') }}" class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-center" style="border-radius:.75rem">
-                                <i class="bi bi-person-bounding-box me-2" style="font-size:1.1rem"></i>Connexion Face ID
+                                <i class="bi bi-person-bounding-box me-2" style="font-size:1.1rem"></i>Sign in with Face ID
                             </a>
                         </div>
-                        <p class="text-center text-muted small mb-0">Pas encore de compte ?
-                            <a href="#" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)" onclick="bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();new bootstrap.Modal(document.getElementById('registerModal')).show()">S'inscrire</a>
+                        <p class="text-center text-muted small mb-0">Don't have an account?
+                            <a href="#" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)" onclick="bootstrap.Modal.getInstance(document.getElementById('loginModal')).hide();new bootstrap.Modal(document.getElementById('registerModal')).show()">Sign up</a>
                         </p>
                     </div>
                 </div>
@@ -165,20 +174,20 @@
                 <div class="col-lg-5 d-none d-lg-block position-relative" style="min-height:750px">
                     <img src="{{ asset('uploads/auth-banner.avif') }}" alt="" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit:cover">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background:linear-gradient(0deg,rgba(114,9,183,.85) 0%,rgba(67,97,238,.4) 50%,transparent 100%)">
-                        <h4 class="text-white fw-bold mb-2">Rejoignez Najahni</h4>
-                        <p class="text-white small opacity-90 mb-3">Faites partie de la communauté d'innovation tunisienne.</p>
+                        <h4 class="text-white fw-bold mb-2">Join Najahni</h4>
+                        <p class="text-white small opacity-90 mb-3">Be part of the Tunisian innovation community.</p>
                         <div class="d-flex flex-column gap-2">
                             <div class="d-flex align-items-center gap-2 text-white">
                                 <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
-                                <small class="opacity-90">Lancez vos projets innovants</small>
+                                <small class="opacity-90">Launch your innovative projects</small>
                             </div>
                             <div class="d-flex align-items-center gap-2 text-white">
                                 <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
-                                <small class="opacity-90">Trouvez mentors & investisseurs</small>
+                                <small class="opacity-90">Find mentors & investors</small>
                             </div>
                             <div class="d-flex align-items-center gap-2 text-white">
                                 <i class="bi bi-check-circle-fill" style="font-size:.8rem"></i>
-                                <small class="opacity-90">Développez votre business</small>
+                                <small class="opacity-90">Grow your business</small>
                             </div>
                         </div>
                     </div>
@@ -186,25 +195,25 @@
                 {# Right — Form #}
                 <div class="col-lg-7">
                     <div class="p-4 p-lg-4 position-relative">
-                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-3">
-                            <h3 class="fw-bold" id="registerModalLabel" style="font-size:1.5rem">Créer un compte</h3>
-                            <p class="text-muted small mb-0">Remplissez vos informations pour commencer</p>
+                            <h3 class="fw-bold" id="registerModalLabel" style="font-size:1.5rem">Create Account</h3>
+                            <p class="text-muted small mb-0">Fill in your information to get started</p>
                         </div>
                         <form method="post" action="{{ path('app_register') }}" id="registerModalForm" novalidate>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Prénom</label>
+                                    <label class="form-label fw-semibold small mb-1">First name</label>
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text bg-light border-end-0"><i class="bi bi-person"></i></span>
-                                        <input type="text" name="firstname" class="form-control border-start-0 ps-0" placeholder="Votre prénom" required minlength="2" maxlength="100">
+                                        <input type="text" name="firstname" class="form-control border-start-0 ps-0" placeholder="Your first name" required minlength="2" maxlength="100">
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Nom</label>
+                                    <label class="form-label fw-semibold small mb-1">Last name</label>
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text bg-light border-end-0"><i class="bi bi-person-fill"></i></span>
-                                        <input type="text" name="lastname" class="form-control border-start-0 ps-0" placeholder="Votre nom" required minlength="2" maxlength="100">
+                                        <input type="text" name="lastname" class="form-control border-start-0 ps-0" placeholder="Your last name" required minlength="2" maxlength="100">
                                     </div>
                                 </div>
                             </div>
@@ -212,40 +221,40 @@
                                 <label class="form-label fw-semibold small mb-1">Email</label>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="votre@email.com" required>
+                                    <input type="email" name="email" class="form-control border-start-0 ps-0" placeholder="your@email.com" required>
                                 </div>
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Téléphone</label>
+                                    <label class="form-label fw-semibold small mb-1">Phone</label>
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text bg-light border-end-0"><i class="bi bi-phone"></i></span>
                                         <input type="tel" name="phone" class="form-control border-start-0 ps-0" placeholder="+216 XX XXX XXX" pattern="^\+?[0-9\s\-]{7,20}$" maxlength="20">
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Rôle</label>
+                                    <label class="form-label fw-semibold small mb-1">Role</label>
                                     <select name="role" class="form-select form-select-sm" required>
                                         <option value="ENTREPRENEUR">Entrepreneur</option>
                                         <option value="MENTOR">Mentor</option>
-                                        <option value="INVESTISSEUR">Investisseur</option>
+                                        <option value="INVESTISSEUR">Investor</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Mot de passe</label>
+                                    <label class="form-label fw-semibold small mb-1">Password</label>
                                     <div class="input-group input-group-sm">
-                                        <input type="password" name="password" id="regModalPw" class="form-control border-end-0" placeholder="Min. 6 caractères" required minlength="6" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}">
+                                        <input type="password" name="password" id="regModalPw" class="form-control border-end-0" placeholder="Min. 6 characters" required minlength="6" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}">
                                         <button class="btn btn-outline-secondary border-start-0 btn-sm" type="button" onclick="(function(b){var i=document.getElementById('regModalPw'),c=b.querySelector('i');if(i.type==='password'){i.type='text';c.className='bi bi-eye-slash'}else{i.type='password';c.className='bi bi-eye'}})(this)">
                                             <i class="bi bi-eye"></i>
                                         </button>
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label fw-semibold small mb-1">Confirmer</label>
+                                    <label class="form-label fw-semibold small mb-1">Confirm</label>
                                     <div class="input-group input-group-sm">
-                                        <input type="password" name="confirm_password" id="regModalConfirm" class="form-control border-end-0" placeholder="Confirmer" required minlength="6">
+                                        <input type="password" name="confirm_password" id="regModalConfirm" class="form-control border-end-0" placeholder="Confirm" required minlength="6">
                                         <button class="btn btn-outline-secondary border-start-0 btn-sm" type="button" onclick="(function(b){var i=document.getElementById('regModalConfirm'),c=b.querySelector('i');if(i.type==='password'){i.type='text';c.className='bi bi-eye-slash'}else{i.type='password';c.className='bi bi-eye'}})(this)">
                                             <i class="bi bi-eye"></i>
                                         </button>
@@ -257,10 +266,10 @@
                                     <div class="progress-bar" id="pwModalStrength" role="progressbar" style="width:0%"></div>
                                 </div>
                                 <div class="d-flex flex-wrap gap-2">
-                                    <small id="mrLen" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> 6+ car.</small>
-                                    <small id="mrUp" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Majuscule</small>
-                                    <small id="mrLow" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Minuscule</small>
-                                    <small id="mrDig" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Chiffre</small>
+                                    <small id="mrLen" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> 6+ chars</small>
+                                    <small id="mrUp" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Uppercase</small>
+                                    <small id="mrLow" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Lowercase</small>
+                                    <small id="mrDig" class="text-muted" style="font-size:.7rem"><i class="bi bi-circle"></i> Number</small>
                                 </div>
                             </div>
                             {% if recaptcha_on %}
@@ -269,20 +278,20 @@
                             </div>
                             {% endif %}
                             <button type="submit" class="btn btn-nj w-100 py-2 mb-2">
-                                <i class="bi bi-person-plus me-2"></i>Créer mon compte
+                                <i class="bi bi-person-plus me-2"></i>Create my account
                             </button>
                         </form>
                         <div class="d-flex align-items-center my-2">
-                            <hr class="flex-grow-1"><span class="px-3 text-muted small">ou</span><hr class="flex-grow-1">
+                            <hr class="flex-grow-1"><span class="px-3 text-muted small">or</span><hr class="flex-grow-1">
                         </div>
                         <div class="d-grid mb-2">
                             <a href="{{ path('app_google_connect') }}" class="btn btn-outline-secondary py-2 d-flex align-items-center justify-content-center" style="border-radius:.75rem">
                                 <svg width="18" height="18" viewBox="0 0 24 24" class="me-2"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                                S'inscrire avec Google
+                                Sign up with Google
                             </a>
                         </div>
-                        <p class="text-center text-muted small mb-0">Déjà un compte ?
-                            <a href="#" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)" onclick="bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();new bootstrap.Modal(document.getElementById('loginModal')).show()">Se connecter</a>
+                        <p class="text-center text-muted small mb-0">Already have an account?
+                            <a href="#" class="fw-semibold text-decoration-none" style="color:var(--nj-primary)" onclick="bootstrap.Modal.getInstance(document.getElementById('registerModal')).hide();new bootstrap.Modal(document.getElementById('loginModal')).show()">Sign in</a>
                         </p>
                     </div>
                 </div>
@@ -298,23 +307,23 @@
         <div class="row g-4">
             <div class="col-md-4">
                 <h5 class="fw-bold text-white mb-3">Najahni</h5>
-                <p class="small mb-0">La plateforme tunisienne qui connecte entrepreneurs, mentors et investisseurs pour bâtir l'avenir.</p>
+                <p class="small mb-0">The Tunisian platform connecting entrepreneurs, mentors and investors to build the future.</p>
             </div>
             <div class="col-md-4">
-                <h6 class="fw-bold text-white mb-3">Modules</h6>
+                <h6 class="fw-bold text-white mb-3">Features</h6>
                 <div class="d-flex flex-column gap-1">
-                    <a href="{{ path('app_projet_index') }}"><i class="bi bi-rocket-takeoff me-2"></i>Projets</a>
-                    <a href="{{ path('app_invest_opportunities') }}"><i class="bi bi-graph-up-arrow me-2"></i>Investissement</a>
-                    <a href="{{ path('app_community_posts') }}"><i class="bi bi-people me-2"></i>Communauté</a>
-                    <a href="{{ path('app_mentorat_requests') }}"><i class="bi bi-mortarboard me-2"></i>Mentorat</a>
-                    <a href="{{ path('app_apprentissage_cours') }}"><i class="bi bi-book me-2"></i>Apprentissage</a>
+                    <a href="{{ path('app_projet_index') }}"><i class="bi bi-rocket-takeoff me-2"></i>Projects</a>
+                    <a href="{{ path('app_invest_opportunities') }}"><i class="bi bi-graph-up-arrow me-2"></i>Investment</a>
+                    <a href="{{ path('app_community_posts') }}"><i class="bi bi-people me-2"></i>Community</a>
+                    <a href="{{ path('app_mentorat_requests') }}"><i class="bi bi-mortarboard me-2"></i>Mentoring</a>
+                    <a href="{{ path('app_team_matcher_index') }}"><i class="bi bi-people-fill me-2"></i>Co-founders & Partners</a>
                 </div>
             </div>
             <div class="col-md-4">
                 <h6 class="fw-bold text-white mb-3">Contact</h6>
                 <p class="small mb-1"><i class="bi bi-geo-alt me-2"></i>Esprit, Ariana, Tunisie</p>
                 <p class="small mb-1"><i class="bi bi-envelope me-2"></i>contact@najahni.tn</p>
-                <p class="small mb-3"><i class="bi bi-telephone me-2"></i>+216 XX XXX XXX</p>
+                <p class="small mb-3"><i class="bi bi-telephone me-2"></i>+216 94 003 160</p>
                 <div class="d-flex gap-3">
                     <a href="#" class="text-white"><i class="bi bi-facebook" style="font-size:1.2rem"></i></a>
                     <a href="#" class="text-white"><i class="bi bi-linkedin" style="font-size:1.2rem"></i></a>
@@ -323,7 +332,7 @@
             </div>
         </div>
         <hr style="border-color:rgba(255,255,255,.15)">
-        <p class="text-center small mb-0">&copy; {{ "now"|date('Y') }} Najahni — Projet PIDEV 3A Esprit. Tous droits réservés.</p>
+        <p class="text-center small mb-0">&copy; {{ "now"|date('Y') }} Najahni — PIDEV 3A Esprit. All rights reserved.</p>
     </div>
 </footer>
 
@@ -370,7 +379,7 @@
         updateBadge(data.unreadCount);
         notifCache = data.notifications;
         if (!data.notifications.length) {
-            list.innerHTML = '<div class="text-center text-muted small py-4"><i class="bi bi-bell-slash" style="font-size:1.5rem"></i><p class="mt-2 mb-0">Aucune notification</p></div>';
+            list.innerHTML = '<div class="text-center text-muted small py-4"><i class="bi bi-bell-slash" style="font-size:1.5rem"></i><p class="mt-2 mb-0">No notifications</p></div>';
             return;
         }
         list.innerHTML = data.notifications.map(renderNotifCard).join('');
@@ -566,5 +575,203 @@ document.addEventListener('DOMContentLoaded', function(){
         });
     }
 })();
+
+/* ── Theme toggle ── */
+(function(){
+    var root = document.documentElement;
+    var btn  = document.getElementById('themeToggle');
+    var icon = document.getElementById('themeIcon');
+    var saved = localStorage.getItem('nj-theme') || 'dark';
+    root.setAttribute('data-bs-theme', saved);
+    if(icon) icon.className = saved === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    if(btn){
+        btn.addEventListener('click', function(){
+            var next = root.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+            root.setAttribute('data-bs-theme', next);
+            localStorage.setItem('nj-theme', next);
+            icon.className = next === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        });
+    }
+})();
 </script>
+
+{# ── Global Floating AI Chatbot ── #}
+{% if app.user %}
+<style>
+/* Floating button */
+.nj-chat-fab{position:fixed;bottom:1.75rem;right:1.75rem;z-index:1050;width:54px;height:54px;border-radius:50%;background:var(--nj-gradient);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(67,97,238,.55);transition:transform .25s,box-shadow .25s;outline:none}
+.nj-chat-fab:hover{transform:scale(1.1);box-shadow:0 12px 36px rgba(67,97,238,.7)}
+.nj-chat-fab::before{content:'';position:absolute;inset:-4px;border-radius:50%;background:var(--nj-gradient);opacity:.25;animation:njFabPulse 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes njFabPulse{0%,100%{transform:scale(1);opacity:.25}50%{transform:scale(1.25);opacity:0}}
+.nj-chat-fab i{font-size:1.35rem;color:#fff;transition:transform .3s}
+.nj-chat-fab.open i.bi-robot{display:none}
+.nj-chat-fab.open i.bi-x-lg{display:block!important}
+/* Panel */
+.nj-chat-panel{position:fixed;bottom:5.5rem;right:1.75rem;z-index:1049;width:360px;max-width:calc(100vw - 2rem);
+    background:rgba(9,14,39,.97);border:1px solid rgba(255,255,255,.1);border-radius:1.25rem;
+    backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+    box-shadow:0 24px 64px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04);
+    display:flex;flex-direction:column;overflow:hidden;
+    transform:translateY(24px) scale(.96);opacity:0;pointer-events:none;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1),opacity .25s ease}
+.nj-chat-panel.visible{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+/* Panel header */
+.nj-chat-header{padding:.85rem 1.1rem;background:linear-gradient(135deg,rgba(67,97,238,.22),rgba(114,9,183,.15));
+    border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:.65rem}
+.nj-chat-header-avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:var(--nj-gradient);
+    display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px rgba(67,97,238,.3)}
+.nj-chat-header strong{font-size:.88rem;color:#fff}
+.nj-chat-header small{font-size:.71rem;color:rgba(103,232,249,.85)}
+/* Messages area */
+.nj-chat-messages{flex:1;overflow-y:auto;padding:.9rem 1rem;display:flex;flex-direction:column;gap:.75rem;max-height:300px;
+    scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.nj-chat-msg{display:flex;gap:.55rem;align-items:flex-end}
+.nj-chat-msg.user{flex-direction:row-reverse}
+.nj-chat-bubble{max-width:82%;padding:.6rem .9rem;border-radius:1rem;font-size:.82rem;line-height:1.55}
+.nj-chat-msg.bot .nj-chat-bubble{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(226,232,240,.9);border-bottom-left-radius:.3rem}
+.nj-chat-msg.user .nj-chat-bubble{background:var(--nj-gradient);color:#fff;border-bottom-right-radius:.3rem}
+.nj-chat-avatar{width:26px;height:26px;min-width:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;flex-shrink:0}
+.nj-chat-msg.bot .nj-chat-avatar{background:var(--nj-gradient)}
+.nj-chat-msg.user .nj-chat-avatar{background:rgba(255,255,255,.15)}
+/* Quick actions */
+.nj-chat-quick{padding:.5rem 1rem;display:flex;gap:.4rem;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.06)}
+.nj-chat-qbtn{font-size:.72rem;padding:.3rem .65rem;border-radius:10rem;background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);cursor:pointer;transition:all .18s;white-space:nowrap}
+.nj-chat-qbtn:hover{background:rgba(67,97,238,.2);border-color:rgba(67,97,238,.4);color:#fff}
+/* Input area */
+.nj-chat-input-wrap{padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.08);display:flex;gap:.5rem;align-items:center}
+.nj-chat-input{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.1);border-radius:1.5rem;
+    padding:.5rem .9rem;color:#fff;font-size:.82rem;outline:none;transition:border-color .2s}
+.nj-chat-input:focus{border-color:rgba(67,97,238,.6)}
+.nj-chat-input::placeholder{color:rgba(255,255,255,.3)}
+.nj-chat-send{width:34px;height:34px;min-width:34px;border-radius:50%;background:var(--nj-gradient);border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.nj-chat-send:hover{transform:scale(1.1);box-shadow:0 4px 14px rgba(67,97,238,.5)}
+.nj-chat-send i{color:#fff;font-size:.82rem}
+/* Typing dots */
+.nj-typing{display:flex;gap:4px;align-items:center;padding:.4rem .2rem}
+.nj-typing span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);animation:njTyping 1.2s ease-in-out infinite}
+.nj-typing span:nth-child(2){animation-delay:.2s}
+.nj-typing span:nth-child(3){animation-delay:.4s}
+@keyframes njTyping{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+@media(max-width:480px){.nj-chat-panel{right:.75rem;bottom:5rem;width:calc(100vw - 1.5rem)}}
+</style>
+
+{# FAB button #}
+<button class="nj-chat-fab" id="njChatFab" title="Najahni AI" aria-label="Open AI assistant">
+    <i class="bi bi-robot"></i>
+    <i class="bi bi-x-lg" style="display:none"></i>
+</button>
+
+{# Chat panel #}
+<div class="nj-chat-panel" id="njChatPanel">
+    <div class="nj-chat-header">
+        <div class="nj-chat-header-avatar"><i class="bi bi-robot text-white" style="font-size:.85rem"></i></div>
+        <div class="flex-grow-1">
+            <strong class="d-block">Najahni AI</strong>
+            <small><i class="bi bi-circle-fill me-1" style="font-size:.45rem"></i>Online</small>
+        </div>
+        <button onclick="document.getElementById('njChatFab').click()" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:.25rem;line-height:1"><i class="bi bi-chevron-down"></i></button>
+    </div>
+    <div class="nj-chat-messages" id="njChatMessages">
+        <div class="nj-chat-msg bot">
+            <div class="nj-chat-avatar"><i class="bi bi-robot text-white"></i></div>
+            <div class="nj-chat-bubble">Hello {{ app.user.firstname }}! 👋 I'm <strong>Najahni AI</strong>. How can I help you today?</div>
+        </div>
+    </div>
+    <div class="nj-chat-quick" id="njChatQuick">
+        <button class="nj-chat-qbtn" data-q="How do I create a project?">💡 Create project</button>
+        <button class="nj-chat-qbtn" data-q="How do I find investors?">💰 Investment</button>
+        <button class="nj-chat-qbtn" data-q="How do I find a mentor?">🎓 Mentoring</button>
+    </div>
+    <div class="nj-chat-input-wrap">
+        <input type="text" class="nj-chat-input" id="njChatInput" placeholder="Ask your question..." autocomplete="off">
+        <button class="nj-chat-send" id="njChatSend"><i class="bi bi-send-fill"></i></button>
+    </div>
+</div>
+
+<script>
+(function(){
+    const fab = document.getElementById('njChatFab');
+    const panel = document.getElementById('njChatPanel');
+    const messages = document.getElementById('njChatMessages');
+    const input = document.getElementById('njChatInput');
+    const send = document.getElementById('njChatSend');
+    const quickWrap = document.getElementById('njChatQuick');
+    const chatUrl = '{{ path("app_global_ai_chat") }}';
+    let open = false;
+
+    fab.addEventListener('click', function(){
+        open = !open;
+        fab.classList.toggle('open', open);
+        panel.classList.toggle('visible', open);
+        if(open) input.focus();
+    });
+
+    function scrollBottom(){ messages.scrollTop = messages.scrollHeight; }
+
+    function escHtml(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function formatText(t){
+        t = t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+        t = t.replace(/\n/g,'<br>');
+        return t;
+    }
+
+    function addMsg(text, role){
+        const d = document.createElement('div');
+        d.className = 'nj-chat-msg ' + role;
+        if(role === 'bot'){
+            d.innerHTML = '<div class="nj-chat-avatar"><i class="bi bi-robot text-white"></i></div><div class="nj-chat-bubble">' + formatText(text) + '</div>';
+        } else {
+            d.innerHTML = '<div class="nj-chat-bubble">' + escHtml(text) + '</div><div class="nj-chat-avatar"><i class="bi bi-person-fill" style="color:rgba(255,255,255,.7)"></i></div>';
+        }
+        messages.appendChild(d);
+        scrollBottom();
+    }
+
+    function addTyping(){
+        const d = document.createElement('div');
+        d.id = 'njTyping';
+        d.className = 'nj-chat-msg bot';
+        d.innerHTML = '<div class="nj-chat-avatar"><i class="bi bi-robot text-white"></i></div><div class="nj-chat-bubble" style="padding:.45rem .7rem"><div class="nj-typing"><span></span><span></span><span></span></div></div>';
+        messages.appendChild(d);
+        scrollBottom();
+    }
+
+    function removeTyping(){ const t = document.getElementById('njTyping'); if(t) t.remove(); }
+
+    async function ask(msg){
+        if(!msg.trim()) return;
+        quickWrap.style.display = 'none';
+        addMsg(msg, 'user');
+        input.value = '';
+        input.disabled = true;
+        send.disabled = true;
+        addTyping();
+        try {
+            const r = await fetch(chatUrl, {
+                method:'POST',
+                headers:{'Content-Type':'application/json','X-Requested-With':'XMLHttpRequest'},
+                body: JSON.stringify({message: msg})
+            });
+            removeTyping();
+            const data = await r.json();
+            addMsg(data.response || data.error || 'Unexpected error.', 'bot');
+        } catch(e){
+            removeTyping();
+            addMsg('Connection error. Check your network.', 'bot');
+        }
+        input.disabled = false;
+        send.disabled = false;
+        input.focus();
+    }
+
+    send.addEventListener('click', () => ask(input.value));
+    input.addEventListener('keydown', e => { if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); ask(input.value); }});
+    quickWrap.querySelectorAll('.nj-chat-qbtn').forEach(b => b.addEventListener('click', () => ask(b.dataset.q)));
+})();
+</script>
+{% endif %}
+
 {% endblock %}

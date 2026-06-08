@@ -1,27 +1,35 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Sessions de mentorat - Najahni{% endblock %}
+{% block title %}Mentorship Sessions - Najahni{% endblock %}
 
 {% block main %}
 {% set userRole = app.user.role %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-mortarboard me-2"></i>Mentorat</h2>
-    <div class="d-flex gap-2">
-        <a href="{{ path('app_mentorat_sessions_export_pdf') }}" class="btn btn-outline-danger btn-sm"><i class="bi bi-file-earmark-pdf me-1"></i>PDF</a>
-        <a href="{{ path('app_mentorat_sessions_export_excel') }}" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel me-1"></i>Excel</a>
-        {% if userRole == 'MENTOR' %}
-            <a href="{{ path('app_mentorat_session_new') }}" class="btn btn-nj btn-sm"><i class="bi bi-plus-lg me-1"></i>Nouvelle session</a>
-        {% endif %}
+<div class="nj-page-hero nj-hero-mentorat mb-4">
+    <i class="bi bi-camera-video nj-ph-icon"></i>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3" style="position:relative;z-index:1">
+        <div>
+            <div class="nj-ph-eyebrow">Mentoring</div>
+            <h1 class="nj-ph-title mb-1">Mentorship Sessions</h1>
+            <p class="nj-ph-sub">Track and manage your ongoing mentorship sessions</p>
+        </div>
+        <div class="nj-hero-actions">
+            <div class="nj-action-group">
+                <a href="{{ path('app_mentorat_sessions_export_pdf') }}" class="nj-action-link"><i class="bi bi-file-earmark-pdf"></i>Export PDF</a>
+            </div>
+            {% if userRole == 'MENTOR' %}
+            <a href="{{ path('app_mentorat_session_new') }}" class="nj-action-cta cta-mentorat"><i class="bi bi-plus-lg"></i>New Session</a>
+            {% endif %}
+        </div>
     </div>
 </div>
 
 {# ── 4-Tab Navigation (role-aware) ── #}
 <ul class="nav nav-tabs mb-4">
-    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Demandes</a></li>
+    <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_requests') }}"><i class="bi bi-send me-1"></i>Requests</a></li>
     <li class="nav-item"><a class="nav-link active" href="{{ path('app_mentorat_sessions') }}"><i class="bi bi-camera-video me-1"></i>Sessions</a></li>
     {% if userRole == 'MENTOR' %}
-        <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Disponibilités</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_availability') }}"><i class="bi bi-calendar-check me-1"></i>Availability</a></li>
     {% endif %}
     <li class="nav-item"><a class="nav-link" href="{{ path('app_mentorat_chatbot') }}"><i class="bi bi-robot me-1"></i>Chatbot</a></li>
 </ul>
@@ -37,17 +45,12 @@
             <tr>
                 <th>ID</th>
                 <th>{{ userRole == 'MENTOR' ? 'Entrepreneur' : 'Mentor' }}</th>
-                <th>Date prévue</th>
-                <th>Durée</th>
-                <th>Statut</th>
-                <th>Lien réunion</th>
-                {% if userRole == 'MENTOR' %}
-                    <th>Mon feedback</th>
-                    <th>Ma note</th>
-                {% else %}
-                    <th>Mon feedback</th>
-                    <th>Ma note</th>
-                {% endif %}
+                <th>Scheduled</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Meeting link</th>
+                <th>My feedback</th>
+                <th>My rating</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -69,18 +72,18 @@
                 <td>{{ session.durationMinutes }} min</td>
                 <td>
                     {% if session.status == 'completed' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Terminée</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Completed</span>
                     {% elseif session.status == 'cancelled' %}
-                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Annulée</span>
+                        <span class="badge bg-danger"><i class="bi bi-x-circle me-1"></i>Cancelled</span>
                     {% elseif session.status == 'no_show' %}
-                        <span class="badge bg-secondary"><i class="bi bi-eye-slash me-1"></i>Absent</span>
+                        <span class="badge bg-secondary"><i class="bi bi-eye-slash me-1"></i>No show</span>
                     {% else %}
-                        <span class="badge bg-primary"><i class="bi bi-calendar-event me-1"></i>Planifiée</span>
+                        <span class="badge bg-primary"><i class="bi bi-calendar-event me-1"></i>Scheduled</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if session.meetingLink %}
-                        <a href="{{ session.meetingLink }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-camera-video me-1"></i>Rejoindre</a>
+                        <a href="{{ session.meetingLink }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-camera-video me-1"></i>Join</a>
                     {% else %}<span class="text-muted">—</span>{% endif %}
                 </td>
                 {% if userRole == 'MENTOR' %}
@@ -93,14 +96,14 @@
                 <td>
                     {% if userRole == 'MENTOR' %}
                     <div class="btn-group btn-group-sm">
-                        <a href="{{ path('app_mentorat_session_edit', {id: session.id}) }}" class="btn btn-outline-primary" title="Modifier"><i class="bi bi-pencil"></i></a>
-                        <form method="post" action="{{ path('app_mentorat_session_delete', {id: session.id}) }}" class="d-inline" onsubmit="return confirm('Supprimer cette session ?')">
+                        <a href="{{ path('app_mentorat_session_edit', {id: session.id}) }}" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                        <form method="post" action="{{ path('app_mentorat_session_delete', {id: session.id}) }}" class="d-inline" onsubmit="return confirm('Delete this session?')">
                             <input type="hidden" name="_token" value="{{ csrf_token('mentorat_session_del_' ~ session.id) }}">
-                            <button class="btn btn-outline-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                            <button class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></button>
                         </form>
                     </div>
                     {% else %}
-                    <span class="text-muted small">Lecture seule</span>
+                    <span class="text-muted small">Read only</span>
                     {% endif %}
                 </td>
             </tr>
@@ -111,16 +114,16 @@
                     <form method="post" action="{{ path('app_mentorat_session_feedback', {id: session.id}) }}" class="d-flex gap-2 align-items-end">
                         <input type="hidden" name="_token" value="{{ csrf_token('mentorat_feedback_' ~ session.id) }}">
                         <div class="flex-grow-1">
-                            <label class="form-label small mb-0 fw-semibold">Votre feedback</label>
-                            <input type="text" name="feedback" class="form-control form-control-sm" placeholder="Votre avis sur cette session...">
+                            <label class="form-label small mb-0 fw-semibold">Your feedback</label>
+                            <input type="text" name="feedback" class="form-control form-control-sm" placeholder="Your thoughts on this session...">
                         </div>
                         <div style="width:80px">
-                            <label class="form-label small mb-0 fw-semibold">Note</label>
+                            <label class="form-label small mb-0 fw-semibold">Rating</label>
                             <select name="rating" class="form-select form-select-sm">
                                 {% for i in 1..5 %}<option>{{ i }}</option>{% endfor %}
                             </select>
                         </div>
-                        <button class="btn btn-sm btn-nj"><i class="bi bi-send me-1"></i>Envoyer</button>
+                        <button class="btn btn-sm btn-nj"><i class="bi bi-send me-1"></i>Submit</button>
                     </form>
                 </td>
             </tr>
@@ -132,10 +135,10 @@
 {% else %}
 <div class="text-center py-5">
     <i class="bi bi-camera-video" style="font-size:4rem;color:var(--nj-primary)"></i>
-    <h4 class="fw-bold mt-3">Aucune session</h4>
-    <p class="text-muted">Les sessions apparaîtront après acceptation d'une demande de mentorat</p>
+    <h4 class="fw-bold mt-3">No sessions yet</h4>
+    <p class="text-muted">Sessions will appear after a mentorship request is accepted</p>
     {% if userRole == 'MENTOR' %}
-        <a href="{{ path('app_mentorat_session_new') }}" class="btn btn-nj"><i class="bi bi-plus-lg me-1"></i>Créer une session</a>
+        <a href="{{ path('app_mentorat_session_new') }}" class="btn btn-nj"><i class="bi bi-plus-lg me-1"></i>Create a session</a>
     {% endif %}
 </div>
 {% endif %}

@@ -2,201 +2,307 @@
 
 {% block title %}Business Plan - {{ projet.titre }} - Najahni{% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.bp-section { scroll-margin-top: 80px; }
+.bp-nav-link {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .45rem .75rem;
+    border-radius: .5rem;
+    font-size: .8rem;
+    font-weight: 500;
+    color: rgba(255,255,255,.5);
+    text-decoration: none;
+    transition: all .18s;
+    border: 1px solid transparent;
+}
+.bp-nav-link:hover { background:rgba(67,97,238,.1);color:#a5b4fc; }
+.bp-nav-link.active { background:rgba(67,97,238,.15);color:#818cf8;border-color:rgba(67,97,238,.2); }
+.bp-box {
+    padding: .9rem 1.1rem;
+    border-radius: .7rem;
+    border: 1px solid rgba(255,255,255,.07);
+    background: rgba(255,255,255,.03);
+}
+</style>
+{% endblock %}
+
 {% block main %}
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Retour au projet</a>
-        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-file-earmark-text me-2"></i>Business Plan</h2>
-        <p class="text-muted mb-0">{{ projet.titre }}</p>
-    </div>
-    <a href="{{ path('app_projet_business_plan_pdf', {id: projet.id}) }}" class="btn btn-nj" target="_blank">
-        <i class="bi bi-file-pdf me-1"></i>Télécharger PDF
-    </a>
-</div>
-
-{# Executive Summary #}
-<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-    <h4 class="fw-bold mb-3" style="color:var(--nj-primary)"><i class="bi bi-bookmark-star me-2"></i>Résumé Exécutif</h4>
-    <p class="lead">{{ plan.resume_executif }}</p>
-</div>
-
-<div class="row g-4">
-    <div class="col-md-6">
-        {# Problem & Solution #}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-lightbulb me-2"></i>Problème & Solution</h5>
-            <div class="mb-3">
-                <h6 class="fw-semibold text-danger"><i class="bi bi-exclamation-triangle me-1"></i>Problème</h6>
-                <p>{{ plan.probleme_solution.probleme }}</p>
-            </div>
-            <div class="mb-3">
-                <h6 class="fw-semibold text-success"><i class="bi bi-check-circle me-1"></i>Solution</h6>
-                <p>{{ plan.probleme_solution.solution }}</p>
-            </div>
+<div class="nj-page-hero nj-hero-projets mb-4">
+    <i class="bi bi-file-earmark-text nj-ph-icon"></i>
+    <div style="position:relative;z-index:1">
+        <a href="{{ path('app_projet_show', {id: projet.id}) }}" class="d-inline-flex align-items-center gap-1 mb-2 text-decoration-none"
+           style="color:rgba(255,255,255,.7);font-size:.82rem">
+            <i class="bi bi-arrow-left"></i> Back to Project
+        </a>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
             <div>
-                <h6 class="fw-semibold" style="color:var(--nj-primary)"><i class="bi bi-star me-1"></i>Proposition de valeur</h6>
-                <p class="mb-0">{{ plan.probleme_solution.proposition_valeur }}</p>
+                <div class="nj-ph-eyebrow">Projects &middot; AI</div>
+                <h1 class="nj-ph-title mb-1">Business Plan</h1>
+                <p class="nj-ph-sub">{{ projet.titre }} &mdash; AI-generated strategic document</p>
+            </div>
+            <div class="nj-hero-actions">
+                <a href="{{ path('app_projet_business_plan_pdf', {id: projet.id}) }}" class="nj-action-cta cta-projets" target="_blank">
+                    <i class="bi bi-file-pdf"></i>Download PDF
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-6">
-        {# Market Analysis #}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-globe me-2"></i>Analyse de Marché</h5>
+<div class="row g-4">
+    {# Sticky sidebar nav — desktop only #}
+    <div class="col-lg-3 d-none d-lg-block">
+        <div class="card border-0 shadow-sm p-3" style="border-radius:1rem;position:sticky;top:80px">
+            <p class="mb-2 px-1" style="font-size:.68rem;letter-spacing:.06em;color:rgba(255,255,255,.35);font-weight:600">SECTIONS</p>
+            <nav class="d-flex flex-column gap-1">
+                <a href="#bp-summary"    class="bp-nav-link"><i class="bi bi-bookmark-star"></i>Executive Summary</a>
+                <a href="#bp-problem"    class="bp-nav-link"><i class="bi bi-lightbulb"></i>Problem &amp; Solution</a>
+                <a href="#bp-market"     class="bp-nav-link"><i class="bi bi-globe"></i>Market Analysis</a>
+                <a href="#bp-model"      class="bp-nav-link"><i class="bi bi-cash-coin"></i>Business Model</a>
+                <a href="#bp-marketing"  class="bp-nav-link"><i class="bi bi-megaphone"></i>Marketing Strategy</a>
+                <a href="#bp-ops"        class="bp-nav-link"><i class="bi bi-gear"></i>Operational Plan</a>
+                <a href="#bp-risks"      class="bp-nav-link"><i class="bi bi-shield-exclamation"></i>Risk Analysis</a>
+                <a href="#bp-finance"    class="bp-nav-link"><i class="bi bi-graph-up"></i>Financial Projections</a>
+                <a href="#bp-conclusion" class="bp-nav-link"><i class="bi bi-flag"></i>Conclusion</a>
+            </nav>
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="col-lg-9">
+
+        {# Executive Summary #}
+        <div id="bp-summary" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem;border-left:3px solid var(--nj-primary) !important">
+            <h4 class="fw-bold mb-3" style="color:var(--nj-primary)"><i class="bi bi-bookmark-star me-2"></i>Executive Summary</h4>
+            <p class="lead mb-0" style="line-height:1.7">{{ plan.resume_executif }}</p>
+        </div>
+
+        {# Problem & Solution #}
+        <div id="bp-problem" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem">
+            <h5 class="fw-bold mb-4"><i class="bi bi-lightbulb me-2"></i>Problem &amp; Solution</h5>
             <div class="row g-3">
-                <div class="col-6">
-                    <div class="p-3 rounded-3" style="background:rgba(67,97,238,.05)">
-                        <p class="text-muted small mb-1">Taille du marché</p>
+                <div class="col-md-6">
+                    <div class="bp-box h-100" style="border-left:2px solid rgba(239,68,68,.4)">
+                        <h6 class="fw-semibold mb-2" style="color:#f87171"><i class="bi bi-exclamation-triangle me-1"></i>Problem</h6>
+                        <p class="small text-muted mb-0">{{ plan.probleme_solution.probleme }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bp-box h-100" style="border-left:2px solid rgba(16,185,129,.4)">
+                        <h6 class="fw-semibold mb-2" style="color:#34d399"><i class="bi bi-check-circle me-1"></i>Solution</h6>
+                        <p class="small text-muted mb-0">{{ plan.probleme_solution.solution }}</p>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="bp-box" style="border-left:2px solid rgba(99,102,241,.4)">
+                        <h6 class="fw-semibold mb-2" style="color:#a5b4fc"><i class="bi bi-star me-1"></i>Value Proposition</h6>
+                        <p class="small text-muted mb-0">{{ plan.probleme_solution.proposition_valeur }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Market Analysis #}
+        <div id="bp-market" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem">
+            <h5 class="fw-bold mb-4"><i class="bi bi-globe me-2"></i>Market Analysis</h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Market Size</p>
                         <h6 class="fw-bold mb-0">{{ plan.analyse_marche.taille }}</h6>
                     </div>
                 </div>
-                <div class="col-6">
-                    <div class="p-3 rounded-3" style="background:rgba(114,9,183,.05)">
-                        <p class="text-muted small mb-1">Cible</p>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Target Audience</p>
                         <h6 class="fw-bold mb-0">{{ plan.analyse_marche.cible }}</h6>
                     </div>
                 </div>
-            </div>
-            <div class="mt-3">
-                <p class="text-muted small mb-1"><strong>Tendances :</strong></p>
-                <p>{{ plan.analyse_marche.tendances }}</p>
-                <p class="text-muted small mb-1"><strong>Concurrence :</strong></p>
-                <p class="mb-0">{{ plan.analyse_marche.concurrence }}</p>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1 fw-semibold">Trends</p>
+                        <p class="small mb-0">{{ plan.analyse_marche.tendances }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1 fw-semibold">Competition</p>
+                        <p class="small mb-0">{{ plan.analyse_marche.concurrence }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-{# Business Model #}
-<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-    <h5 class="fw-bold mb-3"><i class="bi bi-cash-coin me-2"></i>Modèle Économique</h5>
-    <div class="row g-3">
-        <div class="col-md-3">
-            <div class="p-3 rounded-3" style="background:rgba(67,97,238,.05)">
-                <p class="text-muted small mb-1">Sources de revenus</p>
-                <p class="fw-semibold small mb-0">{{ plan.modele_economique.sources_revenus }}</p>
+        {# Business Model #}
+        <div id="bp-model" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem">
+            <h5 class="fw-bold mb-4"><i class="bi bi-cash-coin me-2"></i>Business Model</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Revenue Streams</p>
+                        <p class="fw-semibold small mb-0">{{ plan.modele_economique.sources_revenus }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Cost Structure</p>
+                        <p class="fw-semibold small mb-0">{{ plan.modele_economique.structure_couts }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Pricing</p>
+                        <p class="fw-semibold small mb-0">{{ plan.modele_economique.prix }}</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Profitability</p>
+                        <p class="fw-semibold small mb-0">{{ plan.modele_economique.rentabilite }}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="p-3 rounded-3" style="background:rgba(247,37,133,.05)">
-                <p class="text-muted small mb-1">Structure de coûts</p>
-                <p class="fw-semibold small mb-0">{{ plan.modele_economique.structure_couts }}</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="p-3 rounded-3" style="background:rgba(114,9,183,.05)">
-                <p class="text-muted small mb-1">Pricing</p>
-                <p class="fw-semibold small mb-0">{{ plan.modele_economique.prix }}</p>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="p-3 rounded-3" style="background:rgba(16,185,129,.08)">
-                <p class="text-muted small mb-1">Rentabilité</p>
-                <p class="fw-semibold small mb-0">{{ plan.modele_economique.rentabilite }}</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="row g-4">
-    <div class="col-md-6">
-        {# Marketing Strategy #}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-megaphone me-2"></i>Stratégie Marketing</h5>
-            <p><strong>Positionnement :</strong> {{ plan.strategie_marketing.positionnement }}</p>
-            <p><strong>Canaux :</strong> {{ plan.strategie_marketing.canaux }}</p>
-            <h6 class="fw-semibold mt-3">Actions clés :</h6>
-            <ul class="mb-0">
-                {% for action in plan.strategie_marketing.actions %}
-                <li>{{ action }}</li>
-                {% endfor %}
-            </ul>
+        {# Marketing + Ops #}
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div id="bp-marketing" class="card border-0 shadow-sm p-4 h-100 bp-section" style="border-radius:1rem">
+                    <h5 class="fw-bold mb-4"><i class="bi bi-megaphone me-2"></i>Marketing Strategy</h5>
+                    <div class="bp-box mb-2">
+                        <p class="text-muted small mb-1">Positioning</p>
+                        <p class="small mb-0">{{ plan.strategie_marketing.positionnement }}</p>
+                    </div>
+                    <div class="bp-box mb-3">
+                        <p class="text-muted small mb-1">Channels</p>
+                        <p class="small mb-0">{{ plan.strategie_marketing.canaux }}</p>
+                    </div>
+                    <p class="text-muted small fw-semibold mb-2">Key Actions</p>
+                    <ul class="mb-0 small ps-3 d-flex flex-column gap-1">
+                        {% for action in plan.strategie_marketing.actions %}
+                        <li>{{ action }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="bp-ops" class="card border-0 shadow-sm p-4 h-100 bp-section" style="border-radius:1rem">
+                    <h5 class="fw-bold mb-4"><i class="bi bi-gear me-2"></i>Operational Plan</h5>
+                    <p class="text-muted small fw-semibold mb-2">Key Milestones</p>
+                    <div class="d-flex flex-column gap-2 mb-3">
+                        {% for etape in plan.plan_operationnel.etapes_cles %}
+                        <div class="d-flex align-items-start gap-2">
+                            <span class="badge rounded-pill flex-shrink-0" style="background:var(--nj-gradient);min-width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.68rem">{{ loop.index }}</span>
+                            <span class="small">{{ etape }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="bp-box mb-2">
+                        <p class="text-muted small mb-1">Resources</p>
+                        <p class="small mb-0">{{ plan.plan_operationnel.ressources }}</p>
+                    </div>
+                    <div class="bp-box">
+                        <p class="text-muted small mb-1">Timeline</p>
+                        <p class="small mb-0">{{ plan.plan_operationnel.timeline }}</p>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        {# Operational Plan #}
-        <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-gear me-2"></i>Plan Opérationnel</h5>
-            <h6 class="fw-semibold">Étapes clés :</h6>
-            <div class="timeline">
-                {% for etape in plan.plan_operationnel.etapes_cles %}
-                <div class="d-flex align-items-start mb-3">
-                    <span class="badge rounded-pill me-2" style="background:var(--nj-gradient);min-width:28px;height:28px;display:flex;align-items:center;justify-content:center">{{ loop.index }}</span>
-                    <span>{{ etape }}</span>
+        {# Risk Analysis #}
+        <div id="bp-risks" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem">
+            <h5 class="fw-bold mb-4"><i class="bi bi-shield-exclamation me-2"></i>Risk Analysis</h5>
+            <div class="d-flex flex-column gap-2 mb-3">
+                {% for r in plan.analyse_risques.risques %}
+                <div class="row g-0 rounded-3 overflow-hidden" style="border:1px solid rgba(255,255,255,.07)">
+                    <div class="col-md-6 p-3" style="background:rgba(239,68,68,.04);border-right:1px solid rgba(255,255,255,.05)">
+                        <p class="mb-1" style="font-size:.65rem;letter-spacing:.05em;color:rgba(248,113,113,.7);font-weight:600">RISK</p>
+                        <p class="small mb-0">{{ r.risque }}</p>
+                    </div>
+                    <div class="col-md-6 p-3" style="background:rgba(16,185,129,.04)">
+                        <p class="mb-1" style="font-size:.65rem;letter-spacing:.05em;color:rgba(52,211,153,.7);font-weight:600">MITIGATION</p>
+                        <p class="small mb-0">{{ r.mitigation }}</p>
+                    </div>
                 </div>
                 {% endfor %}
             </div>
-            <p class="mt-2"><strong>Ressources :</strong> {{ plan.plan_operationnel.ressources }}</p>
-            <p class="mb-0"><strong>Timeline :</strong> {{ plan.plan_operationnel.timeline }}</p>
+            <div class="bp-box">
+                <p class="text-muted small mb-1 fw-semibold">Contingency Plan</p>
+                <p class="small mb-0">{{ plan.analyse_risques.plan_b }}</p>
+            </div>
         </div>
+
+        {# Financial Projections #}
+        <div id="bp-finance" class="card border-0 shadow-sm p-4 mb-4 bp-section" style="border-radius:1rem">
+            <h5 class="fw-bold mb-4"><i class="bi bi-graph-up me-2"></i>Financial Projections</h5>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-3">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="text-center">Year 1</th>
+                            <th class="text-center">Year 2</th>
+                            <th class="text-center">Year 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="fw-semibold small"><i class="bi bi-arrow-up-circle text-success me-1"></i>Revenue (TND)</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_1.revenus|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_2.revenus|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_3.revenus|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold small"><i class="bi bi-arrow-down-circle text-danger me-1"></i>Costs (TND)</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_1.couts|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_2.couts|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center">{{ plan.projections_financieres.annee_3.couts|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                        <tr>
+                            <td class="fw-semibold small"><i class="bi bi-cash-stack text-warning me-1"></i>Net Profit (TND)</td>
+                            <td class="text-center fw-bold" style="color:{{ plan.projections_financieres.annee_1.benefice >= 0 ? '#10b981' : '#ef4444' }}">{{ plan.projections_financieres.annee_1.benefice|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center fw-bold" style="color:{{ plan.projections_financieres.annee_2.benefice >= 0 ? '#10b981' : '#ef4444' }}">{{ plan.projections_financieres.annee_2.benefice|number_format(0, ',', ' ') }}</td>
+                            <td class="text-center fw-bold" style="color:{{ plan.projections_financieres.annee_3.benefice >= 0 ? '#10b981' : '#ef4444' }}">{{ plan.projections_financieres.annee_3.benefice|number_format(0, ',', ' ') }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bp-box">
+                <p class="text-muted small mb-1">Break-even Point</p>
+                <p class="fw-semibold small mb-0">{{ plan.projections_financieres.point_equilibre }}</p>
+            </div>
+        </div>
+
+        {# Conclusion #}
+        <div id="bp-conclusion" class="card border-0 shadow-sm p-4 bp-section" style="border-radius:1rem;background:linear-gradient(135deg,rgba(67,97,238,.06),rgba(114,9,183,.06));border:1px solid rgba(67,97,238,.12) !important">
+            <h5 class="fw-bold mb-3"><i class="bi bi-flag me-2"></i>Conclusion</h5>
+            <p class="mb-0" style="line-height:1.7">{{ plan.conclusion }}</p>
+        </div>
+
     </div>
 </div>
+{% endblock %}
 
-{# Risk Analysis #}
-<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-    <h5 class="fw-bold mb-3"><i class="bi bi-shield-exclamation me-2"></i>Analyse des Risques</h5>
-    <div class="table-responsive">
-        <table class="table table-hover mb-3">
-            <thead>
-                <tr><th>Risque</th><th>Mitigation</th></tr>
-            </thead>
-            <tbody>
-                {% for r in plan.analyse_risques.risques %}
-                <tr>
-                    <td><span class="text-danger"><i class="bi bi-exclamation-diamond me-1"></i></span>{{ r.risque }}</td>
-                    <td><span class="text-success"><i class="bi bi-shield-check me-1"></i></span>{{ r.mitigation }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <p class="mb-0"><strong>Plan B :</strong> {{ plan.analyse_risques.plan_b }}</p>
-</div>
-
-{# Financial Projections #}
-<div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-    <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Projections Financières</h5>
-    <div class="table-responsive">
-        <table class="table table-bordered text-center">
-            <thead class="table-light">
-                <tr><th></th><th>Année 1</th><th>Année 2</th><th>Année 3</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="fw-semibold">Revenus (DT)</td>
-                    <td>{{ plan.projections_financieres.annee_1.revenus|number_format(0, ',', ' ') }}</td>
-                    <td>{{ plan.projections_financieres.annee_2.revenus|number_format(0, ',', ' ') }}</td>
-                    <td>{{ plan.projections_financieres.annee_3.revenus|number_format(0, ',', ' ') }}</td>
-                </tr>
-                <tr>
-                    <td class="fw-semibold">Coûts (DT)</td>
-                    <td>{{ plan.projections_financieres.annee_1.couts|number_format(0, ',', ' ') }}</td>
-                    <td>{{ plan.projections_financieres.annee_2.couts|number_format(0, ',', ' ') }}</td>
-                    <td>{{ plan.projections_financieres.annee_3.couts|number_format(0, ',', ' ') }}</td>
-                </tr>
-                <tr class="fw-bold">
-                    <td>Bénéfice (DT)</td>
-                    <td style="color:{{ plan.projections_financieres.annee_1.benefice >= 0 ? '#10b981' : '#ef4444' }}">
-                        {{ plan.projections_financieres.annee_1.benefice|number_format(0, ',', ' ') }}
-                    </td>
-                    <td style="color:{{ plan.projections_financieres.annee_2.benefice >= 0 ? '#10b981' : '#ef4444' }}">
-                        {{ plan.projections_financieres.annee_2.benefice|number_format(0, ',', ' ') }}
-                    </td>
-                    <td style="color:{{ plan.projections_financieres.annee_3.benefice >= 0 ? '#10b981' : '#ef4444' }}">
-                        {{ plan.projections_financieres.annee_3.benefice|number_format(0, ',', ' ') }}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <p class="mb-0"><strong>Point d'équilibre :</strong> {{ plan.projections_financieres.point_equilibre }}</p>
-</div>
-
-{# Conclusion #}
-<div class="card border-0 shadow-sm p-4" style="border-radius:1rem;background:linear-gradient(135deg,rgba(67,97,238,.05),rgba(114,9,183,.05))">
-    <h5 class="fw-bold mb-3"><i class="bi bi-flag me-2"></i>Conclusion</h5>
-    <p class="mb-0">{{ plan.conclusion }}</p>
-</div>
+{% block javascripts %}
+<script>
+(function () {
+    const links = document.querySelectorAll('.bp-nav-link');
+    const sections = document.querySelectorAll('.bp-section');
+    if (!links.length || !sections.length) return;
+    const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                links.forEach(l => l.classList.remove('active'));
+                const a = document.querySelector('.bp-nav-link[href="#' + e.target.id + '"]');
+                if (a) a.classList.add('active');
+            }
+        });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    sections.forEach(s => obs.observe(s));
+})();
+</script>
 {% endblock %}

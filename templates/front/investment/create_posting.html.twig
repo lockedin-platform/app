@@ -1,0 +1,100 @@
+{% extends 'front/layout.html.twig' %}
+
+{% block title %}Post Investment Interest — Najahni{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center g-4">
+    <div class="col-12 col-lg-7">
+
+        <a href="{{ path('app_invest_my_postings') }}" class="d-inline-flex align-items-center gap-1 text-muted text-decoration-none mb-4" style="font-size:.88rem">
+            <i class="bi bi-arrow-left"></i> Back to my postings
+        </a>
+
+        {% for type, messages in app.flashes %}
+            {% for msg in messages %}
+                <div class="alert alert-{{ type }} alert-dismissible fade show mb-3" role="alert">
+                    {{ msg }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="card border-0 shadow-sm" style="border-radius:1rem;background:var(--nj-card-bg)">
+            <div class="card-body p-4">
+                <h4 class="fw-bold mb-1">
+                    <i class="bi bi-broadcast me-2" style="color:var(--nj-primary)"></i>Post Investment Interest
+                </h4>
+                <p class="text-muted mb-4" style="font-size:.88rem">
+                    Tell entrepreneurs what you're looking to invest in. They'll apply with their matching projects.
+                </p>
+
+                <form method="POST" action="{{ path('app_invest_create_posting') }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('create_posting') }}">
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="sector">Investment Sector <span class="text-danger">*</span></label>
+                        <input type="text" id="sector" name="sector" class="form-control"
+                            value="{{ sector ?? '' }}" placeholder="e.g. AgriTech, HealthTech, E-commerce, SaaS…"
+                            required maxlength="100">
+                        <div class="form-text">Specify the industry or technology sector you want to invest in.</div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold" for="budget_min">Budget Minimum (TND) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" id="budget_min" name="budget_min" class="form-control"
+                                    value="{{ budgetMin ?? '' }}" min="0" step="1000" placeholder="10 000" required>
+                                <span class="input-group-text">TND</span>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold" for="budget_max">Budget Maximum (TND) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" id="budget_max" name="budget_max" class="form-control"
+                                    value="{{ budgetMax ?? '' }}" min="1000" step="1000" placeholder="100 000" required>
+                                <span class="input-group-text">TND</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="description">What you're looking for <span class="text-danger">*</span></label>
+                        <textarea id="description" name="description" rows="5" class="form-control"
+                            placeholder="Describe the type of startup or project you want to invest in. What stage? What market? What kind of team? What do you bring beyond capital (mentorship, network, etc.)?"
+                            minlength="20" maxlength="2000" required>{{ description ?? '' }}</textarea>
+                        <div class="d-flex justify-content-between">
+                            <div class="form-text">Be specific — this helps entrepreneurs self-select the right fit.</div>
+                            <div class="form-text" id="charCount">0 / 2000</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold" for="deadline">Application Deadline <span class="text-muted fw-normal">(optional)</span></label>
+                        <input type="date" id="deadline" name="deadline" class="form-control"
+                            value="{{ deadlineStr ?? '' }}" min="{{ "now"|date('Y-m-d') }}">
+                        <div class="form-text">Leave blank for an open-ended posting.</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn fw-semibold px-4" style="background:var(--nj-gradient);color:#fff">
+                            <i class="bi bi-broadcast me-2"></i>Publish Posting
+                        </button>
+                        <a href="{{ path('app_invest_my_postings') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+const textarea = document.getElementById('description');
+const counter = document.getElementById('charCount');
+if (textarea && counter) {
+    const update = () => counter.textContent = textarea.value.length + ' / 2000';
+    textarea.addEventListener('input', update);
+    update();
+}
+</script>
+{% endblock %}

@@ -1,27 +1,27 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Modifier mon profil - Najahni{% endblock %}
+{% block title %}Edit Profile - Najahni{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square me-2"></i>Modifier mon profil</h2>
-    <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Retour</a>
+    <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square me-2"></i>Edit My Profile</h2>
+    <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left me-1"></i>Back</a>
 </div>
 
 <div class="row g-4">
     <div class="col-md-8">
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4">Informations personnelles</h5>
+            <h5 class="fw-bold mb-4">Personal Information</h5>
             <form method="post" enctype="multipart/form-data" novalidate>
                 {% set e = fieldErrors|default({}) %}
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Prénom</label>
+                        <label class="form-label fw-semibold">First Name</label>
                         <input type="text" name="firstname" class="form-control {{ e.firstname is defined ? 'is-invalid' }}" value="{{ app.user.firstname }}" required minlength="2" maxlength="100">
                         {% if e.firstname is defined %}<div class="invalid-feedback d-block">{{ e.firstname }}</div>{% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Nom</label>
+                        <label class="form-label fw-semibold">Last Name</label>
                         <input type="text" name="lastname" class="form-control {{ e.lastname is defined ? 'is-invalid' }}" value="{{ app.user.lastname }}" required minlength="2" maxlength="100">
                         {% if e.lastname is defined %}<div class="invalid-feedback d-block">{{ e.lastname }}</div>{% endif %}
                     </div>
@@ -31,36 +31,36 @@
                         {% if e.email is defined %}<div class="invalid-feedback d-block">{{ e.email }}</div>{% endif %}
                         {% if not app.user.verified %}
                             <div class="mt-1" id="emailVerifZone">
-                                <small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Non vérifié</small>
+                                <small class="text-warning"><i class="bi bi-exclamation-triangle me-1"></i>Not verified</small>
                                 <button type="button" class="btn btn-sm btn-outline-warning ms-2" id="sendVerifBtn">
-                                    <i class="bi bi-envelope-check me-1"></i>Vérifier maintenant
+                                    <i class="bi bi-envelope-check me-1"></i>Verify now
                                 </button>
                                 <div id="verifCodeForm" class="mt-2 d-none">
                                     <div class="input-group input-group-sm">
-                                        <input type="text" id="verifCodeInput" class="form-control" placeholder="Code à 4 chiffres" maxlength="4" pattern="\d{4}">
+                                        <input type="text" id="verifCodeInput" class="form-control" placeholder="4-digit code" maxlength="4" pattern="\d{4}">
                                         <button type="button" class="btn btn-success" id="confirmVerifBtn">
-                                            <i class="bi bi-check-lg me-1"></i>Confirmer
+                                            <i class="bi bi-check-lg me-1"></i>Confirm
                                         </button>
                                     </div>
-                                    <small class="text-muted">Vérifiez votre boîte mail.</small>
+                                    <small class="text-muted">Check your inbox.</small>
                                 </div>
                             </div>
                         {% else %}
-                            <small class="text-success"><i class="bi bi-check-circle me-1"></i>Vérifié</small>
+                            <small class="text-success"><i class="bi bi-check-circle me-1"></i>Verified</small>
                         {% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Téléphone</label>
-                        <input type="tel" name="phone" class="form-control {{ e.phone is defined ? 'is-invalid' }}" value="{{ app.user.phone }}" pattern="^\+?[0-9\s\-]{7,20}$" maxlength="20" title="Numéro de téléphone valide (7-20 chiffres)">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="tel" name="phone" class="form-control {{ e.phone is defined ? 'is-invalid' }}" value="{{ app.user.phone }}" pattern="^\+?[0-9\s\-]{7,20}$" maxlength="20" title="Valid phone number (7-20 digits)">
                         {% if e.phone is defined %}<div class="invalid-feedback d-block">{{ e.phone }}</div>{% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Date de naissance</label>
+                        <label class="form-label fw-semibold">Date of Birth</label>
                         <input type="date" name="date_of_birth" class="form-control {{ e.dateOfBirth is defined ? 'is-invalid' }}" value="{{ app.user.dateOfBirth ? app.user.dateOfBirth|date('Y-m-d') }}" max="{{ 'now'|date('Y-m-d') }}">
                         {% if e.dateOfBirth is defined %}<div class="invalid-feedback d-block">{{ e.dateOfBirth }}</div>{% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Langue préférée</label>
+                        <label class="form-label fw-semibold">Preferred Language</label>
                         <select name="preferred_language" class="form-select">
                             <option value="fr" {{ app.user.preferredLanguage == 'fr' ? 'selected' }}>🇫🇷 Français</option>
                             <option value="en" {{ app.user.preferredLanguage == 'en' ? 'selected' }}>🇬🇧 English</option>
@@ -73,7 +73,7 @@
                         {% if e.bio is defined %}<div class="invalid-feedback d-block">{{ e.bio }}</div>{% endif %}
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-semibold">Entreprise</label>
+                        <label class="form-label fw-semibold">Company</label>
                         <input type="text" name="company_name" class="form-control {{ e.companyName is defined ? 'is-invalid' }}" value="{{ app.user.companyName }}" maxlength="200">
                         {% if e.companyName is defined %}<div class="invalid-feedback d-block">{{ e.companyName }}</div>{% endif %}
                     </div>
@@ -83,40 +83,50 @@
                         {% if e.linkedinUrl is defined %}<div class="invalid-feedback d-block">{{ e.linkedinUrl }}</div>{% endif %}
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Adresse</label>
+                        <label class="form-label fw-semibold">Address</label>
                         <input type="text" name="address" class="form-control {{ e.address is defined ? 'is-invalid' }}" value="{{ app.user.address }}" maxlength="300">
                         {% if e.address is defined %}<div class="invalid-feedback d-block">{{ e.address }}</div>{% endif %}
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-semibold">Photo de profil</label>
+                        <label class="form-label fw-semibold">Profile Picture</label>
                         <input type="file" name="profile_picture" class="form-control" accept="image/*">
                         {% if app.user.profilePicture %}
                             <div class="mt-2 d-flex align-items-center gap-2">
                                 <img src="{{ app.user.profilePicture }}" class="rounded-circle" width="40" height="40" style="object-fit:cover" alt="">
-                                <small class="text-muted">Photo actuelle</small>
+                                <small class="text-muted">Current photo</small>
+                                <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2 ms-2"
+                                        onclick="if(confirm('Remove your profile picture?')){document.getElementById('deletePicForm').submit();}">
+                                    <i class="bi bi-trash3"></i> Remove
+                                </button>
                             </div>
                         {% endif %}
                     </div>
                 </div>
-                <button type="submit" class="btn btn-nj mt-4"><i class="bi bi-check-lg me-2"></i>Enregistrer</button>
+                <button type="submit" class="btn btn-nj mt-4"><i class="bi bi-check-lg me-2"></i>Save Changes</button>
             </form>
+
+            {% if app.user.profilePicture %}
+            <form id="deletePicForm" method="post" action="{{ path('app_profile_picture_delete') }}" class="d-none">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete_picture') }}">
+            </form>
+            {% endif %}
         </div>
     </div>
 
     <div class="col-md-4">
         {# Change Password #}
         <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-4"><i class="bi bi-shield-lock me-2"></i>Changer le mot de passe</h5>
+            <h5 class="fw-bold mb-4"><i class="bi bi-shield-lock me-2"></i>Change Password</h5>
             <form method="post" action="{{ path('app_profile_password') }}" novalidate>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Mot de passe actuel</label>
+                    <label class="form-label fw-semibold">Current Password</label>
                     <div class="input-group">
                         <input type="password" name="current_password" id="curPw" class="form-control border-end-0" required>
                         <button class="btn btn-outline-secondary border-start-0" type="button" onclick="togglePw('curPw',this)"><i class="bi bi-eye"></i></button>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Nouveau mot de passe</label>
+                    <label class="form-label fw-semibold">New Password</label>
                     <div class="input-group">
                         <input type="password" name="new_password" id="newPw" class="form-control border-end-0" required minlength="6">
                         <button class="btn btn-outline-secondary border-start-0" type="button" onclick="togglePw('newPw',this)"><i class="bi bi-eye"></i></button>
@@ -126,10 +136,10 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-semibold">Confirmer</label>
+                    <label class="form-label fw-semibold">Confirm</label>
                     <input type="password" name="confirm_password" class="form-control" required minlength="6">
                 </div>
-                <button type="submit" class="btn btn-outline-danger w-100"><i class="bi bi-key me-2"></i>Modifier</button>
+                <button type="submit" class="btn btn-outline-danger w-100"><i class="bi bi-key me-2"></i>Update Password</button>
             </form>
         </div>
 
@@ -139,67 +149,68 @@
             {% if app.user.faceRegistered %}
                 <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
-                    <span>Visage enregistré. Vous pouvez vous connecter avec Face ID.</span>
+                    <span>Face registered. You can sign in with Face ID.</span>
                 </div>
                 <div class="d-grid gap-2">
-                    <button class="btn btn-outline-primary btn-sm" id="faceReRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceModal">
-                        <i class="bi bi-arrow-repeat me-1"></i>Ré-enregistrer mon visage
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#faceModal">
+                        <i class="bi bi-arrow-repeat me-1"></i>Re-register my face
                     </button>
                     <button class="btn btn-outline-danger btn-sm" id="faceRemoveBtn">
-                        <i class="bi bi-trash me-1"></i>Supprimer Face ID
+                        <i class="bi bi-trash me-1"></i>Remove Face ID
                     </button>
                 </div>
             {% else %}
-                <p class="text-muted small mb-3">Enregistrez votre visage pour vous connecter sans mot de passe.</p>
-                <button class="btn btn-outline-primary w-100" id="faceRegisterBtn" data-bs-toggle="modal" data-bs-target="#faceModal">
-                    <i class="bi bi-camera me-2"></i>Enregistrer mon visage
+                <p class="text-muted small mb-3">Register your face to sign in without a password.</p>
+                <button class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#faceModal">
+                    <i class="bi bi-camera me-2"></i>Register my face
                 </button>
             {% endif %}
         </div>
 
-        {# Face ID Modal #}
-        <div class="modal fade" id="faceModal" tabindex="-1" aria-labelledby="faceModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content" style="border-radius:1.25rem;border:none">
-                    <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title fw-bold" id="faceModalLabel">
-                            <i class="bi bi-person-bounding-box me-2" style="color:var(--nj-accent)"></i>Enregistrement Face ID
-                        </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body">
-                        <p class="text-muted small mb-3">Placez votre visage bien en face de la caméra, dans un endroit bien éclairé.</p>
-                        <div class="rounded-4 overflow-hidden bg-dark mb-3 position-relative" style="height:300px">
-                            <video id="faceVideo" autoplay playsinline muted class="w-100 h-100" style="object-fit:cover;transform:scaleX(-1)"></video>
-                            <canvas id="faceOverlay" class="position-absolute top-0 start-0 w-100 h-100 d-none" style="pointer-events:none;transform:scaleX(-1)"></canvas>
-                            <div id="facePlaceholder" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-white">
-                                <div class="text-center">
-                                    <div class="spinner-border text-light mb-2" role="status"></div>
-                                    <p class="mb-0 opacity-75 small">Initialisation de la caméra...</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="faceStatus" class="text-center mb-3"></div>
-                        <div class="d-grid">
-                            <button class="btn btn-nj py-2" id="faceScanBtn" disabled>
-                                <i class="bi bi-person-check me-2"></i>Scanner et enregistrer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         {# Quick Links #}
         <div class="card border-0 shadow-sm p-4" style="border-radius:1rem">
-            <h5 class="fw-bold mb-3"><i class="bi bi-link-45deg me-2"></i>Liens rapides</h5>
+            <h5 class="fw-bold mb-3"><i class="bi bi-link-45deg me-2"></i>Quick Links</h5>
             <div class="d-grid gap-2">
                 <a href="{{ path('app_profile_login_history') }}" class="btn btn-outline-secondary btn-sm text-start">
-                    <i class="bi bi-clock-history me-2"></i>Historique de connexion
+                    <i class="bi bi-clock-history me-2"></i>Login History
                 </a>
                 <a href="{{ path('app_profile_notifications') }}" class="btn btn-outline-secondary btn-sm text-start">
                     <i class="bi bi-bell me-2"></i>Notifications
                 </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade" id="faceModal" tabindex="-1" aria-labelledby="faceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius:1.25rem;border:none">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold" id="faceModalLabel">
+                    <i class="bi bi-person-bounding-box me-2" style="color:var(--nj-accent)"></i>Face ID Registration
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted small mb-3">Face the camera directly in a well-lit area.</p>
+                <div class="rounded-4 overflow-hidden bg-dark mb-3 position-relative" style="height:300px">
+                    <video id="faceVideo" autoplay playsinline muted class="w-100 h-100" style="object-fit:cover;transform:scaleX(-1)"></video>
+                    <canvas id="faceOverlay" class="position-absolute top-0 start-0 w-100 h-100 d-none" style="pointer-events:none;transform:scaleX(-1)"></canvas>
+                    <div id="facePlaceholder" class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-white">
+                        <div class="text-center">
+                            <div class="spinner-border text-light mb-2" role="status"></div>
+                            <p class="mb-0 opacity-75 small">Starting camera...</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="faceStatus" class="text-center mb-3"></div>
+                <div class="d-grid">
+                    <button class="btn btn-nj py-2" id="faceScanBtn">
+                        <i class="bi bi-person-check me-2"></i>Scan &amp; Register
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -215,7 +226,8 @@ function togglePw(id, btn) {
     if (inp.type === 'password') { inp.type = 'text'; icon.className = 'bi bi-eye-slash'; }
     else { inp.type = 'password'; icon.className = 'bi bi-eye'; }
 }
-document.getElementById('newPw').addEventListener('input', function() {
+const newPwEl = document.getElementById('newPw');
+if (newPwEl) newPwEl.addEventListener('input', function() {
     const v = this.value;
     let score = (v.length >= 6 ? 1 : 0) + (/[A-Z]/.test(v) ? 1 : 0) + (/[a-z]/.test(v) ? 1 : 0) + (/\d/.test(v) ? 1 : 0);
     const bar = document.getElementById('pwBar');
@@ -235,7 +247,7 @@ document.getElementById('newPw').addEventListener('input', function() {
 
     sendBtn.addEventListener('click', function(){
         sendBtn.disabled = true;
-        sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Envoi...';
+        sendBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Sending...';
         fetch(url, {
             method: 'POST',
             headers: {'X-Requested-With':'XMLHttpRequest','Content-Type':'application/x-www-form-urlencoded'},
@@ -247,12 +259,12 @@ document.getElementById('newPw').addEventListener('input', function() {
                 codeInput.focus();
             } else {
                 sendBtn.disabled = false;
-                sendBtn.innerHTML = '<i class="bi bi-envelope-check me-1"></i>Vérifier maintenant';
+                sendBtn.innerHTML = '<i class="bi bi-envelope-check me-1"></i>Verify now';
                 alert(data.message);
             }
         }).catch(() => {
             sendBtn.disabled = false;
-            sendBtn.innerHTML = '<i class="bi bi-envelope-check me-1"></i>Vérifier maintenant';
+            sendBtn.innerHTML = '<i class="bi bi-envelope-check me-1"></i>Verify now';
         });
     });
 
@@ -267,15 +279,15 @@ document.getElementById('newPw').addEventListener('input', function() {
             body: 'action=verify&code=' + encodeURIComponent(code)
         }).then(r => r.json()).then(data => {
             if (data.success) {
-                zone.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>Vérifié</small>';
+                zone.innerHTML = '<small class="text-success"><i class="bi bi-check-circle me-1"></i>Verified</small>';
             } else {
                 codeInput.classList.add('is-invalid');
                 confirmBtn.disabled = false;
-                confirmBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Confirmer';
+                confirmBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Confirm';
             }
         }).catch(() => {
             confirmBtn.disabled = false;
-            confirmBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Confirmer';
+            confirmBtn.innerHTML = '<i class="bi bi-check-lg me-1"></i>Confirm';
         });
     });
 
@@ -283,7 +295,7 @@ document.getElementById('newPw').addEventListener('input', function() {
     codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); confirmBtn.click(); } });
 })();
 
-// Face ID Registration (modal)
+// Face ID Registration
 (function(){
     var MODEL_URL = '/models';
     var faceVideo   = document.getElementById('faceVideo');
@@ -300,13 +312,20 @@ document.getElementById('newPw').addEventListener('input', function() {
         faceStatus.innerHTML = '<div class="' + (cls || '') + ' small">' + html + '</div>';
     }
 
-    async function initCameraAndModels() {
-        setStatus('<div class="spinner-border spinner-border-sm me-1" role="status"></div> Chargement des modèles...', 'text-muted');
+    function showPlaceholder(html) {
+        placeholder.innerHTML = html;
         placeholder.classList.remove('d-none');
-        scanBtn.disabled = true;
+    }
+
+    function hidePlaceholder() {
+        placeholder.classList.add('d-none');
+    }
+
+    async function initCameraAndModels() {
+        setStatus('<span class="spinner-border spinner-border-sm me-1"></span> Loading AI models...', 'text-muted');
+        showPlaceholder('<div class="text-center text-white"><div class="spinner-border text-light mb-2" role="status"></div><p class="mb-0 opacity-75 small">Loading models...</p></div>');
 
         try {
-            // Load models
             if (!modelsReady) {
                 await Promise.all([
                     faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
@@ -315,30 +334,41 @@ document.getElementById('newPw').addEventListener('input', function() {
                 ]);
                 modelsReady = true;
             }
-        } catch(e) {
-            setStatus('<i class="bi bi-exclamation-triangle me-1"></i>Erreur de chargement des modèles. Rechargez la page.', 'text-danger');
-            placeholder.innerHTML = '<div class="text-center text-white"><i class="bi bi-exclamation-triangle" style="font-size:3rem;opacity:.5"></i><p class="mt-2 mb-0 opacity-75 small">Modèles indisponibles</p></div>';
+        } catch(err) {
+            setStatus('<i class="bi bi-exclamation-triangle me-1"></i>Failed to load AI models. Please reload the page.', 'text-danger');
+            showPlaceholder('<div class="text-center text-white"><i class="bi bi-exclamation-triangle" style="font-size:3rem;opacity:.5"></i><p class="mt-2 mb-0 opacity-75 small">Models unavailable</p></div>');
             return;
         }
 
-        setStatus('<div class="spinner-border spinner-border-sm me-1" role="status"></div> Activation de la caméra...', 'text-muted');
+        setStatus('<span class="spinner-border spinner-border-sm me-1"></span> Starting camera...', 'text-muted');
+        showPlaceholder('<div class="text-center text-white"><div class="spinner-border text-light mb-2" role="status"></div><p class="mb-0 opacity-75 small">Starting camera...</p></div>');
 
+        if (!window.isSecureContext || !navigator.mediaDevices) {
+            var hint = location.hostname === '127.0.0.1' ? ' Open <a href="' + location.href.replace('127.0.0.1','localhost') + '">localhost:' + (location.port||'80') + '</a> instead.' : '';
+            setStatus('<i class="bi bi-shield-exclamation me-1"></i>Camera requires HTTPS or localhost.' + hint, 'text-warning');
+            showPlaceholder('<div class="text-center text-white"><i class="bi bi-shield-exclamation" style="font-size:3rem;opacity:.5"></i><p class="mt-2 mb-0 opacity-75 small">Secure context required</p></div>');
+            return;
+        }
         try {
             faceStream = await navigator.mediaDevices.getUserMedia({
                 video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
             });
             faceVideo.srcObject = faceStream;
-            await faceVideo.play();
-            placeholder.classList.add('d-none');
-            scanBtn.disabled = false;
-            setStatus('<i class="bi bi-check-circle text-success me-1"></i>Caméra activée. Placez votre visage bien en face puis cliquez le bouton.', 'text-muted');
-        } catch(e) {
-            var msg = 'Impossible d\'accéder à la caméra.';
-            if (e.name === 'NotAllowedError') msg += ' Autorisez l\'accès dans votre navigateur.';
-            else if (e.name === 'NotFoundError') msg += ' Aucune caméra détectée.';
-            else if (e.name === 'NotReadableError') msg += ' La caméra est utilisée par une autre application.';
+            await new Promise(function(resolve) {
+                faceVideo.onloadedmetadata = function() { faceVideo.play().then(resolve).catch(resolve); };
+                setTimeout(resolve, 3000);
+            });
+            hidePlaceholder();
+            setStatus('<i class="bi bi-check-circle text-success me-1"></i>Camera ready — click <b>Scan &amp; Register</b>.', 'text-muted');
+        } catch(err) {
+            var msg = 'Cannot access camera.';
+            if (err.name === 'NotAllowedError') {
+                msg += ' Camera permission denied.';
+                if (location.hostname === '127.0.0.1') msg += ' Try <a href="' + location.href.replace('127.0.0.1','localhost') + '">localhost:' + (location.port||'80') + '</a>.';
+            } else if (err.name === 'NotFoundError') { msg += ' No camera detected.';
+            } else if (err.name === 'NotReadableError') { msg += ' Camera is in use by another app.'; }
             setStatus('<i class="bi bi-exclamation-triangle me-1"></i>' + msg, 'text-danger');
-            placeholder.innerHTML = '<div class="text-center text-white"><i class="bi bi-camera-video-off" style="font-size:3rem;opacity:.5"></i><p class="mt-2 mb-0 opacity-75 small">Caméra indisponible</p></div>';
+            showPlaceholder('<div class="text-center text-white"><i class="bi bi-camera-video-off" style="font-size:3rem;opacity:.5"></i><p class="mt-2 mb-0 opacity-75 small">Camera unavailable</p></div>');
         }
     }
 
@@ -346,59 +376,75 @@ document.getElementById('newPw').addEventListener('input', function() {
         if (faceStream) { faceStream.getTracks().forEach(function(t){ t.stop(); }); faceStream = null; }
         faceVideo.srcObject = null;
         faceOverlay.classList.add('d-none');
-        placeholder.classList.remove('d-none');
-        placeholder.innerHTML = '<div class="text-center"><div class="spinner-border text-light mb-2" role="status"></div><p class="mb-0 opacity-75 small text-white">Initialisation de la caméra...</p></div>';
-        scanBtn.disabled = true;
+        showPlaceholder('<div class="text-center text-white"><div class="spinner-border text-light mb-2" role="status"></div><p class="mb-0 opacity-75 small">Starting camera...</p></div>');
         faceStatus.innerHTML = '';
     }
 
-    // Open modal → start camera
+    // Capture a canvas snapshot from the video and run detection on it
+    async function captureAndDetect(threshold) {
+        var w = faceVideo.videoWidth || 640;
+        var h = faceVideo.videoHeight || 480;
+        var snap = document.createElement('canvas');
+        snap.width = w;
+        snap.height = h;
+        snap.getContext('2d').drawImage(faceVideo, 0, 0, w, h);
+        return await faceapi
+            .detectSingleFace(snap, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: threshold }))
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+    }
+
     if (modalEl) {
         modalEl.addEventListener('shown.bs.modal', function() { initCameraAndModels(); });
         modalEl.addEventListener('hidden.bs.modal', function() { stopCamera(); });
     }
 
-    // Remove Face ID
     if (removeBtn) {
         removeBtn.addEventListener('click', async function() {
-            if (!confirm('Supprimer votre Face ID ?')) return;
+            if (!confirm('Remove your Face ID?')) return;
             removeBtn.disabled = true;
             try {
                 var res = await fetch('/api/face-unregister', { method:'POST', headers:{'Content-Type':'application/json'} });
                 var data = await res.json();
                 if (data.success) location.reload();
-                else { alert(data.message || 'Erreur'); removeBtn.disabled = false; }
-            } catch(e) { alert('Erreur réseau'); removeBtn.disabled = false; }
+                else { alert(data.message || 'Error'); removeBtn.disabled = false; }
+            } catch(err) { alert('Network error'); removeBtn.disabled = false; }
         });
     }
 
-    // Scan face
     if (scanBtn) {
         scanBtn.addEventListener('click', async function() {
+            if (!faceStream || !modelsReady) {
+                setStatus('<i class="bi bi-hourglass me-1"></i>Camera not ready yet, please wait...', 'text-warning');
+                return;
+            }
             scanBtn.disabled = true;
-            scanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyse en cours...';
-            setStatus('<div class="spinner-border spinner-border-sm me-1" role="status"></div> Détection du visage...', 'text-muted');
+            scanBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Analyzing...';
 
             try {
-                var detection = await faceapi
-                    .detectSingleFace(faceVideo, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 }))
-                    .withFaceLandmarks()
-                    .withFaceDescriptor();
+                var detection = null;
+                // Try progressively lower thresholds with canvas snapshots
+                var thresholds = [0.5, 0.4, 0.3, 0.25, 0.2];
+                for (var ti = 0; ti < thresholds.length && !detection; ti++) {
+                    setStatus('<span class="spinner-border spinner-border-sm me-1"></span> Detecting face (attempt ' + (ti+1) + '/' + thresholds.length + ')...', 'text-muted');
+                    detection = await captureAndDetect(thresholds[ti]);
+                    if (!detection) await new Promise(function(r){ setTimeout(r, 400); });
+                }
 
                 if (!detection) {
-                    setStatus('<i class="bi bi-exclamation-triangle me-1"></i>Aucun visage détecté. Vérifiez l\'éclairage et réessayez.', 'text-danger');
+                    setStatus('<i class="bi bi-exclamation-triangle me-1"></i>No face detected. Make sure you are well lit and facing the camera directly.', 'text-danger');
                     scanBtn.disabled = false;
-                    scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scanner et enregistrer';
+                    scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scan &amp; Register';
                     return;
                 }
 
-                // Draw face detection on overlay
+                // Draw result on overlay
                 var dims = faceapi.matchDimensions(faceOverlay, faceVideo, true);
                 faceOverlay.classList.remove('d-none');
                 faceapi.draw.drawDetections(faceOverlay, faceapi.resizeResults(detection, dims));
                 faceapi.draw.drawFaceLandmarks(faceOverlay, faceapi.resizeResults(detection, dims));
 
-                setStatus('<div class="spinner-border spinner-border-sm me-1" role="status"></div> Enregistrement du visage...', 'text-muted');
+                setStatus('<span class="spinner-border spinner-border-sm me-1"></span> Saving face...', 'text-muted');
 
                 var descriptor = Array.from(detection.descriptor);
                 var res = await fetch('/api/face-register', {
@@ -410,17 +456,17 @@ document.getElementById('newPw').addEventListener('input', function() {
 
                 if (data.success) {
                     setStatus('<i class="bi bi-check-circle-fill me-1"></i>' + data.message, 'text-success fw-semibold');
-                    scanBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Enregistré !';
+                    scanBtn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Saved!';
                     setTimeout(function(){ bootstrap.Modal.getInstance(modalEl).hide(); location.reload(); }, 1500);
                 } else {
-                    setStatus('<i class="bi bi-exclamation-triangle me-1"></i>' + (data.message || 'Erreur'), 'text-danger');
+                    setStatus('<i class="bi bi-exclamation-triangle me-1"></i>' + (data.message || 'Error saving face.'), 'text-danger');
                     scanBtn.disabled = false;
-                    scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scanner et enregistrer';
+                    scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scan &amp; Register';
                 }
-            } catch(e) {
-                setStatus('<i class="bi bi-exclamation-triangle me-1"></i>Erreur lors de l\'analyse. Réessayez.', 'text-danger');
+            } catch(err) {
+                setStatus('<i class="bi bi-exclamation-triangle me-1"></i>Analysis failed. Please try again.', 'text-danger');
                 scanBtn.disabled = false;
-                scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scanner et enregistrer';
+                scanBtn.innerHTML = '<i class="bi bi-person-check me-2"></i>Scan &amp; Register';
             }
         });
     }

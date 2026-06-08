@@ -71,8 +71,10 @@ class CommunityController extends AbstractController
         'ar' => 'Arabe',
     ];
 
-    public function __construct(private readonly GroupRepository $groupRepository)
-    {
+    public function __construct(
+        private readonly GroupRepository $groupRepository,
+        private readonly EventRepository $eventRepository,
+    ) {
     }
 
     // ========== POSTS ==========
@@ -1242,6 +1244,7 @@ class CommunityController extends AbstractController
             'sort' => $sort,
             'reactionMeta' => self::REACTION_META,
             'translationLanguages' => self::TRANSLATION_LANGUAGES,
+            'upcomingEvents' => $this->eventRepository->findUpcoming(3),
             'newPostData' => [
                 'content' => '',
             ],
