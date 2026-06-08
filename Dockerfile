@@ -49,4 +49,5 @@ EXPOSE 8080
 
 # Start: update schema then serve
 CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
+    APP_ENV=prod php bin/console app:create-admin --env=prod && \
     APP_ENV=prod php -S 0.0.0.0:8080 -t public/
