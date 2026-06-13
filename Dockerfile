@@ -47,8 +47,7 @@ RUN APP_ENV=prod php bin/console asset-map:compile || true
 
 EXPOSE 8080
 
-# Start: update schema then serve
-CMD APP_ENV=prod php bin/console doctrine:schema:drop --force --env=prod --no-debug || true && \
-    APP_ENV=prod php bin/console doctrine:schema:create --env=prod --no-debug && \
+# Start: update schema (safe, never drops data) then serve
+CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
     APP_ENV=prod php bin/console app:create-admin --env=prod && \
     APP_ENV=prod php -S 0.0.0.0:8080 -t public/
