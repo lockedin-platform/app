@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[AsEventListener(event: KernelEvents::REQUEST, priority: 10)]
+#[AsEventListener(event: KernelEvents::REQUEST, priority: 7)]
 class AdminRedirectListener
 {
     public function __construct(
