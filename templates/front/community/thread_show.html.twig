@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}{{ thread.title }} - Najahni{% endblock %}
+{% block title %}{{ thread.title }} - LockedIn{% endblock %}
 
 {% block main %}
 {% set canManageThread = thread.user == app.user or is_granted('ROLE_ADMIN') %}

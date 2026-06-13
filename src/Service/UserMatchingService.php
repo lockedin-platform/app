@@ -139,7 +139,7 @@ class UserMatchingService
         }
 
         return <<<PROMPT
-Tu es un algorithme de matching pour une plateforme d'entrepreneuriat tunisienne (Najahni).
+Tu es un algorithme de matching pour une plateforme d'entrepreneuriat tunisienne (LockedIn).
 Trouve les {$limit} meilleurs profils compatibles pour l'utilisateur ci-dessous.
 
 UTILISATEUR ACTUEL:

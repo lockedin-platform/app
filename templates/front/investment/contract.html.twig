@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Investment Contract - Najahni{% endblock %}
+{% block title %}Investment Contract - LockedIn{% endblock %}
 
 {% block main %}
 {% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Contract', activeStep: 3} %}
@@ -2098,7 +2098,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var vcModal = document.getElementById('videoCallModal');
     if (vcModal) {
         vcModal.addEventListener('show.bs.modal', function() {
-            document.getElementById('jitsiFrame').src = 'https://meet.jit.si/najahni-contract-{{ offer.id }}#config.startWithVideoMuted=false&config.startWithAudioMuted=true';
+            document.getElementById('jitsiFrame').src = 'https://meet.jit.si/lockedin-contract-{{ offer.id }}#config.startWithVideoMuted=false&config.startWithAudioMuted=true';
         });
         vcModal.addEventListener('hide.bs.modal', function() {
             document.getElementById('jitsiFrame').src = '';

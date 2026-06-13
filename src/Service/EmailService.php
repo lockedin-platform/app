@@ -11,7 +11,7 @@ use Twig\Environment;
 class EmailService
 {
     private const SENDER_EMAIL = 'mahdibenmariem1@gmail.com';
-    private const SENDER_NAME = 'Najahni';
+    private const SENDER_NAME = 'LockedIn';
 
     public function __construct(
         private MailerInterface $mailer,
@@ -28,7 +28,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Code de vérification - Najahni')
+            ->subject('Code de vérification - LockedIn')
             ->html($html);
 
         $this->mailer->send($email);
@@ -44,7 +44,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Réinitialisation de mot de passe - Najahni')
+            ->subject('Réinitialisation de mot de passe - LockedIn')
             ->html($html);
 
         $this->mailer->send($email);
@@ -59,7 +59,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Confirmation de changement de mot de passe - Najahni')
+            ->subject('Confirmation de changement de mot de passe - LockedIn')
             ->html($html);
 
         $this->mailer->send($email);
@@ -74,7 +74,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Bienvenue sur Najahni !')
+            ->subject('Bienvenue sur LockedIn !')
             ->html($html);
 
         $this->mailer->send($email);
@@ -100,7 +100,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Votre ticket pour '.((string) $event->getTitle()).' - Najahni')
+            ->subject('Votre ticket pour '.((string) $event->getTitle()).' - LockedIn')
             ->html($html);
 
         if (is_string($qrPng) && $qrPng !== '') {
@@ -123,7 +123,7 @@ class EmailService
             $email = (new Email())
                 ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
                 ->to($to)
-                ->subject($subject . ' - Najahni')
+                ->subject($subject . ' - LockedIn')
                 ->html($html);
 
             $this->mailer->send($email);
@@ -156,7 +156,7 @@ class EmailService
         $email = (new Email())
             ->from(new Address(self::SENDER_EMAIL, self::SENDER_NAME))
             ->to($to)
-            ->subject('Confirmation de paiement - Najahni')
+            ->subject('Confirmation de paiement - LockedIn')
             ->html($html);
 
         $this->mailer->send($email);

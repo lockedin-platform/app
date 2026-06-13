@@ -94,7 +94,7 @@ class SeedInvestmentDemoDataCommand extends Command
         $connection->executeStatement('DELETE FROM investment_contract');
         $connection->executeStatement('DELETE FROM investment_offer');
         $connection->executeStatement('DELETE FROM investment_opportunity');
-        $connection->executeStatement('DELETE FROM projet WHERE titre LIKE ?', ['Najahni Demo:%']);
+        $connection->executeStatement('DELETE FROM projet WHERE titre LIKE ?', ['LockedIn Demo:%']);
         $connection->executeStatement('DELETE FROM projet WHERE diagnostic_ia LIKE ?', [self::SEED_MARKER . '%']);
     }
 

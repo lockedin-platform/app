@@ -109,7 +109,7 @@ class NewsApiService
             $response = $this->httpClient->request('GET', $url, [
                 'timeout' => 10,
                 'headers' => [
-                    'User-Agent' => 'Mozilla/5.0 (compatible; NajahniBot/1.0)',
+                    'User-Agent' => 'Mozilla/5.0 (compatible; LockedInBot/1.0)',
                     'Accept' => 'application/rss+xml, application/xml, text/xml',
                 ],
             ]);

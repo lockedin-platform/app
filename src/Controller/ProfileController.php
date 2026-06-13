@@ -147,7 +147,7 @@ class ProfileController extends AbstractController
         $linkedin = $user->getLinkedinUrl() ? 'LinkedIn: ' . $user->getLinkedinUrl() : '';
         $context = "Name: $name\nRole: $role\n$company\n$linkedin\n$bio";
 
-        return 'You are a profile AI assistant for Najahni. Based on the following user profile, write a professional bio in English in 2 to 3 sentences. The tone should be clear, engaging and action-oriented, highlighting the role and value delivered.' . "\n\n"
+        return 'You are a profile AI assistant for LockedIn. Based on the following user profile, write a professional bio in English in 2 to 3 sentences. The tone should be clear, engaging and action-oriented, highlighting the role and value delivered.' . "\n\n"
             . $context . "\n\n"
             . 'Reply with the final bio text only, no explanations.';
     }
@@ -159,7 +159,7 @@ class ProfileController extends AbstractController
         $company = $user->getCompanyName() ? 'Company: ' . $user->getCompanyName() . "\n" : '';
         $bio = $user->getBio() ? 'Bio: ' . $user->getBio() . "\n" : '';
 
-        return "You are a personal assistant for a Najahni user. Give helpful, concise answers suited to an entrepreneur or mentor profile in Tunisia. Always reply in English.\n"
+        return "You are a personal assistant for a LockedIn user. Give helpful, concise answers suited to an entrepreneur or mentor profile in Tunisia. Always reply in English.\n"
             . "Profile context:\n"
             . "- Name: $name\n"
             . "- Role: $role\n"
@@ -179,7 +179,7 @@ class ProfileController extends AbstractController
         $groups   = $stats['groups'];
         $projets  = $stats['projets'];
 
-        return "You are an AI career coach for Najahni. Give four practical recommendations to this user to improve their profile, increase their visibility, and make better use of the platform. Always reply in English.\n"
+        return "You are an AI career coach for LockedIn. Give four practical recommendations to this user to improve their profile, increase their visibility, and make better use of the platform. Always reply in English.\n"
             . "Profile information:\n"
             . "- Name: $name\n"
             . "- Role: $role\n"

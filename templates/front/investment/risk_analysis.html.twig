@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Risk Analysis - {{ opportunity.project ? opportunity.project.titre : 'Opportunity' }} - Najahni{% endblock %}
+{% block title %}Risk Analysis - {{ opportunity.project ? opportunity.project.titre : 'Opportunity' }} - LockedIn{% endblock %}
 
 {% block main %}
 {% include 'front/investment/_wayfinder.html.twig' with {pageLabel: 'Risk Analysis', activeStep: 2} %}
@@ -373,7 +373,7 @@
         {% if not isOwner %}
         <div class="card border-0 shadow-sm mt-3" style="border-radius:1rem">
             <div class="card-body">
-                <h5 class="fw-semibold mb-3"><i class="bi bi-chat-dots me-2"></i>NAJAHNI Chatbot</h5>
+                <h5 class="fw-semibold mb-3"><i class="bi bi-chat-dots me-2"></i>LockedIn Chatbot</h5>
                 <div id="chatbotContainer"
                      data-opportunity-id="{{ opportunity.id }}"
                      data-opportunity-title="{{ opportunity.project ? opportunity.project.titre : 'N/A' }}"

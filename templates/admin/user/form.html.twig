@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ user ? 'Modifier' : 'Ajouter' }} un utilisateur - Najahni{% endblock %}
+{% block title %}{{ user ? 'Modifier' : 'Ajouter' }} un utilisateur - LockedIn{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -44,8 +44,8 @@
                 {% if not user %}
                 <div class="col-md-6">
                     <label class="form-label fw-semibold">Mot de passe</label>
-                    <input type="password" name="password" class="form-control" value="najahni123">
-                    <small class="text-muted">Par défaut : najahni123</small>
+                    <input type="password" name="password" class="form-control" value="lockedin123">
+                    <small class="text-muted">Par défaut : lockedin123</small>
                 </div>
                 {% endif %}
                 <div class="col-md-6">

@@ -3,7 +3,7 @@
 {% block body %}
 {# Announcement Bar #}
 <div class="nj-announce-bar" id="njAnnounceBar">
-    <span class="nj-announce-msg active">Najahni connects entrepreneurs and investors in Tunisia</span>
+    <span class="nj-announce-msg active">LockedIn connects entrepreneurs and investors in Tunisia</span>
     <span class="nj-announce-msg">New: Contracts digitally signed with SHA-256</span>
     <span class="nj-announce-msg">Join {{ njPlatformUserCount|default(0)|number_format(0, ',', ' ') }} active members on the platform</span>
     <button class="nj-announce-close" id="njAnnounceClose" aria-label="Close"><i class="bi bi-x"></i></button>
@@ -13,7 +13,7 @@
 <nav class="navbar navbar-expand-lg navbar-nj navbar-dark sticky-top">
     <div class="container-fluid px-4">
         <a class="navbar-brand d-flex align-items-center gap-2" href="{{ path('app_home') }}">
-            <span class="nj-brand-gradient">Najahni</span>
+            <span class="nj-brand-gradient">LockedIn</span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
             <span class="navbar-toggler-icon"></span>
@@ -93,7 +93,7 @@
                 <div class="col-md-5 d-none d-md-block position-relative" style="min-height:650px">
                     <img src="{{ asset('uploads/auth-banner.avif') }}" alt="" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit:cover">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background:linear-gradient(0deg,rgba(58,12,163,.85) 0%,rgba(67,97,238,.4) 50%,transparent 100%)">
-                        <h4 class="text-white fw-bold mb-2">Welcome to Najahni</h4>
+                        <h4 class="text-white fw-bold mb-2">Welcome to LockedIn</h4>
                         <p class="text-white small opacity-90 mb-0">Sign in to access your personal space and grow your projects.</p>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
                         <div class="text-center mb-4">
                             <h3 class="fw-bold" id="loginModalLabel" style="font-size:1.65rem">Sign In</h3>
-                            <p class="text-muted small">Access your Najahni account</p>
+                            <p class="text-muted small">Access your LockedIn account</p>
                         </div>
                         <div class="alert alert-danger d-none rounded-3 py-2" id="loginError" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i><span></span>
@@ -174,7 +174,7 @@
                 <div class="col-lg-5 d-none d-lg-block position-relative" style="min-height:750px">
                     <img src="{{ asset('uploads/auth-banner.avif') }}" alt="" class="w-100 h-100 position-absolute top-0 start-0" style="object-fit:cover">
                     <div class="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-4" style="background:linear-gradient(0deg,rgba(114,9,183,.85) 0%,rgba(67,97,238,.4) 50%,transparent 100%)">
-                        <h4 class="text-white fw-bold mb-2">Join Najahni</h4>
+                        <h4 class="text-white fw-bold mb-2">Join LockedIn</h4>
                         <p class="text-white small opacity-90 mb-3">Be part of the Tunisian innovation community.</p>
                         <div class="d-flex flex-column gap-2">
                             <div class="d-flex align-items-center gap-2 text-white">
@@ -306,7 +306,7 @@
     <div class="container">
         <div class="row g-4">
             <div class="col-md-4">
-                <h5 class="fw-bold text-white mb-3">Najahni</h5>
+                <h5 class="fw-bold text-white mb-3">LockedIn</h5>
                 <p class="small mb-0">The Tunisian platform connecting entrepreneurs, mentors and investors to build the future.</p>
             </div>
             <div class="col-md-4">
@@ -322,7 +322,7 @@
             <div class="col-md-4">
                 <h6 class="fw-bold text-white mb-3">Contact</h6>
                 <p class="small mb-1"><i class="bi bi-geo-alt me-2"></i>Esprit, Ariana, Tunisie</p>
-                <p class="small mb-1"><i class="bi bi-envelope me-2"></i>contact@najahni.tn</p>
+                <p class="small mb-1"><i class="bi bi-envelope me-2"></i>contact@lockedin.tn</p>
                 <p class="small mb-3"><i class="bi bi-telephone me-2"></i>+216 94 003 160</p>
                 <div class="d-flex gap-3">
                     <a href="#" class="text-white"><i class="bi bi-facebook" style="font-size:1.2rem"></i></a>
@@ -332,7 +332,7 @@
             </div>
         </div>
         <hr style="border-color:rgba(255,255,255,.15)">
-        <p class="text-center small mb-0">&copy; {{ "now"|date('Y') }} Najahni — PIDEV 3A Esprit. All rights reserved.</p>
+        <p class="text-center small mb-0">&copy; {{ "now"|date('Y') }} LockedIn — PIDEV 3A Esprit. All rights reserved.</p>
     </div>
 </footer>
 
@@ -658,7 +658,7 @@ document.addEventListener('DOMContentLoaded', function(){
 </style>
 
 {# FAB button #}
-<button class="nj-chat-fab" id="njChatFab" title="Najahni AI" aria-label="Open AI assistant">
+<button class="nj-chat-fab" id="njChatFab" title="LockedIn AI" aria-label="Open AI assistant">
     <i class="bi bi-robot"></i>
     <i class="bi bi-x-lg" style="display:none"></i>
 </button>
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="nj-chat-header">
         <div class="nj-chat-header-avatar"><i class="bi bi-robot text-white" style="font-size:.85rem"></i></div>
         <div class="flex-grow-1">
-            <strong class="d-block">Najahni AI</strong>
+            <strong class="d-block">LockedIn AI</strong>
             <small><i class="bi bi-circle-fill me-1" style="font-size:.45rem"></i>Online</small>
         </div>
         <button onclick="document.getElementById('njChatFab').click()" style="background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;padding:.25rem;line-height:1"><i class="bi bi-chevron-down"></i></button>
@@ -676,7 +676,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="nj-chat-messages" id="njChatMessages">
         <div class="nj-chat-msg bot">
             <div class="nj-chat-avatar"><i class="bi bi-robot text-white"></i></div>
-            <div class="nj-chat-bubble">Hello {{ app.user.firstname }}! 👋 I'm <strong>Najahni AI</strong>. How can I help you today?</div>
+            <div class="nj-chat-bubble">Hello {{ app.user.firstname }}! 👋 I'm <strong>LockedIn AI</strong>. How can I help you today?</div>
         </div>
     </div>
     <div class="nj-chat-quick" id="njChatQuick">

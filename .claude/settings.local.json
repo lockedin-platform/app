@@ -24,7 +24,8 @@
       "Bash(php bin/console dbal:run-sql \"SELECT id, status, investor_posting_id, applicant_id FROM investment_application WHERE applicant_id = 2\")",
       "Bash(php bin/console dbal:run-sql \"SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '%invest%'\")",
       "Bash(php bin/console dbal:run-sql \"SELECT id, status, investor_posting_id, applicant_id FROM investor_application WHERE applicant_id = 2\")",
-      "Bash(php bin/console dbal:run-sql \"PRAGMA table_info\\(investor_application\\)\")"
+      "Bash(php bin/console dbal:run-sql \"PRAGMA table_info\\(investor_application\\)\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\mahdi\\\\.claude\\\\projects\\\\\" -Recurse -Filter \"*.jsonl\" | Sort-Object LastWriteTime -Descending | Select-Object -First 50 | Select-Object FullName, LastWriteTime | Format-Table -AutoSize)"
     ]
   }
 }

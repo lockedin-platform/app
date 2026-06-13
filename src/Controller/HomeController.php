@@ -251,14 +251,14 @@ class HomeController extends AbstractController
         $userRole = $user ? $user->getRole() : 'non connecté';
 
         $prompt = <<<PROMPT
-Tu es "Najahni AI", l'assistant de la plateforme Najahni — plateforme tunisienne pour entrepreneurs, investisseurs et mentors.
+Tu es "LockedIn AI", l'assistant de la plateforme LockedIn — plateforme tunisienne pour entrepreneurs, investisseurs et mentors.
 
 Tu aides avec : gestion de projets, investissement, mentorat, apprentissage, et la communauté entrepreneuriale tunisienne.
 Utilisateur : {$userName} (rôle : {$userRole}).
 
 Message : {$message}
 
-Réponds en français, de façon utile et concise (max 3 paragraphes). Si pertinent, oriente vers les fonctionnalités Najahni.
+Réponds en français, de façon utile et concise (max 3 paragraphes). Si pertinent, oriente vers les fonctionnalités LockedIn.
 PROMPT;
 
         $response = $ai->generate($prompt, 0.7);

@@ -38,7 +38,7 @@ class StripePaymentService
                 'amount' => $this->toCents((float) $offer->getProposedAmount()),
                 'currency' => self::TEST_CURRENCY,
                 'description' => sprintf(
-                    'Investissement Najahni - Offre #%d - Opportunite #%d',
+                    'Investissement LockedIn - Offre #%d - Opportunite #%d',
                     $offer->getId(),
                     $offer->getOpportunity()?->getId() ?? 0,
                 ),

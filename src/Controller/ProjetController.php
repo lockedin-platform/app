@@ -445,7 +445,7 @@ class ProjetController extends AbstractController
         }
 
         $prompt = <<<PROMPT
-Tu es "Najahni AI", un assistant expert en entrepreneuriat, gestion de projets et business en Tunisie et en Afrique du Nord.
+Tu es "LockedIn AI", un assistant expert en entrepreneuriat, gestion de projets et business en Tunisie et en Afrique du Nord.
 
 Voici le portefeuille complet de projets de l'entrepreneur:
 {$context}

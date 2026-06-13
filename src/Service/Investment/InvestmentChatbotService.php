@@ -216,7 +216,7 @@ PROMPT;
 
         if ($mode === 'contract') {
             return sprintf(
-                "You are a deal advisor on Najahni, a Tunisian investment platform. You are advising parties on a live contract negotiation. Here is the contract context:\n\n"
+                "You are a deal advisor on LockedIn, a Tunisian investment platform. You are advising parties on a live contract negotiation. Here is the contract context:\n\n"
                 . "Project: %s\n"
                 . "Sector: %s\n"
                 . "Investment amount: %s TND\n"
@@ -238,7 +238,7 @@ PROMPT;
         }
 
         return sprintf(
-            "You are an expert investment advisor on Najahni, a Tunisian investment platform connecting small businesses with investors. You are currently advising an investor who is evaluating a specific investment opportunity. Here is the context you must use to answer their questions:\n\n"
+            "You are an expert investment advisor on LockedIn, a Tunisian investment platform connecting small businesses with investors. You are currently advising an investor who is evaluating a specific investment opportunity. Here is the context you must use to answer their questions:\n\n"
             . "Project: %s\n"
             . "Sector: %s\n"
             . "Funding target: %s TND\n"

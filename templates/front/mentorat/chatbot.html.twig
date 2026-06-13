@@ -1,6 +1,6 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Mentoring Chatbot - Najahni{% endblock %}
+{% block title %}Mentoring Chatbot - LockedIn{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -22,20 +22,20 @@
     <div class="col-md-8">
         <div class="card border-0 shadow-sm" style="border-radius:1rem">
             <div class="card-header bg-white border-0 pt-4 px-4">
-                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>Najahni Assistant</h5>
-                <p class="text-muted small mb-0">Ask your questions about Najahni, mentoring, projects, investment...</p>
+                <h5 class="fw-bold mb-0"><i class="bi bi-robot me-2"></i>LockedIn Assistant</h5>
+                <p class="text-muted small mb-0">Ask your questions about LockedIn, mentoring, projects, investment...</p>
             </div>
             <div class="card-body p-4">
                 <div id="chatMessages" style="height:400px;overflow-y:auto;border:1px solid #e9ecef;border-radius:0.75rem;padding:1rem;background:#f8f9fa;" class="mb-3">
                     <div class="d-flex mb-3">
                         <div class="rounded-circle d-flex align-items-center justify-content-center me-2" style="width:32px;height:32px;min-width:32px;background:var(--nj-gradient);color:#fff"><i class="bi bi-robot"></i></div>
                         <div class="bg-white p-2 px-3 rounded-3 shadow-sm" style="max-width:80%">
-                            <small>Hello {{ app.user.firstname }}! 👋 I am the Najahni assistant. I know everything about the platform: mentoring, sessions, calendar, projects, investment, community and learning. How can I help you?</small>
+                            <small>Hello {{ app.user.firstname }}! 👋 I am the LockedIn assistant. I know everything about the platform: mentoring, sessions, calendar, projects, investment, community and learning. How can I help you?</small>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex flex-wrap gap-2 mb-3">
-                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="What is Najahni?"><i class="bi bi-info-circle me-1"></i>What is Najahni?</button>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="What is LockedIn?"><i class="bi bi-info-circle me-1"></i>What is LockedIn?</button>
                     <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="How to find a mentor?"><i class="bi bi-search me-1"></i>Find a mentor</button>
                     <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="How to book a session?"><i class="bi bi-calendar-check me-1"></i>Book a session</button>
                     <button class="btn btn-sm btn-outline-primary rounded-pill chatbot-suggestion" data-question="Who are the best mentors?"><i class="bi bi-star me-1"></i>Best mentors</button>
@@ -53,16 +53,16 @@
 
 <script>
 const knowledgeBase = [
-    // ── About Najahni ──
-    { keywords: ['najahni', 'plateforme', 'platform', 'c\'est quoi', 'what is', 'à propos', 'about'],
-      answer: 'Najahni is a digital platform designed to foster entrepreneurship and mentoring by connecting dynamic founders with experienced mentors, investors and essential resources to build and grow innovative projects.' },
+    // ── About LockedIn ──
+    { keywords: ['lockedin', 'plateforme', 'platform', 'c\'est quoi', 'what is', 'à propos', 'about'],
+      answer: 'LockedIn is a digital platform designed to foster entrepreneurship and mentoring by connecting dynamic founders with experienced mentors, investors and essential resources to build and grow innovative projects.' },
 
     { keywords: ['qui a créé', 'qui a fait', 'créateur', 'origine', 'esprit'],
-      answer: 'Najahni is a PIDEV 3A project developed by students from Esprit, Ariana, Tunisia. It is a Tunisian platform connecting entrepreneurs, mentors and investors.' },
+      answer: 'LockedIn is a PIDEV 3A project developed by students from Esprit, Ariana, Tunisia. It is a Tunisian platform connecting entrepreneurs, mentors and investors.' },
 
     // ── Mentors ──
     { keywords: ['meilleur mentor', 'best mentor', 'top mentor', 'recommand'],
-      answer: 'The best mentors depend on your needs. The active super mentors on Najahni generally have strong skills in tech startups, strategic management and fundraising. Check the dashboard to see "Top Rated" mentors based on community feedback.' },
+      answer: 'The best mentors depend on your needs. The active super mentors on LockedIn generally have strong skills in tech startups, strategic management and fundraising. Check the dashboard to see "Top Rated" mentors based on community feedback.' },
 
     { keywords: ['trouver mentor', 'find mentor', 'chercher mentor', 'mentor disponible', 'available mentor'],
       answer: 'You can navigate to the "Find a mentor" tab to see available slots. You can also check the Availability Calendar to see dates highlighted in green where mentors are free.' },
@@ -110,7 +110,7 @@ const knowledgeBase = [
 
     // ── Investment ──
     { keywords: ['investissement', 'investment', 'investisseur', 'investor', 'financement', 'funding'],
-      answer: 'The Investment module on Najahni allows entrepreneurs to publish opportunities and investors to make offers. Access it via the "Investment" menu in the navigation bar.' },
+      answer: 'The Investment module on LockedIn allows entrepreneurs to publish opportunities and investors to make offers. Access it via the "Investment" menu in the navigation bar.' },
 
     // ── Projects ──
     { keywords: ['projet', 'project', 'startup'],
@@ -118,7 +118,7 @@ const knowledgeBase = [
 
     // ── Community ──
     { keywords: ['communauté', 'community', 'groupe', 'group', 'event', 'événement', 'post'],
-      answer: 'The Community module includes posts, groups and events. Share your ideas, join themed groups and participate in events organized by the Najahni community.' },
+      answer: 'The Community module includes posts, groups and events. Share your ideas, join themed groups and participate in events organized by the LockedIn community.' },
 
     // ── Learning ──
     { keywords: ['apprentissage', 'cours', 'learning', 'formation', 'badge', 'xp'],
@@ -130,7 +130,7 @@ const knowledgeBase = [
 
     // ── Greetings ──
     { keywords: ['bonjour', 'salut', 'hello', 'hi', 'bonsoir', 'hey', 'salam'],
-      answer: 'Hello! 👋 I am the Najahni assistant. How can I help you today? You can ask me questions about mentoring, sessions, the calendar, projects, investment and more!' },
+      answer: 'Hello! 👋 I am the LockedIn assistant. How can I help you today? You can ask me questions about mentoring, sessions, the calendar, projects, investment and more!' },
 
     { keywords: ['merci', 'thanks', 'thank you', 'شكرا'],
       answer: 'You\'re welcome! Don\'t hesitate if you have any other questions. 😊' },
@@ -175,7 +175,7 @@ function sendMessage() {
     setTimeout(function() {
         removeTyping(typingId);
         const reply = findBestAnswer(text)
-            || 'I don\'t have information on this topic at the moment. Try asking me questions about:\n🔹 Najahni and how it works\n🔹 Finding a mentor / Calendar\n🔹 Mentoring requests and sessions\n🔹 Matching and auto-acceptance\n🔹 PDF / Excel export\n🔹 Projects, Investment, Community, Learning';
+            || 'I don\'t have information on this topic at the moment. Try asking me questions about:\n🔹 LockedIn and how it works\n🔹 Finding a mentor / Calendar\n🔹 Mentoring requests and sessions\n🔹 Matching and auto-acceptance\n🔹 PDF / Excel export\n🔹 Projects, Investment, Community, Learning';
         appendMessage(reply, 'bot');
     }, 600 + Math.random() * 400);
 }

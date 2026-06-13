@@ -294,7 +294,7 @@ class ApprentissageController extends AbstractController
         </head>
         <body>
             <div class="header">
-                <div class="logo">Najahni</div>
+                <div class="logo">LockedIn</div>
                 <div class="subtitle">Attestation de progression — ' . $date . '</div>
             </div>';
 
@@ -323,7 +323,7 @@ class ApprentissageController extends AbstractController
 
         $html .= '
             <div class="footer">
-                Genere par Najahni &bull; ' . $date . ' &bull; ' . htmlspecialchars($user->getEmail()) . '
+                Genere par LockedIn &bull; ' . $date . ' &bull; ' . htmlspecialchars($user->getEmail()) . '
             </div>
         </body>
         </html>';

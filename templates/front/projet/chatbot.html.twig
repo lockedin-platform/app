@@ -1,12 +1,12 @@
 {% extends 'front/layout.html.twig' %}
 
-{% block title %}Assistant IA — Gestion de Projets - Najahni{% endblock %}
+{% block title %}Assistant IA — Gestion de Projets - LockedIn{% endblock %}
 
 {% block main %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <a href="{{ path('app_projet_index') }}" class="text-decoration-none text-muted"><i class="bi bi-arrow-left me-1"></i>Mes Projets</a>
-        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-robot me-2"></i>Najahni AI — Assistant Projets</h2>
+        <h2 class="fw-bold mt-2 mb-0"><i class="bi bi-robot me-2"></i>LockedIn AI — Assistant Projets</h2>
         <p class="text-muted mb-0">Votre assistant IA pour la gestion de tous vos projets</p>
     </div>
 </div>
@@ -22,7 +22,7 @@
                         <i class="bi bi-robot text-white fs-5"></i>
                     </div>
                     <div>
-                        <strong class="d-block" style="font-size:.95rem">Najahni AI</strong>
+                        <strong class="d-block" style="font-size:.95rem">LockedIn AI</strong>
                         <small class="text-success"><i class="bi bi-circle-fill me-1" style="font-size:.5rem"></i>En ligne — {{ projets|length }} projet{{ projets|length > 1 ? 's' : '' }} chargé{{ projets|length > 1 ? 's' : '' }}</small>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                         <i class="bi bi-robot text-white"></i>
                     </div>
                     <div class="p-3 rounded-3" style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);max-width:80%">
-                        <p class="mb-2">Bonjour ! 👋 Je suis <strong>Najahni AI</strong>, votre assistant pour la gestion de projets.</p>
+                        <p class="mb-2">Bonjour ! 👋 Je suis <strong>LockedIn AI</strong>, votre assistant pour la gestion de projets.</p>
                         <p class="mb-0 text-muted small">J'ai accès à vos <strong>{{ projets|length }} projet{{ projets|length > 1 ? 's' : '' }}</strong>. Posez-moi des questions : comparaison, stratégie, finances, risques, priorisation, conseils sectoriels en Tunisie...</p>
                     </div>
                 </div>

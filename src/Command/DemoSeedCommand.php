@@ -34,7 +34,7 @@ class DemoSeedCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $io->title('Seeding demo data for Najahni');
+        $io->title('Seeding demo data for LockedIn');
 
         // ── 1. Users ──────────────────────────────────────────────────────────
         $io->section('Creating demo users');
@@ -215,7 +215,7 @@ class DemoSeedCommand extends Command
             [$mahdi,    'Just submitted PayLink for AI evaluation — scored 78%! The AI identified our B2B sales strategy as the key differentiator. Who else is building fintech in Tunisia? 🚀'],
             [$karim,    'MedConsult AI just hit 500 beta sign-ups in 2 weeks! Huge validation for digital health in Tunisia. The AI triage feature alone reduced consultation wait times by 60%.'],
             [$mentor,   'Mentoring tip of the week: The biggest mistake early-stage founders make is building features before validating the problem. Talk to 100 customers before writing a single line of code.'],
-            [$investor, 'Najahni\'s investment pipeline is impressive. Reviewed 12 projects this month — 3 are genuinely fundable with solid teams and real traction. The platform makes due diligence so much faster.'],
+            [$investor, 'LockedIn\'s investment pipeline is impressive. Reviewed 12 projects this month — 3 are genuinely fundable with solid teams and real traction. The platform makes due diligence so much faster.'],
             [$mahdi,    'Lesson learned: I rewrote our pitch deck 6 times. The version that worked had 10 slides, a clear problem, a live demo, and one slide on the team. Simplicity wins every time.'],
             [$karim,    'For anyone building in HealthTech — the key is getting one hospital as a reference client first. Everything else follows from there. Happy to share how we got ours.'],
         ];
@@ -251,8 +251,8 @@ class DemoSeedCommand extends Command
         $this->em->persist($p2e1);
 
         $e2 = new Event();
-        $e2->setTitle('Investor Pitch Day — Najahni x BIAT');
-        $e2->setDescription('5 selected Najahni startups pitch live in front of 12 investors from BIAT, Flat6Labs and Wamda. Audience includes 200 ecosystem players. Apply by June 10 to be selected.');
+        $e2->setTitle('Investor Pitch Day — LockedIn x BIAT');
+        $e2->setDescription('5 selected LockedIn startups pitch live in front of 12 investors from BIAT, Flat6Labs and Wamda. Audience includes 200 ecosystem players. Apply by June 10 to be selected.');
         $e2->setEventDate(new \DateTime('+25 days'));
         $e2->setCapacity(200);
         $e2->setCreatedBy($investor);

@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python -c ' *)"
+      "Bash(python -c ' *)",
+      "Bash(php bin/console dbal:run-sql *)",
+      "Bash(php bin/console doctrine:query:sql *)",
+      "Bash(php bin/console debug:router*)",
+      "Bash(php bin/console debug:container*)",
+      "Bash(php bin/console security:hash-password *)",
+      "Bash(php bin/console lint:twig*)",
+      "Bash(curl -s * http://localhost:*)",
+      "Bash(wc -l *)"
     ]
   }
 }
