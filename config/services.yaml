@@ -37,7 +37,7 @@ services:
         arguments:
             $secretKey: '%env(RECAPTCHA3_SECRET)%'
             $scoreThreshold: 0.5
-            $enabled: true
+            $enabled: false
 
     App\Service\Investment\InvestmentChatbotService:
         arguments:
