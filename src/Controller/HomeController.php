@@ -34,6 +34,9 @@ class HomeController extends AbstractController
         MentorshipSessionRepository $sessionRepo,
         PostRepository $postRepo,
     ): Response {
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirectToRoute('admin_dashboard');
+        }
         $platformStats = [
             'totalUsers' => 0,
             'totalInvestors' => 0,
