@@ -22,37 +22,44 @@ class CreateAdminCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $email = $_ENV['ADMIN_EMAIL'] ?? 'admin@lockedin.app';
-        $password = $_ENV['ADMIN_PASSWORD'] ?? 'LockedIn2026!';
+        $this->upsertAdmin('lockedin.admin@gmail.com', 'LockedIn@2026', $output);
 
-        $existing = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
-
-        $output->writeln("Admin email used: $email");
-
-        if ($existing) {
-            $existing->setRole(User::ROLE_ADMIN);
-            $existing->setVerified(true);
-            $existing->setIsActive(true);
-            $existing->setIsBanned(false);
-            $existing->setPassword($this->hasher->hashPassword($existing, $password));
-            $this->em->flush();
-            $output->writeln("Admin user updated: email=$email role=ADMIN password=RESET isActive=true isBanned=false");
-            return Command::SUCCESS;
+        // Also handle env-based admin
+        $email = $_ENV['ADMIN_EMAIL'] ?? null;
+        $password = $_ENV['ADMIN_PASSWORD'] ?? null;
+        if ($email && $email !== 'lockedin.admin@gmail.com') {
+            $this->upsertAdmin($email, $password ?? 'LockedIn@2026', $output);
         }
 
-        $user = new User();
-        $user->setEmail($email);
-        $user->setFirstname('Admin');
-        $user->setLastname('LockedIn');
-        $user->setRole(User::ROLE_ADMIN);
-        $user->setPassword($this->hasher->hashPassword($user, $password));
-        $user->setVerified(true);
-
-        $this->em->persist($user);
-        $this->em->flush();
-
-        $output->writeln("Admin CREATED: email=$email password=$password");
-
         return Command::SUCCESS;
+    }
+
+    private function upsertAdmin(string $email, string $password, OutputInterface $output): void
+    {
+        $repo = $this->em->getRepository(User::class);
+        $user = $repo->findOneBy(['email' => $email]);
+
+        if ($user) {
+            $user->setRole(User::ROLE_ADMIN);
+            $user->setVerified(true);
+            $user->setIsActive(true);
+            $user->setIsBanned(false);
+            $user->setPassword($this->hasher->hashPassword($user, $password));
+            $this->em->flush();
+            $output->writeln("ADMIN UPDATED: $email / $password");
+        } else {
+            $user = new User();
+            $user->setEmail($email);
+            $user->setFirstname('Admin');
+            $user->setLastname('LockedIn');
+            $user->setRole(User::ROLE_ADMIN);
+            $user->setVerified(true);
+            $user->setIsActive(true);
+            $user->setIsBanned(false);
+            $user->setPassword($this->hasher->hashPassword($user, $password));
+            $this->em->persist($user);
+            $this->em->flush();
+            $output->writeln("ADMIN CREATED: $email / $password");
+        }
     }
 }
