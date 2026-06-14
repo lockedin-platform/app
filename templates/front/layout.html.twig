@@ -1,6 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+{% if app.user is not null and app.user.role == 'ADMIN' %}
+<script>window.location.replace('{{ path('admin_dashboard') }}');</script>
+{% endif %}
 {# Announcement Bar #}
 <div class="nj-announce-bar" id="njAnnounceBar">
     <span class="nj-announce-msg active">LockedIn connects entrepreneurs and investors in Tunisia</span>
