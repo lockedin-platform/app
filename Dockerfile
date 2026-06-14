@@ -45,9 +45,9 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-install-cmd --no-interac
 RUN APP_ENV=prod php bin/console cache:clear --no-debug || true
 RUN APP_ENV=prod php bin/console asset-map:compile || true
 
-EXPOSE 8080
+EXPOSE 10000
 
 # Start: update schema (safe, never drops data) then serve
 CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
     APP_ENV=prod php bin/console app:create-admin --env=prod && \
-    APP_ENV=prod php -S 0.0.0.0:8080 -t public/
+    APP_ENV=prod php -S 0.0.0.0:${PORT:-10000} -t public/
