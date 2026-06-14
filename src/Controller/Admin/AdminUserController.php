@@ -70,7 +70,8 @@ class AdminUserController extends AbstractController
         if ($request->isMethod('POST')) {
             $user = new User();
             $this->hydrateUser($user, $request);
-            $user->setPassword($hasher->hashPassword($user, $request->request->get('password', 'najahni123')));
+            $plainPassword = $request->request->get('password') ?: 'lockedin123';
+            $user->setPassword($hasher->hashPassword($user, $plainPassword));
             $user->setVerified(true);
 
             $errors = $validator->validate($user);
@@ -82,13 +83,26 @@ class AdminUserController extends AbstractController
                         $fieldErrors[$field] = $error->getMessage();
                     }
                 }
-                return $this->render('admin/user/form.html.twig', ['user' => null, 'fieldErrors' => $fieldErrors]);
+                return $this->render('admin/user/form.html.twig', [
+                    'user' => null,
+                    'fieldErrors' => $fieldErrors,
+                    'formData' => $request->request->all(),
+                ]);
             }
 
-            $em->persist($user);
-            $em->flush();
-            $this->addFlash('success', 'Utilisateur créé avec succès.');
-            return $this->redirectToRoute('admin_users');
+            try {
+                $em->persist($user);
+                $em->flush();
+                $this->addFlash('success', "Utilisateur {$user->getEmail()} créé avec succès. Mot de passe: $plainPassword");
+                return $this->redirectToRoute('admin_users');
+            } catch (\Exception $e) {
+                $this->addFlash('danger', 'Erreur lors de la création : ' . $e->getMessage());
+                return $this->render('admin/user/form.html.twig', [
+                    'user' => null,
+                    'fieldErrors' => [],
+                    'formData' => $request->request->all(),
+                ]);
+            }
         }
 
         return $this->render('admin/user/form.html.twig', [
