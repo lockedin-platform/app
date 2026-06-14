@@ -13,8 +13,8 @@
                 <tbody>
                     {% for s in pagination %}
                     <tr>
-                        <td>{{ s.mentorshipRequest ? s.mentorshipRequest.mentor.firstname ~ ' ' ~ s.mentorshipRequest.mentor.lastname : '-' }}</td>
-                        <td>{{ s.mentorshipRequest ? s.mentorshipRequest.entrepreneur.firstname ~ ' ' ~ s.mentorshipRequest.entrepreneur.lastname : '-' }}</td>
+                        <td>{{ s.mentorshipRequest and s.mentorshipRequest.mentor ? s.mentorshipRequest.mentor.firstname ~ ' ' ~ s.mentorshipRequest.mentor.lastname : '—' }}</td>
+                        <td>{{ s.mentorshipRequest and s.mentorshipRequest.entrepreneur ? s.mentorshipRequest.entrepreneur.firstname ~ ' ' ~ s.mentorshipRequest.entrepreneur.lastname : '—' }}</td>
                         <td>{{ s.scheduledAt|date('d/m/Y H:i') }}</td>
                         <td>{{ s.durationMinutes }} min</td>
                         <td><span class="badge bg-{{ s.status == 'completed' ? 'success' : (s.status == 'cancelled' ? 'danger' : 'primary') }}">{{ s.status }}</span></td>

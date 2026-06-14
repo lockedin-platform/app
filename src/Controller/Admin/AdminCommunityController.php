@@ -51,7 +51,7 @@ class AdminCommunityController extends AbstractController
     ): Response
     {
         $qb = $repo->createQueryBuilder('g')
-            ->innerJoin('g.groupAdmin', 'a')->addSelect('a')
+            ->leftJoin('g.groupAdmin', 'a')->addSelect('a')
             ->orderBy('g.createdAt', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 
@@ -115,7 +115,7 @@ class AdminCommunityController extends AbstractController
     ): Response
     {
         $qb = $repo->createQueryBuilder('e')
-            ->innerJoin('e.createdBy', 'u')->addSelect('u')
+            ->leftJoin('e.createdBy', 'u')->addSelect('u')
             ->orderBy('e.eventDate', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 

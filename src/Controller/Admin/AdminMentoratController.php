@@ -18,7 +18,11 @@ class AdminMentoratController extends AbstractController
     #[Route('', name: 'admin_mentorat_requests')]
     public function requests(Request $request, MentorshipRequestRepository $repo, PaginatorInterface $paginator): Response
     {
-        $qb = $repo->createQueryBuilder('r')->orderBy('r.date', 'DESC');
+        $qb = $repo->createQueryBuilder('r')
+            ->leftJoin('r.entrepreneur', 'e')->addSelect('e')
+            ->leftJoin('r.mentor', 'm')->addSelect('m')
+            ->leftJoin('r.project', 'p')->addSelect('p')
+            ->orderBy('r.date', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
         return $this->render('admin/mentorat/requests.html.twig', ['pagination' => $pagination]);
     }
@@ -26,7 +30,11 @@ class AdminMentoratController extends AbstractController
     #[Route('/sessions', name: 'admin_mentorat_sessions')]
     public function sessions(Request $request, MentorshipSessionRepository $repo, PaginatorInterface $paginator): Response
     {
-        $qb = $repo->createQueryBuilder('s')->orderBy('s.scheduledAt', 'DESC');
+        $qb = $repo->createQueryBuilder('s')
+            ->leftJoin('s.mentorshipRequest', 'r')->addSelect('r')
+            ->leftJoin('r.entrepreneur', 'e')->addSelect('e')
+            ->leftJoin('r.mentor', 'm')->addSelect('m')
+            ->orderBy('s.scheduledAt', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
         return $this->render('admin/mentorat/sessions.html.twig', ['pagination' => $pagination]);
     }
