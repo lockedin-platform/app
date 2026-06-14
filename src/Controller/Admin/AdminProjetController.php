@@ -22,7 +22,7 @@ class AdminProjetController extends AbstractController
         $search = $request->query->get('q', '');
         if ($search) {
             $qb = $repo->findBySearch($search);
-            $qb->andWhere('p.user IS NOT NULL');
+            $qb->leftJoin('p.user', 'u')->addSelect('u');
         } else {
             $qb = $repo->createQueryBuilderWithUser()->orderBy('p.dateCreation', 'DESC');
         }

@@ -22,7 +22,7 @@ class ProjetRepository extends ServiceEntityRepository
     public function createQueryBuilderWithUser(): \Doctrine\ORM\QueryBuilder
     {
         return $this->createQueryBuilder('p')
-            ->where('p.user IS NOT NULL');
+            ->leftJoin('p.user', 'u')->addSelect('u');
     }
 
     public function findByUserWithFilters(mixed $user, ?string $search = null, ?string $secteur = null, string $sort = 'dateCreation', string $direction = 'DESC'): array
