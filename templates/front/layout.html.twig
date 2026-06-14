@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{% if app.user is not null and app.user.role == 'ADMIN' %}
+{% if is_granted('ROLE_ADMIN') %}
 <script>window.location.replace('{{ path('admin_dashboard') }}');</script>
 {% endif %}
 {# Announcement Bar #}
