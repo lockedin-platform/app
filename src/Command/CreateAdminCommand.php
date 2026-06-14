@@ -27,12 +27,16 @@ class CreateAdminCommand extends Command
 
         $existing = $this->em->getRepository(User::class)->findOneBy(['email' => $email]);
 
+        $output->writeln("Admin email used: $email");
+
         if ($existing) {
             $existing->setRole(User::ROLE_ADMIN);
             $existing->setVerified(true);
+            $existing->setIsActive(true);
+            $existing->setIsBanned(false);
             $existing->setPassword($this->hasher->hashPassword($existing, $password));
             $this->em->flush();
-            $output->writeln("Admin user updated: role=ADMIN, password reset to env value.");
+            $output->writeln("Admin user updated: email=$email role=ADMIN password=RESET isActive=true isBanned=false");
             return Command::SUCCESS;
         }
 
@@ -47,7 +51,7 @@ class CreateAdminCommand extends Command
         $this->em->persist($user);
         $this->em->flush();
 
-        $output->writeln("Admin created: $email / $password");
+        $output->writeln("Admin CREATED: email=$email password=$password");
 
         return Command::SUCCESS;
     }
