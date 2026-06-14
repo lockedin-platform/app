@@ -2,66 +2,129 @@
 
 {% block stylesheets %}
 <style>
-/* ═══════════════════════════════════════
-   ADMIN LAYOUT — dark + light mode
-═══════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   ADMIN — CSS tokens (dark default, light override)
+   All rules use html[data-bs-theme] body to beat the
+   base.html.twig front-office rules (specificity wins)
+═══════════════════════════════════════════════════════ */
 
-/* Body override for admin */
-body { background: var(--adm-bg) !important; }
-
-/* Dark mode admin tokens */
-:root, html[data-bs-theme="dark"] {
+/* ── Tokens ── */
+:root {
     --adm-bg: #0b0f1e;
     --adm-sidebar-bg: rgba(255,255,255,.03);
-    --adm-sidebar-border: rgba(255,255,255,.06);
-    --adm-link: rgba(255,255,255,.6);
+    --adm-sidebar-border: rgba(255,255,255,.07);
+    --adm-link: rgba(255,255,255,.58);
     --adm-link-hover: #fff;
-    --adm-link-active-bg: rgba(67,97,238,.15);
+    --adm-link-active-bg: rgba(67,97,238,.18);
     --adm-card-bg: rgba(255,255,255,.05);
     --adm-card-border: rgba(255,255,255,.08);
+    --adm-card-shadow: 0 4px 20px rgba(0,0,0,.3);
     --adm-text: rgba(226,232,240,.9);
-    --adm-text-muted: rgba(255,255,255,.45);
-    --adm-stat-num: #fff;
+    --adm-muted: rgba(255,255,255,.4);
+    --adm-num: #fff;
     --adm-row-hover: rgba(255,255,255,.04);
+    --adm-input-bg: rgba(255,255,255,.06);
+    --adm-input-border: rgba(255,255,255,.12);
+    --adm-input-color: rgba(226,232,240,.9);
+    --adm-divider: rgba(255,255,255,.07);
 }
-
-/* Light mode admin tokens */
 html[data-bs-theme="light"] {
     --adm-bg: #f0f2ff;
-    --adm-sidebar-bg: #fff;
-    --adm-sidebar-border: rgba(67,97,238,.1);
-    --adm-link: rgba(30,27,75,.6);
+    --adm-sidebar-bg: #ffffff;
+    --adm-sidebar-border: rgba(67,97,238,.12);
+    --adm-link: #4b5280;
     --adm-link-hover: #1e1b4b;
-    --adm-link-active-bg: rgba(67,97,238,.09);
-    --adm-card-bg: #fff;
-    --adm-card-border: rgba(67,97,238,.1);
+    --adm-link-active-bg: rgba(67,97,238,.1);
+    --adm-card-bg: #ffffff;
+    --adm-card-border: rgba(67,97,238,.12);
+    --adm-card-shadow: 0 2px 16px rgba(67,97,238,.08);
     --adm-text: #1e1b4b;
-    --adm-text-muted: rgba(30,27,75,.55);
-    --adm-stat-num: #1e1b4b;
+    --adm-muted: rgba(30,27,75,.5);
+    --adm-num: #1e1b4b;
     --adm-row-hover: rgba(67,97,238,.04);
+    --adm-input-bg: #fff;
+    --adm-input-border: rgba(67,97,238,.2);
+    --adm-input-color: #1e1b4b;
+    --adm-divider: rgba(67,97,238,.1);
+}
+
+/* ── Body (beats base specificity with html prefix) ── */
+html[data-bs-theme="dark"] body,
+html[data-bs-theme="light"] body {
+    background: var(--adm-bg) !important;
+    color: var(--adm-text) !important;
+    background-attachment: fixed !important;
+}
+html[data-bs-theme="dark"] body {
+    background: radial-gradient(circle at 20% 20%, rgba(67,97,238,.06), transparent 35%),
+                radial-gradient(circle at 80% 80%, rgba(114,9,183,.06), transparent 35%),
+                #0b0f1e !important;
+}
+html[data-bs-theme="light"] body {
+    background: linear-gradient(135deg, #f0f2ff 0%, #e8eaf6 50%, #ede9fe 100%) !important;
 }
 
 /* ── Admin navbar ── */
 .admin-navbar {
-    background: rgba(10,14,39,.92) !important;
+    background: rgba(8,12,32,.92) !important;
     backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255,255,255,.06);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,.06) !important;
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) !important;
 }
 html[data-bs-theme="light"] .admin-navbar {
     background: #fff !important;
     border-bottom: 1px solid rgba(67,97,238,.12) !important;
-    box-shadow: 0 2px 12px rgba(67,97,238,.07) !important;
+    box-shadow: 0 2px 16px rgba(67,97,238,.08) !important;
+    backdrop-filter: none !important;
 }
-html[data-bs-theme="light"] .admin-navbar .navbar-brand { color: #1e1b4b !important; }
-html[data-bs-theme="light"] .admin-navbar .text-white { color: #1e1b4b !important; }
+/* Navbar text colors */
+.admin-navbar .navbar-brand,
+.admin-navbar .text-white,
+.admin-navbar .dropdown-toggle { color: rgba(255,255,255,.9) !important; }
+html[data-bs-theme="light"] .admin-navbar .navbar-brand,
+html[data-bs-theme="light"] .admin-navbar .text-white,
+html[data-bs-theme="light"] .admin-navbar .dropdown-toggle { color: #1e1b4b !important; }
+/* Front Office button */
 html[data-bs-theme="light"] .admin-navbar .btn-outline-light {
     color: var(--nj-primary) !important;
     border-color: rgba(67,97,238,.3) !important;
+    background: transparent !important;
 }
 html[data-bs-theme="light"] .admin-navbar .btn-outline-light:hover {
     background: rgba(67,97,238,.08) !important;
 }
-html[data-bs-theme="light"] .admin-navbar .dropdown-toggle { color: #1e1b4b !important; }
+/* Dropdown */
+html[data-bs-theme="light"] .admin-navbar .dropdown-menu {
+    background: #fff !important;
+    border: 1px solid rgba(67,97,238,.12) !important;
+    box-shadow: 0 8px 24px rgba(67,97,238,.12) !important;
+}
+html[data-bs-theme="light"] .admin-navbar .dropdown-item { color: #1e1b4b !important; }
+html[data-bs-theme="light"] .admin-navbar .dropdown-item:hover { background: rgba(67,97,238,.07) !important; color: var(--nj-primary) !important; }
+html[data-bs-theme="light"] .admin-navbar .dropdown-divider { border-color: rgba(67,97,238,.1) !important; }
+
+/* ── Theme toggle button ── */
+.adm-theme-btn {
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.8);
+    border-radius: .65rem;
+    padding: .35rem .65rem;
+    line-height: 1;
+    cursor: pointer;
+    font-size: .9rem;
+    transition: all .2s;
+}
+.adm-theme-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+html[data-bs-theme="light"] .adm-theme-btn {
+    background: rgba(67,97,238,.08) !important;
+    border-color: rgba(67,97,238,.22) !important;
+    color: var(--nj-primary) !important;
+}
+html[data-bs-theme="light"] .adm-theme-btn:hover {
+    background: rgba(67,97,238,.15) !important;
+}
 
 /* ── Sidebar ── */
 .sidebar {
@@ -70,22 +133,30 @@ html[data-bs-theme="light"] .admin-navbar .dropdown-toggle { color: #1e1b4b !imp
     border-right: 1px solid var(--adm-sidebar-border) !important;
     transition: background .25s, border-color .25s;
 }
+.sidebar .nav-section-label {
+    padding: .65rem 1.25rem .25rem;
+    font-size: .67rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--adm-muted);
+}
 .sidebar .nav-link {
     color: var(--adm-link) !important;
-    padding: .75rem 1.25rem;
-    border-radius: 0;
-    transition: all .2s;
+    padding: .7rem 1.25rem;
     border-left: 3px solid transparent;
-    font-size: .91rem;
+    font-size: .9rem;
     display: flex;
     align-items: center;
     gap: .5rem;
+    transition: all .18s;
+    text-decoration: none;
 }
-.sidebar .nav-link i { width: 22px; text-align: center; flex-shrink: 0; }
+.sidebar .nav-link i { width: 20px; text-align: center; flex-shrink: 0; font-size: .95rem; }
 .sidebar .nav-link:hover {
     color: var(--adm-link-hover) !important;
-    background: rgba(67,97,238,.08) !important;
-    border-left-color: rgba(67,97,238,.4) !important;
+    background: rgba(67,97,238,.09) !important;
+    border-left-color: rgba(67,97,238,.45) !important;
 }
 .sidebar .nav-link.active {
     color: var(--nj-primary) !important;
@@ -93,116 +164,187 @@ html[data-bs-theme="light"] .admin-navbar .dropdown-toggle { color: #1e1b4b !imp
     border-left-color: var(--nj-primary) !important;
     font-weight: 600;
 }
-html[data-bs-theme="light"] .sidebar .nav-link.active { color: var(--nj-primary) !important; }
-.sidebar .nav-section-label {
-    padding: .6rem 1.25rem .3rem;
-    font-size: .68rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--adm-text-muted);
-}
 
-/* ── Main content area ── */
+/* ── Admin content wrapper ── */
 .admin-content {
-    background: var(--adm-bg);
+    background: transparent;
     color: var(--adm-text);
     flex: 1;
     min-width: 0;
 }
 
+/* ── Cards ── */
+html[data-bs-theme="dark"] .card,
+html[data-bs-theme="light"] .card {
+    background: var(--adm-card-bg) !important;
+    border: 1px solid var(--adm-card-border) !important;
+    box-shadow: var(--adm-card-shadow) !important;
+    color: var(--adm-text) !important;
+    border-radius: 1rem;
+}
+html[data-bs-theme="dark"] .card:hover,
+html[data-bs-theme="light"] .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(67,97,238,.14) !important;
+}
+html[data-bs-theme="dark"] .card-body,
+html[data-bs-theme="light"] .card-body { color: var(--adm-text) !important; }
+html[data-bs-theme="dark"] .card h1, html[data-bs-theme="dark"] .card h2,
+html[data-bs-theme="dark"] .card h3, html[data-bs-theme="dark"] .card h4,
+html[data-bs-theme="dark"] .card h5, html[data-bs-theme="dark"] .card h6,
+html[data-bs-theme="light"] .card h1, html[data-bs-theme="light"] .card h2,
+html[data-bs-theme="light"] .card h3, html[data-bs-theme="light"] .card h4,
+html[data-bs-theme="light"] .card h5, html[data-bs-theme="light"] .card h6 {
+    color: var(--adm-text) !important;
+}
+
 /* ── Stat cards ── */
 .stat-card {
-    background: var(--adm-card-bg) !important;
+    /* no background here — let gradient cards use their inline style */
     border: 1px solid var(--adm-card-border) !important;
     border-radius: 1rem;
     padding: 1.5rem;
-    transition: all .25s;
+    transition: transform .22s, box-shadow .22s;
     position: relative;
     overflow: hidden;
 }
-.stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,.15); }
-.stat-card .stat-label { color: var(--adm-text-muted) !important; font-size: .83rem; margin-bottom: .35rem; }
-.stat-card .stat-num { color: var(--adm-stat-num) !important; font-size: 2rem; font-weight: 800; line-height: 1; }
-.stat-card.stat-gradient { background: var(--nj-gradient) !important; border: none !important; color: #fff !important; }
-.stat-card.stat-gradient .stat-label, .stat-card.stat-gradient .stat-num { color: #fff !important; }
-.stat-card.stat-gradient::after { content:''; position:absolute; top:-50%; right:-40%; width:90%; height:180%; background:rgba(255,255,255,.08); border-radius:50%; pointer-events:none; }
-
-/* ── Admin tables ── */
-.table-nj thead { background: var(--nj-gradient); color: #fff; }
-.table-nj thead th { font-weight: 600; padding: .9rem 1rem; border: none; font-size: .88rem; }
-.table-nj tbody td { padding: .85rem 1rem; vertical-align: middle; border-bottom: 1px solid var(--adm-card-border); font-size: .9rem; color: var(--adm-text); }
-.table-nj tbody tr:hover { background: var(--adm-row-hover); }
-.table-nj tbody tr:last-child td { border-bottom: none; }
-
-/* ── Admin cards ── */
-.card {
+/* Only non-gradient cards get the themed background */
+.stat-card:not(.stat-gradient) {
     background: var(--adm-card-bg) !important;
-    border-color: var(--adm-card-border) !important;
-    color: var(--adm-text) !important;
 }
-.card-body { color: var(--adm-text) !important; }
-.card h1,.card h2,.card h3,.card h4,.card h5,.card h6 { color: var(--adm-text) !important; }
-.text-muted { color: var(--adm-text-muted) !important; }
-html[data-bs-theme="light"] .card { box-shadow: 0 2px 12px rgba(67,97,238,.07) !important; }
+.stat-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(67,97,238,.15) !important; }
+.stat-card:not(.stat-gradient) p,
+.stat-card:not(.stat-gradient) .stat-label { color: var(--adm-muted) !important; font-size: .83rem; }
+.stat-card:not(.stat-gradient) .stat-num,
+.stat-card:not(.stat-gradient) h3.fw-bold { color: var(--adm-num) !important; font-size: 2rem; font-weight: 800; }
 
-/* ── Theme toggle ── */
-.adm-theme-btn {
-    background: rgba(255,255,255,.1);
-    border: 1px solid rgba(255,255,255,.2);
-    color: rgba(255,255,255,.8);
-    border-radius: .65rem;
-    padding: .35rem .6rem;
-    line-height: 1;
-    cursor: pointer;
-    transition: all .2s;
+/* Gradient cards — always white text regardless of theme */
+.stat-card.stat-gradient {
+    border: none !important;
 }
-.adm-theme-btn:hover { background: rgba(255,255,255,.18); color: #fff; }
-html[data-bs-theme="light"] .adm-theme-btn {
-    background: rgba(67,97,238,.08);
-    border-color: rgba(67,97,238,.2);
-    color: var(--nj-primary);
-}
-
-/* ── Pagination ── */
-html[data-bs-theme="light"] .pagination .page-link {
-    border-color: rgba(67,97,238,.15) !important;
-    background: #fff !important;
-    color: #1e1b4b !important;
-}
-html[data-bs-theme="light"] .pagination .page-link:hover {
-    background: rgba(67,97,238,.07) !important;
-    color: var(--nj-primary) !important;
+html[data-bs-theme="dark"] .stat-card.stat-gradient h4,
+html[data-bs-theme="dark"] .stat-card.stat-gradient h3,
+html[data-bs-theme="dark"] .stat-card.stat-gradient p,
+html[data-bs-theme="dark"] .stat-card.stat-gradient i,
+html[data-bs-theme="dark"] .stat-card.stat-gradient span,
+html[data-bs-theme="light"] .stat-card.stat-gradient h4,
+html[data-bs-theme="light"] .stat-card.stat-gradient h3,
+html[data-bs-theme="light"] .stat-card.stat-gradient p,
+html[data-bs-theme="light"] .stat-card.stat-gradient i,
+html[data-bs-theme="light"] .stat-card.stat-gradient span { color: #fff !important; }
+.stat-card.stat-gradient::after {
+    content: '';
+    position: absolute;
+    top: -50%; right: -40%;
+    width: 90%; height: 180%;
+    background: rgba(255,255,255,.07);
+    border-radius: 50%;
+    pointer-events: none;
 }
 
-/* ── Flash alerts ── */
-html[data-bs-theme="light"] .alert-success { background: #ecfdf5 !important; border-color: #6ee7b7 !important; color: #065f46 !important; }
-html[data-bs-theme="light"] .alert-danger  { background: #fef2f2 !important; border-color: #fca5a5 !important; color: #991b1b !important; }
+/* ── Text utilities ── */
+html[data-bs-theme="dark"] .text-muted,
+html[data-bs-theme="light"] .text-muted { color: var(--adm-muted) !important; }
+html[data-bs-theme="dark"] h1, html[data-bs-theme="dark"] h2,
+html[data-bs-theme="dark"] h3, html[data-bs-theme="dark"] h4,
+html[data-bs-theme="dark"] h5, html[data-bs-theme="dark"] h6 { color: var(--adm-text) !important; }
+html[data-bs-theme="light"] h1, html[data-bs-theme="light"] h2,
+html[data-bs-theme="light"] h3, html[data-bs-theme="light"] h4,
+html[data-bs-theme="light"] h5, html[data-bs-theme="light"] h6 { color: #1e1b4b !important; }
+html[data-bs-theme="light"] p,
+html[data-bs-theme="light"] span:not(.badge):not(.btn) { color: inherit; }
 
-/* ── Form controls in light mode ── */
-html[data-bs-theme="light"] .form-control,
-html[data-bs-theme="light"] .form-select {
+/* ── Tables ── */
+.table-nj thead { background: var(--nj-gradient) !important; color: #fff !important; }
+.table-nj thead th { font-weight: 600; padding: .9rem 1rem; border: none !important; font-size: .88rem; color: #fff !important; }
+html[data-bs-theme="dark"] .table-nj tbody td { color: var(--adm-text); border-bottom: 1px solid var(--adm-divider); padding: .85rem 1rem; vertical-align: middle; font-size: .9rem; }
+html[data-bs-theme="light"] .table-nj tbody td { color: #1e1b4b !important; border-bottom: 1px solid rgba(67,97,238,.08) !important; background: transparent !important; padding: .85rem 1rem; vertical-align: middle; font-size: .9rem; }
+.table-nj tbody tr:hover { background: var(--adm-row-hover) !important; }
+.table-nj tbody tr:last-child td { border-bottom: none !important; }
+
+/* ── Forms ── */
+html[data-bs-theme="dark"] .form-control, html[data-bs-theme="dark"] .form-select {
+    background: var(--adm-input-bg) !important;
+    border-color: var(--adm-input-border) !important;
+    color: var(--adm-input-color) !important;
+}
+html[data-bs-theme="light"] .form-control, html[data-bs-theme="light"] .form-select {
     background: #fff !important;
     border-color: rgba(67,97,238,.2) !important;
     color: #1e1b4b !important;
 }
 html[data-bs-theme="light"] .form-label { color: #1e1b4b !important; }
-html[data-bs-theme="light"] .input-group-text { background: rgba(67,97,238,.06) !important; border-color: rgba(67,97,238,.2) !important; color: var(--nj-primary) !important; }
+html[data-bs-theme="light"] .form-check-label { color: #1e1b4b !important; }
+html[data-bs-theme="light"] .input-group-text {
+    background: rgba(67,97,238,.07) !important;
+    border-color: rgba(67,97,238,.2) !important;
+    color: var(--nj-primary) !important;
+}
 
-/* ── Buttons in light mode ── */
-html[data-bs-theme="light"] .btn-outline-primary { color: var(--nj-primary) !important; border-color: var(--nj-primary) !important; }
-html[data-bs-theme="light"] .btn-outline-primary:hover { background: var(--nj-primary) !important; color: #fff !important; }
-html[data-bs-theme="light"] .btn-outline-secondary { color: #4b5563 !important; border-color: #d1d5db !important; }
-html[data-bs-theme="light"] .btn-outline-danger { color: #dc2626 !important; border-color: #dc2626 !important; }
-html[data-bs-theme="light"] .btn-outline-danger:hover { background: #dc2626 !important; color: #fff !important; }
+/* ── Buttons ── */
+html[data-bs-theme="light"] .btn-outline-primary {
+    color: var(--nj-primary) !important;
+    border-color: var(--nj-primary) !important;
+    background: transparent !important;
+}
+html[data-bs-theme="light"] .btn-outline-primary:hover {
+    background: var(--nj-primary) !important;
+    color: #fff !important;
+}
+html[data-bs-theme="light"] .btn-outline-secondary {
+    color: #4b5563 !important;
+    border-color: #d1d5db !important;
+    background: transparent !important;
+}
+html[data-bs-theme="light"] .btn-outline-secondary:hover {
+    background: #f3f4f6 !important;
+    color: #1f2937 !important;
+}
+html[data-bs-theme="light"] .btn-outline-danger {
+    color: #dc2626 !important;
+    border-color: #dc2626 !important;
+    background: transparent !important;
+}
+html[data-bs-theme="light"] .btn-outline-danger:hover {
+    background: #dc2626 !important;
+    color: #fff !important;
+}
+html[data-bs-theme="light"] .btn-sm.btn-outline-primary { font-size: .82rem; }
 
-/* ── Badge & misc ── */
+/* ── Badges ── */
 html[data-bs-theme="light"] .badge.text-bg-primary { background: var(--nj-primary) !important; color: #fff !important; }
 html[data-bs-theme="light"] .badge.text-bg-light { background: #e8eaf6 !important; color: #1e1b4b !important; }
+html[data-bs-theme="light"] .badge.text-bg-warning { background: #fef3c7 !important; color: #92400e !important; }
+html[data-bs-theme="light"] .badge.text-bg-success { background: #d1fae5 !important; color: #065f46 !important; }
+html[data-bs-theme="light"] .badge.text-bg-danger { background: #fee2e2 !important; color: #991b1b !important; }
 
-/* Fade-in */
-.fade-in { animation: fadeIn .3s ease-out both; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+/* ── Pagination ── */
+html[data-bs-theme="light"] .pagination .page-link {
+    background: #fff !important;
+    border-color: rgba(67,97,238,.15) !important;
+    color: #1e1b4b !important;
+}
+html[data-bs-theme="light"] .pagination .page-item.active .page-link {
+    background: var(--nj-gradient) !important;
+    border-color: transparent !important;
+    color: #fff !important;
+}
+html[data-bs-theme="light"] .pagination .page-link:hover {
+    background: rgba(67,97,238,.08) !important;
+    color: var(--nj-primary) !important;
+}
+
+/* ── Alerts / flash messages ── */
+html[data-bs-theme="light"] .alert-success { background: #ecfdf5 !important; border-color: #a7f3d0 !important; color: #065f46 !important; }
+html[data-bs-theme="light"] .alert-danger  { background: #fef2f2 !important; border-color: #fecaca !important; color: #991b1b !important; }
+html[data-bs-theme="light"] .alert-info    { background: #eff6ff !important; border-color: #bfdbfe !important; color: #1e40af !important; }
+
+/* ── Small utility nav (community tabs etc) ── */
+html[data-bs-theme="light"] .btn-outline-primary.btn-sm { color: var(--nj-primary) !important; }
+
+/* ── Fade-in ── */
+.fade-in { animation: admFadeIn .28s ease-out both; }
+@keyframes admFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 </style>
 {% endblock %}
 
@@ -217,8 +359,8 @@ html[data-bs-theme="light"] .badge.text-bg-light { background: #e8eaf6 !importan
             <button class="adm-theme-btn" id="admThemeBtn" title="Toggle theme">
                 <i class="bi bi-sun-fill" id="admThemeIcon"></i>
             </button>
-            <a href="{{ path('app_home') }}" class="btn btn-outline-light btn-sm">
-                <i class="bi bi-house me-1"></i>Front Office
+            <a href="{{ path('admin_preview_enter') }}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-eye me-1"></i>Front Office
             </a>
             <div class="dropdown">
                 <a class="text-white text-decoration-none dropdown-toggle ms-2" href="#" role="button" data-bs-toggle="dropdown">

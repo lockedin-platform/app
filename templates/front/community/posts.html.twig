@@ -280,9 +280,10 @@
         {% if myReaction and reactionMeta[myReaction] is defined %}
             {% set reactionCaption = reactionCaption ~ ' · You chose ' ~ reactionMeta[myReaction].label %}
         {% endif %}
-        <div id="post-{{ post.id }}" class="card border-0 shadow-sm mb-3" style="border-radius:1rem" data-post-id="{{ post.id }}" data-live-post-card data-live-post-text="{{ (post.user.firstname ~ ' ' ~ post.user.lastname ~ ' ' ~ post.content)|lower|e('html_attr') }}">
+        <div id="post-{{ post.id }}" class="card border-0 shadow-sm mb-3" style="border-radius:1rem" data-post-id="{{ post.id }}" data-live-post-card data-live-post-text="{{ ((post.user ? post.user.firstname ~ ' ' ~ post.user.lastname : '') ~ ' ' ~ post.content)|lower|e('html_attr') }}">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center mb-3">
+                    {% if post.user %}
                     <a href="{{ path('app_user_profile', {id: post.user.id}) }}" class="text-decoration-none d-flex align-items-center">
                         <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:var(--nj-gradient);color:#fff">
                             {{ post.user.firstname|first|upper }}{{ post.user.lastname|first|upper }}
@@ -292,6 +293,15 @@
                             <small class="text-muted">{{ post.createdAt|date('d/m/Y H:i') }}</small>
                         </div>
                     </a>
+                    {% else %}
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:42px;height:42px;background:#94a3b8;color:#fff">?</div>
+                        <div>
+                            <h6 class="fw-bold mb-0 text-muted">[Compte supprimé]</h6>
+                            <small class="text-muted">{{ post.createdAt|date('d/m/Y H:i') }}</small>
+                        </div>
+                    </div>
+                    {% endif %}
                     <div class="ms-auto d-flex gap-2 align-items-center">
                         <select class="form-select form-select-sm community-translation-select" data-translate-url="{{ path('app_community_post_translate', {id: post.id}) }}" style="width:130px;min-width:130px">
                             <option value="original">Original</option>

@@ -25,8 +25,9 @@ class AdminRedirectListener
         }
 
         $request = $event->getRequest();
-        $path = $request->getPathInfo();
+        $path    = $request->getPathInfo();
 
+        // Always allow admin/auth/API paths
         if (str_starts_with($path, '/admin') ||
             str_starts_with($path, '/login') ||
             str_starts_with($path, '/logout') ||
@@ -38,11 +39,18 @@ class AdminRedirectListener
         }
 
         $user = $this->security->getUser();
-
-        if ($user instanceof User && $user->getRole() === User::ROLE_ADMIN) {
-            $event->setResponse(new RedirectResponse(
-                $this->urlGenerator->generate('admin_dashboard')
-            ));
+        if (!($user instanceof User) || $user->getRole() !== User::ROLE_ADMIN) {
+            return;
         }
+
+        // Allow front-office preview when the cookie is set
+        if ($request->cookies->get('nj_admin_preview') === '1') {
+            return;
+        }
+
+        // Otherwise redirect to admin
+        $event->setResponse(new RedirectResponse(
+            $this->urlGenerator->generate('admin_dashboard')
+        ));
     }
 }

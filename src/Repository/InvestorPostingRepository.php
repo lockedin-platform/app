@@ -22,7 +22,8 @@ class InvestorPostingRepository extends ServiceEntityRepository
     public function searchOpenQuery(string $search = '', string $sort = 'recent'): QueryBuilder
     {
         $qb = $this->createQueryBuilder('p')
-            ->leftJoin('p.postedBy', 'u')
+            ->innerJoin('p.postedBy', 'u')
+            ->addSelect('u')
             ->where('p.status = :status')
             ->setParameter('status', InvestorPosting::STATUS_OPEN);
 
