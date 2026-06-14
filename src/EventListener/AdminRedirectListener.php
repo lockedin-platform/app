@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Entity\User;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -26,7 +27,6 @@ class AdminRedirectListener
         $request = $event->getRequest();
         $path = $request->getPathInfo();
 
-        // Already on admin, login, logout, api, or security pages — leave alone
         if (str_starts_with($path, '/admin') ||
             str_starts_with($path, '/login') ||
             str_starts_with($path, '/logout') ||
@@ -39,7 +39,7 @@ class AdminRedirectListener
 
         $user = $this->security->getUser();
 
-        if ($user && $this->security->isGranted('ROLE_ADMIN')) {
+        if ($user instanceof User && $user->getRole() === User::ROLE_ADMIN) {
             $event->setResponse(new RedirectResponse(
                 $this->urlGenerator->generate('admin_dashboard')
             ));
