@@ -35,9 +35,7 @@
             <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_invest' ? 'active' }}" href="{{ path('admin_invest_opportunities') }}"><i class="bi bi-graph-up-arrow"></i>Investissement</a>
             <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_community' ? 'active' }}" href="{{ path('admin_community_dashboard') }}"><i class="bi bi-chat-dots"></i>Communauté</a>
             <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_mentorat' ? 'active' }}" href="{{ path('admin_mentorat_requests') }}"><i class="bi bi-mortarboard"></i>Mentorat</a>
-            <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_cours' ? 'active' }}" href="{{ path('admin_cours') }}"><i class="bi bi-book"></i>Cours</a>
-            <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_badge' ? 'active' }}" href="{{ path('admin_badges') }}"><i class="bi bi-award"></i>Badges</a>
-            <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_progression' ? 'active' }}" href="{{ path('admin_progressions') }}"><i class="bi bi-bar-chart-line"></i>Progressions</a>
+            <a class="nav-link {{ app.request.attributes.get('_route') starts with 'admin_team' ? 'active' }}" href="{{ path('admin_team_matcher') }}"><i class="bi bi-people-fill"></i>Co-founders & Partners</a>
         </nav>
     </aside>
 

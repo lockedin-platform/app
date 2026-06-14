@@ -4,7 +4,7 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: \App\Repository\UserConnectionRepository::class)]
 #[ORM\Table(name: 'user_connection')]
 #[ORM\UniqueConstraint(name: 'unique_connection', columns: ['follower_id', 'followed_id'])]
 class UserConnection

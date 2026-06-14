@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Repository\UserRepository;
 use App\Repository\ProjetRepository;
-use App\Repository\CoursRepository;
+use App\Repository\UserConnectionRepository;
 use App\Repository\GroupRepository;
 use App\Repository\EventRepository;
 use App\Repository\PostRepository;
@@ -23,7 +23,7 @@ class AdminDashboardController extends AbstractController
     public function index(
         UserRepository $userRepo,
         ProjetRepository $projetRepo,
-        CoursRepository $coursRepo,
+        UserConnectionRepository $connectionRepo,
         GroupRepository $groupRepo,
         EventRepository $eventRepo,
         PostRepository $postRepo,
@@ -38,7 +38,7 @@ class AdminDashboardController extends AbstractController
             'bannedUsers' => $userRepo->countBanned(),
             'verifiedUsers' => $userRepo->countVerified(),
             'totalProjets' => $projetRepo->count([]),
-            'totalCours' => $coursRepo->count([]),
+            'totalConnections' => $connectionRepo->count([]),
             'totalGroups' => $groupRepo->count([]),
             'totalEvents' => $eventRepo->count([]),
             'totalPosts' => $postRepo->count([]),

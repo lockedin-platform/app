@@ -1,0 +1,135 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}Co-founders & Partners - Admin LockedIn{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0"><i class="bi bi-people-fill me-2"></i>Co-founders & Partners</h2>
+    <span class="badge rounded-pill" style="background:var(--nj-gradient);font-size:.85rem;padding:.5rem 1rem">{{ totalConnections }} connexions totales</span>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left:4px solid var(--nj-primary)">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted small mb-1">Total Connexions</p>
+                    <h3 class="fw-bold mb-0">{{ totalConnections }}</h3>
+                </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;background:rgba(67,97,238,.1)">
+                    <i class="bi bi-people-fill" style="font-size:1.5rem;color:var(--nj-primary)"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left:4px solid #7209b7">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted small mb-1">Dernières 50 connexions</p>
+                    <h3 class="fw-bold mb-0">{{ connections|length }}</h3>
+                </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;background:rgba(114,9,183,.1)">
+                    <i class="bi bi-person-plus" style="font-size:1.5rem;color:#7209b7"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card" style="border-left:4px solid #16a34a">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <p class="text-muted small mb-1">Top profils connectés</p>
+                    <h3 class="fw-bold mb-0">{{ topConnected|length }}</h3>
+                </div>
+                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;background:rgba(22,163,74,.12)">
+                    <i class="bi bi-star-fill" style="font-size:1.5rem;color:#16a34a"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm" style="border-radius:1rem">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-clock-history me-2"></i>Connexions récentes</h5>
+                {% if connections|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-nj mb-0">
+                        <thead>
+                            <tr><th>Follower</th><th>→</th><th>Suivi</th><th>Date</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for conn in connections %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;background:var(--nj-gradient);flex-shrink:0">
+                                            <span class="text-white fw-bold" style="font-size:.75rem">{{ conn.follower.firstname|first|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="fw-semibold">{{ conn.follower.firstname }} {{ conn.follower.lastname }}</span>
+                                            <small class="text-muted d-block">{{ conn.follower.role }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><i class="bi bi-arrow-right text-muted"></i></td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="rounded-circle d-flex align-items-center justify-content-center" style="width:32px;height:32px;background:rgba(114,9,183,.15);flex-shrink:0">
+                                            <span class="fw-bold" style="font-size:.75rem;color:#7209b7">{{ conn.followed.firstname|first|upper }}</span>
+                                        </div>
+                                        <div>
+                                            <span class="fw-semibold">{{ conn.followed.firstname }} {{ conn.followed.lastname }}</span>
+                                            <small class="text-muted d-block">{{ conn.followed.role }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><small class="text-muted">{{ conn.createdAt|date('d/m/Y') }}</small></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="bi bi-people text-muted" style="font-size:3rem"></i>
+                    <p class="text-muted mt-3">Aucune connexion pour le moment</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm" style="border-radius:1rem">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4"><i class="bi bi-star me-2"></i>Top profils</h5>
+                {% if topConnected|length > 0 %}
+                <div class="d-flex flex-column gap-3">
+                    {% for user in topConnected %}
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white" style="width:38px;height:38px;min-width:38px;background:var(--nj-gradient);font-size:.85rem">
+                            {{ user.firstname|first|upper }}
+                        </div>
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="fw-semibold text-truncate">{{ user.firstname }} {{ user.lastname }}</div>
+                            <small class="text-muted">{{ user.role }}</small>
+                        </div>
+                        <span class="badge bg-primary rounded-pill">{{ user.email }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-4">
+                    <i class="bi bi-person-x text-muted" style="font-size:2rem"></i>
+                    <p class="text-muted small mt-2">Aucun profil</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
