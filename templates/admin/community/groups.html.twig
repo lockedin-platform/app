@@ -51,7 +51,7 @@
                     {% for group in pagination %}
                     <tr>
                         <td class="fw-semibold">{{ group.name }}</td>
-                        <td>{{ group.groupAdmin.firstname }} {{ group.groupAdmin.lastname }}</td>
+                        <td>{{ group.groupAdmin ? group.groupAdmin.firstname ~ ' ' ~ group.groupAdmin.lastname : '—' }}</td>
                         <td>{{ group.members|length }}</td>
                         <td>{{ group.isPrivate ? 'Privé' : 'Public' }}</td>
                         <td>{{ group.createdAt|date('d/m/Y') }}</td>

@@ -51,7 +51,7 @@
                     {% for event in pagination %}
                     <tr>
                         <td class="fw-semibold">{{ event.title }}</td>
-                        <td>{{ event.createdBy.firstname }} {{ event.createdBy.lastname }}</td>
+                        <td>{{ event.createdBy ? event.createdBy.firstname ~ ' ' ~ event.createdBy.lastname : '—' }}</td>
                         <td>{{ event.eventDate|date('d/m/Y H:i') }}</td>
                         <td>{{ event.capacity }}</td>
                         <td>{{ event.participantsCount }}</td>

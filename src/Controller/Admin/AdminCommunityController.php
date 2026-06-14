@@ -50,7 +50,9 @@ class AdminCommunityController extends AbstractController
         PaginatorInterface $paginator,
     ): Response
     {
-        $qb = $repo->createQueryBuilder('g')->orderBy('g.createdAt', 'DESC');
+        $qb = $repo->createQueryBuilder('g')
+            ->innerJoin('g.groupAdmin', 'a')->addSelect('a')
+            ->orderBy('g.createdAt', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 
         return $this->render('admin/community/groups.html.twig', [
@@ -80,7 +82,9 @@ class AdminCommunityController extends AbstractController
         PaginatorInterface $paginator,
     ): Response
     {
-        $qb = $repo->createQueryBuilder('p')->orderBy('p.createdAt', 'DESC');
+        $qb = $repo->createQueryBuilder('p')
+            ->leftJoin('p.user', 'u')->addSelect('u')
+            ->orderBy('p.createdAt', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 
         return $this->render('admin/community/posts.html.twig', [
@@ -110,7 +114,9 @@ class AdminCommunityController extends AbstractController
         PaginatorInterface $paginator,
     ): Response
     {
-        $qb = $repo->createQueryBuilder('e')->orderBy('e.eventDate', 'DESC');
+        $qb = $repo->createQueryBuilder('e')
+            ->innerJoin('e.createdBy', 'u')->addSelect('u')
+            ->orderBy('e.eventDate', 'DESC');
         $pagination = $paginator->paginate($qb, $request->query->getInt('page', 1), 15);
 
         return $this->render('admin/community/events.html.twig', [

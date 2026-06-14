@@ -50,7 +50,7 @@
                 <tbody>
                     {% for post in pagination %}
                     <tr>
-                        <td>{{ post.user.firstname }} {{ post.user.lastname }}</td>
+                        <td>{{ post.user ? post.user.firstname ~ ' ' ~ post.user.lastname : '—' }}</td>
                         <td>{{ post.content|length > 80 ? post.content|slice(0,80) ~ '...' : post.content }}</td>
                         <td>{{ post.reactions|length }}</td>
                         <td>{{ post.createdAt|date('d/m/Y H:i') }}</td>
