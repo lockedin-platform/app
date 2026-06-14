@@ -30,8 +30,9 @@ class CreateAdminCommand extends Command
         if ($existing) {
             $existing->setRole(User::ROLE_ADMIN);
             $existing->setVerified(true);
+            $existing->setPassword($this->hasher->hashPassword($existing, $password));
             $this->em->flush();
-            $output->writeln('Admin user updated: role set to ADMIN.');
+            $output->writeln("Admin user updated: role=ADMIN, password reset to env value.");
             return Command::SUCCESS;
         }
 
