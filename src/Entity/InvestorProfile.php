@@ -24,6 +24,10 @@ class InvestorProfile
     #[ORM\Column(length: 500, nullable: true)]
     private ?string $preferredSectors = null;
 
+    // Model 2 v0 — geography preference (matched against project.pays). Null = no preference.
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $preferredCountry = null;
+
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 5])]
     private int $riskTolerance = 5;
 
@@ -62,6 +66,9 @@ class InvestorProfile
 
     public function getUser(): ?User { return $this->user; }
     public function setUser(?User $user): static { $this->user = $user; return $this; }
+
+    public function getPreferredCountry(): ?string { return $this->preferredCountry; }
+    public function setPreferredCountry(?string $preferredCountry): static { $this->preferredCountry = $preferredCountry; return $this; }
 
     public function getPreferredSectors(): ?string { return $this->preferredSectors; }
     public function setPreferredSectors(?string $v): static { $this->preferredSectors = $v; return $this; }

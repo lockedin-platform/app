@@ -69,10 +69,13 @@ class ProfileController extends AbstractController
 
 
     #[Route('/profile/ai/chat', name: 'app_profile_ai_chat', methods: ['POST'])]
-    public function chatProfileAi(Request $request): JsonResponse
+    public function chatProfileAi(Request $request, \App\Service\SimpleRateLimiter $rateLimiter): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
+        if ($rateLimiter->tooManyAttempts('ai_profile_' . $user->getUserIdentifier(), 20, 60)) {
+            return new JsonResponse(['error' => 'Trop de requêtes. Réessayez dans une minute.'], 429);
+        }
         try {
             $body = $request->toArray();
         } catch (\Throwable $e) {

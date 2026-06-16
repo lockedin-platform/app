@@ -72,7 +72,7 @@ class GroupRepository extends ServiceEntityRepository {
         $rows = $this->getEntityManager()->getConnection()->fetchAllAssociative(
             "SELECT gjr.id, gjr.user_id, u.firstname, u.lastname, u.email
              FROM group_join_request gjr
-             INNER JOIN user u ON u.id = gjr.user_id
+             INNER JOIN app_user u ON u.id = gjr.user_id
              WHERE gjr.group_id = :group_id AND gjr.status = 'PENDING'
              ORDER BY gjr.created_at ASC, gjr.id ASC",
             ['group_id' => $groupId],

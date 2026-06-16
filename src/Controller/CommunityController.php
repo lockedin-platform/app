@@ -1594,6 +1594,11 @@ class CommunityController extends AbstractController
             throw new \RuntimeException('Le televersement de l\'image a echoue.');
         }
 
+        // Size cap (5 MB) — prevent disk-fill / DoS via huge uploads.
+        if ($file->getSize() > 5 * 1024 * 1024) {
+            throw new \RuntimeException('L\'image ne doit pas depasser 5 Mo.');
+        }
+
         $mimeType = (string) ($file->getMimeType() ?? '');
         if (!str_starts_with($mimeType, 'image/')) {
             throw new \RuntimeException('Seules les images peuvent etre televersees.');

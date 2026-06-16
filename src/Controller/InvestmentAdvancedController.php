@@ -283,6 +283,7 @@ class InvestmentAdvancedController extends AbstractController
         }
 
         $profile->setPreferredSectors($request->request->get('sectors', ''));
+        $profile->setPreferredCountry($request->request->get('country') ?: null);
         $profile->setRiskTolerance($riskTolerance);
         $profile->setBudgetMin((string) $budgetMin);
         $profile->setBudgetMax((string) $budgetMax);
@@ -303,7 +304,12 @@ class InvestmentAdvancedController extends AbstractController
         InvestmentChatbotService $chatbot,
         InvestmentOpportunityRepository $oppRepo,
         InvestorProfileRepository $profileRepo,
+        \App\Service\SimpleRateLimiter $rateLimiter,
     ): JsonResponse {
+        $uid = $this->getUser()?->getUserIdentifier() ?? (string) $request->getClientIp();
+        if ($rateLimiter->tooManyAttempts('ai_invest_' . $uid, 20, 60)) {
+            return $this->json(['response' => null, 'error' => 'Trop de requêtes. Réessayez dans une minute.'], 429);
+        }
         $message = trim($request->request->get('message', ''));
         if ($message === '') {
             return $this->json(['response' => null, 'error' => 'Message vide.'], 400);
@@ -388,7 +394,12 @@ class InvestmentAdvancedController extends AbstractController
         Request $request,
         InvestmentChatbotService $chatbot,
         InvestmentOpportunityRepository $oppRepo,
+        \App\Service\SimpleRateLimiter $rateLimiter,
     ): JsonResponse {
+        $uid = $this->getUser()?->getUserIdentifier() ?? (string) $request->getClientIp();
+        if ($rateLimiter->tooManyAttempts('ai_investrisk_' . $uid, 20, 60)) {
+            return $this->json(['error' => 'Trop de requêtes. Réessayez dans une minute.'], 429);
+        }
         $oppId = (int) $request->request->get('opportunityId', 0);
         $opp = $oppRepo->find($oppId);
         if ($opp === null) {

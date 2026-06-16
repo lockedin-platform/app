@@ -27,6 +27,9 @@ RUN apt-get update && apt-get install -y \
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Production OPcache config (CRITICAL for the php -S CLI server — opcache is off there by default)
+COPY docker/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
+
 WORKDIR /app
 
 # Copy composer files first for layer caching

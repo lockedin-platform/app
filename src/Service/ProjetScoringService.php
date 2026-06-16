@@ -127,7 +127,24 @@ class ProjetScoringService
 
     private function computeTeamScore(DonneesBusiness $db): float
     {
-        return max(0, min(100, ($db->getForceEquipe() ?? 5) * 10));
+        $score = ($db->getForceEquipe() ?? 5) * 10.0;
+
+        // Founding team experience (Model 1 input) — strong predictor of success
+        $exp = $db->getExperienceEquipe();
+        if ($exp !== null) {
+            if ($exp >= 10) $score += 15;
+            elseif ($exp >= 5) $score += 10;
+            elseif ($exp >= 2) $score += 5;
+        }
+
+        // Team size — a real team scores higher than a solo founder
+        $size = $db->getTailleEquipe();
+        if ($size !== null) {
+            if ($size >= 5) $score += 8;
+            elseif ($size >= 2) $score += 4;
+        }
+
+        return max(0, min(100, $score));
     }
 
     private function computeRiskScore(DonneesBusiness $db): float

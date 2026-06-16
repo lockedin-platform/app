@@ -1,0 +1,41 @@
+# ── LockedIn production image using FrankenPHP ──────────────────────────────
+# WHY: the current Dockerfile serves the app with `php -S` (the single-threaded PHP
+# dev server) — it handles ONE request at a time, which is the main cause of the
+# deployed site feeling slow. FrankenPHP is a production server (built on Caddy) with
+# real concurrency + a Symfony "worker mode" that keeps the app booted between requests.
+#
+# This is a SEPARATE file so the working Dockerfile is untouched. To adopt:
+#   1. Test locally:   docker build -f Dockerfile.frankenphp -t lockedin .
+#                      docker run -p 10000:10000 -e APP_ENV=prod -e DATABASE_URL=... lockedin
+#   2. On Render: set the Dockerfile path to Dockerfile.frankenphp and redeploy.
+#
+# Expect a large latency/throughput improvement vs `php -S`, plus OPcache on by default.
+
+FROM dunglas/frankenphp:php8.2
+
+# PHP extensions the app needs (same set as the original image)
+RUN install-php-extensions \
+    pdo_pgsql pgsql gd zip intl sodium opcache
+
+# Production OPcache tuning (FrankenPHP runs the CGI SAPI, but keep it explicit)
+COPY docker/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
+
+WORKDIR /app
+
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY composer.json composer.lock ./
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts --no-interaction
+
+COPY . .
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-install-cmd --no-interaction || true
+RUN APP_ENV=prod php bin/console cache:clear --no-debug || true
+RUN APP_ENV=prod php bin/console asset-map:compile || true
+
+ENV APP_ENV=prod
+EXPOSE 10000
+
+# Run DB schema sync + admin bootstrap once, then start FrankenPHP serving public/.
+# (Long term: move schema:update to a one-off migration step instead of every boot.)
+CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug; \
+    APP_ENV=prod php bin/console app:create-admin --env=prod; \
+    frankenphp php-server --listen 0.0.0.0:${PORT:-10000} --root public/

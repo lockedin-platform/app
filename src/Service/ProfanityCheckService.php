@@ -40,8 +40,8 @@ class ProfanityCheckService
         $response = $this->httpClient->request('GET', 'https://www.purgomalum.com/service/containsprofanity', [
             'query' => ['text' => $text],
             'timeout' => 10,
-            'verify_peer' => false,
-            'verify_host' => false,
+            'verify_peer' => \App\Service\Support\Tls::verify(),
+            'verify_host' => \App\Service\Support\Tls::verify(),
         ]);
 
         $result = trim($response->getContent(false));

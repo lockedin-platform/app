@@ -1,0 +1,9 @@
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+# added when the real model lands:
+# scikit-learn
+# xgboost
+# pandas
+# joblib
+# psycopg2-binary   # to read ml_data.scoring_training_features for training

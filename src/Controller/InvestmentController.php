@@ -7,6 +7,7 @@ use App\Entity\InvestmentOpportunity;
 use App\Entity\InvestorApplication;
 use App\Entity\InvestorPosting;
 use App\Entity\Projet;
+use App\Entity\User;
 use App\Repository\ContractMilestoneRepository;
 use App\Repository\InvestmentContractRepository;
 use App\Repository\InvestmentOfferRepository;
@@ -82,6 +83,7 @@ class InvestmentController extends AbstractController
         InvestorApplicationRepository $appRepo,
         ProjetRepository $projetRepo,
         NotificationService $notificationService,
+        \App\Service\MlEventLogger $mlEventLogger,
     ): Response {
         $user = $this->getUser();
 
@@ -129,11 +131,21 @@ class InvestmentController extends AbstractController
             $em->persist($application);
             $em->flush();
 
+            // ML auto-learn: an investor-matching signal (entrepreneur applies to a posting)
+            $mlEventLogger->log('investor_applied', 'investor_application', $application->getId(),
+                $user instanceof User ? $user->getId() : null, [
+                    'posting_id' => $posting->getId(),
+                    'posting_sector' => $posting->getSector(),
+                    'project_id' => $project->getId(),
+                    'project_sector' => $project->getSecteur(),
+                    'project_country' => $project->getPays(),
+                ]);
+
             $inboxUrl = $this->generateUrl('app_invest_my_postings');
             $notificationService->notify(
                 $posting->getPostedBy(),
                 'New application received',
-                ($user->getFirstname() ?? 'An entrepreneur') . ' applied to your "' . $posting->getSector() . '" posting with their project "' . $project->getTitre() . '".',
+                (($user instanceof User ? $user->getFirstname() : null) ?? 'An entrepreneur') . ' applied to your "' . $posting->getSector() . '" posting with their project "' . $project->getTitre() . '".',
                 'INFO',
                 $inboxUrl,
                 'Review application'
@@ -249,6 +261,7 @@ class InvestmentController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notificationService,
+        \App\Service\MlEventLogger $mlEventLogger,
     ): Response {
         if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -291,6 +304,17 @@ class InvestmentController extends AbstractController
 
         $em->flush();
 
+        // ML auto-learn: a deal was initiated (investor → project) — Model 2 (matching) + deal outcomes
+        $investor = $this->getUser();
+        $mlEventLogger->log('investor_offer_made', 'investment_offer', $offer->getId(),
+            $investor instanceof User ? $investor->getId() : null, [
+                'application_id' => $application->getId(),
+                'project_id' => $project->getId(),
+                'project_sector' => $project->getSecteur(),
+                'project_country' => $project->getPays(),
+                'amount' => (float) $amount,
+            ]);
+
         // Notify entrepreneur
         $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
         $notificationService->notify(
@@ -313,6 +337,7 @@ class InvestmentController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notificationService,
+        \App\Service\MlEventLogger $mlEventLogger,
     ): Response {
         if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -326,6 +351,14 @@ class InvestmentController extends AbstractController
 
         $application->setStatus(InvestorApplication::STATUS_REJECTED);
         $em->flush();
+
+        // ML auto-learn: a negative matching signal (investor rejected an applicant) — Model 2
+        $rejector = $this->getUser();
+        $mlEventLogger->log('application_rejected', 'investor_application', $application->getId(),
+            $rejector instanceof User ? $rejector->getId() : null, [
+                'project_id' => $application->getProject()?->getId(),
+                'posting_sector' => $application->getPosting()->getSector(),
+            ]);
 
         $notificationService->notify(
             $application->getEntrepreneur(),
@@ -384,6 +417,8 @@ class InvestmentController extends AbstractController
         EntityManagerInterface $em,
         InvestmentOfferRepository $offerRepo,
         NotificationService $notificationService,
+        \App\Service\MlEventLogger $mlEventLogger,
+        \App\Service\Investment\MacroRiskService $macroRisk,
     ): Response
     {
         if (!$this->isCsrfTokenValid('offer_action_' . $offer->getId(), $request->request->get('_token'))) {
@@ -422,6 +457,22 @@ class InvestmentController extends AbstractController
 
         $em->flush();
 
+        // ML auto-learn: a positive deal outcome (entrepreneur accepted the offer) — the gold-label
+        // event for Model 2 (matching) and the success-fee funnel.
+        $acceptor = $this->getUser();
+        // Model 4 prep: snapshot the macro conditions AT DEAL TIME so the risk model can later
+        // learn "conditions -> outcome". Painful to reconstruct after the fact.
+        $macroSnapshot = $macroRisk->getRiskBreakdown($opportunity->getProject()?->getPays());
+        $mlEventLogger->log('offer_accepted', 'investment_offer', $offer->getId(),
+            $acceptor instanceof User ? $acceptor->getId() : null, [
+                'opportunity_id' => $opportunity->getId(),
+                'project_id' => $opportunity->getProject()?->getId(),
+                'project_sector' => $opportunity->getProject()?->getSecteur(),
+                'project_country' => $opportunity->getProject()?->getPays(),
+                'amount' => (float) $offer->getProposedAmount(),
+                'macro_snapshot' => $macroSnapshot,
+            ]);
+
         $this->addFlash('success', 'Offer accepted. You can now start contract negotiation.');
         return $this->redirectToRoute('app_invest_contract_show', ['id' => $offer->getId()]);
     }
@@ -433,6 +484,7 @@ class InvestmentController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notificationService,
+        \App\Service\MlEventLogger $mlEventLogger,
     ): Response
     {
         if (!$this->isCsrfTokenValid('offer_action_' . $offer->getId(), $request->request->get('_token'))) {
@@ -459,6 +511,15 @@ class InvestmentController extends AbstractController
             'DANGER'
         );
         $em->flush();
+
+        // ML auto-learn: a negative deal outcome (entrepreneur rejected the offer) — Model 2
+        $rejector = $this->getUser();
+        $mlEventLogger->log('offer_rejected', 'investment_offer', $offer->getId(),
+            $rejector instanceof User ? $rejector->getId() : null, [
+                'opportunity_id' => $opportunity->getId(),
+                'project_id' => $opportunity->getProject()?->getId(),
+                'amount' => (float) $offer->getProposedAmount(),
+            ]);
 
         $this->addFlash('success', 'Offer rejected.');
         return $this->redirectToRoute('app_invest_opportunity_show', ['id' => $opportunity->getId()]);

@@ -25,3 +25,20 @@
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+
+###> ml / python tooling ###
+__pycache__/
+*.py[cod]
+.venv/
+ml-service/.venv/
+###< ml / python tooling ###
+
+###> local tooling binaries / certs (reproducible, shouldn't be committed) ###
+/composer.phar
+/cacert.pem
+###< local tooling binaries / certs ###
+
+# Data files (120MB+) are reproducible via scripts/scrape/* + consolidate.py and already
+# loaded into the ml_data DB schema — keep them out of git. Keep only the manifest.
+/data/*
+!/data/README.md
