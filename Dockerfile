@@ -47,7 +47,9 @@ RUN APP_ENV=prod php bin/console asset-map:compile || true
 
 EXPOSE 10000
 
-# Start: update schema (safe, never drops data) then serve
-CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
+# Start: fix schema conflicts, update schema, then serve
+CMD APP_ENV=prod php bin/console doctrine:query:sql "DROP VIEW IF EXISTS ml_data.v_project_training CASCADE" --env=prod --no-debug 2>/dev/null; \
+    APP_ENV=prod php bin/console doctrine:query:sql "DROP TABLE IF EXISTS ml_data.platform_event CASCADE" --env=prod --no-debug 2>/dev/null; \
+    APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
     APP_ENV=prod php bin/console app:create-admin --env=prod && \
     APP_ENV=prod php -S 0.0.0.0:${PORT:-10000} -t public/
