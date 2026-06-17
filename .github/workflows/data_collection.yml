@@ -1,0 +1,81 @@
+name: ML Data Collection
+
+on:
+  schedule:
+    # Every weekday at 18:00 UTC (20:00 Tunis time) — after BVMT closes
+    - cron: '0 18 * * 1-5'
+    # Every Monday at 07:00 UTC — weekly update for macro/investors
+    - cron: '0 7 * * 1'
+  workflow_dispatch:  # allow manual trigger from GitHub UI
+
+jobs:
+  collect-daily:
+    name: Daily — BVMT + BCT
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 18 * * 1-5' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r ml/requirements.txt
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Run BVMT collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ml/data/collectors/bvmt_playwright.py
+
+      - name: Run BCT + World Bank collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ml/data/collectors/bct_worldbank.py
+
+  collect-weekly:
+    name: Weekly — Startups + Investors
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 7 * * 1' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r ml/requirements.txt
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          playwright install chromium --with-deps
+
+      - name: Run StartupBlink collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ml/data/collectors/startupblink_tn.py
+
+      - name: Run Shizune investors collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ml/data/collectors/shizune_investors.py
+
+      - name: Run INS Tunisia collector
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python ml/data/collectors/ins_tunisia.py
