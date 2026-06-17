@@ -6,7 +6,7 @@ Each model serves a rule-based v0 until enough REAL platform data has accumulate
 then this job trains the ML version and the service hot-swaps it in. The model
 "sleeps until the data wakes it up".
 
-This script READS the event log (ml_data.platform_event) + the live training view,
+This script READS the event log (public.platform_event) + the live training view,
 compares counts to per-model thresholds, and reports which models are ready to (re)train.
 It does NOT train yet — training code lands when a model crosses its threshold. Schedule
 it (cron / a scheduled agent) to run daily.
@@ -21,24 +21,24 @@ import psycopg2
 # model -> (counting query, threshold, what v0 serves meanwhile)
 MODELS = {
     "model1_scoring": {
-        "sql": "SELECT count(*) FROM ml_data.platform_event WHERE event_type = 'project_evaluated'",
+        "sql": "SELECT count(*) FROM public.platform_event WHERE event_type = 'project_evaluated'",
         "threshold": 200,
         "v0": "100k static Kaggle features (scoring_training_features) - retrain on OUR data at threshold",
     },
     "model2_matching": {
-        "sql": """SELECT count(*) FROM ml_data.platform_event
+        "sql": """SELECT count(*) FROM public.platform_event
                   WHERE event_type IN ('investor_applied','offer_accepted','offer_rejected','application_rejected')""",
         "threshold": 50,
         "v0": "content-based matching (InvestmentMatchingService: sector/budget/risk/horizon)",
     },
     "model5_fraud": {
-        "sql": "SELECT count(*) FROM ml_data.platform_event WHERE event_type = 'project_submitted'",
+        "sql": "SELECT count(*) FROM public.platform_event WHERE event_type = 'project_submitted'",
         "threshold": 200,
         "v0": "rule-based quality checks (SubmissionQualityService)",
     },
     "model4_risk": {
         # deals carry the macro_snapshot; once enough have known outcomes we can train the regression
-        "sql": "SELECT count(*) FROM ml_data.platform_event WHERE event_type = 'offer_accepted'",
+        "sql": "SELECT count(*) FROM public.platform_event WHERE event_type = 'offer_accepted'",
         "threshold": 30,
         "v0": "rule-based lookup on real World Bank data (MacroRiskService)",
     },

@@ -5,20 +5,10 @@
 
 CREATE SCHEMA IF NOT EXISTS ml_data;
 
--- 1) Generic event log the app writes to (via App\Service\MlEventLogger).
---    Captures: project submissions/evaluations, investor actions, deals, mentor sessions.
-CREATE TABLE IF NOT EXISTS ml_data.platform_event (
-    id          BIGSERIAL PRIMARY KEY,
-    event_type  VARCHAR(60)  NOT NULL,          -- e.g. project_submitted, investor_applied, deal_closed
-    entity_type VARCHAR(60),                    -- projet, investor_application, mentorship_session...
-    entity_id   INTEGER,
-    user_id     INTEGER,
-    payload     JSONB,                          -- snapshot of the relevant fields at event time
-    created_at  TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-CREATE INDEX IF NOT EXISTS ix_platform_event_type    ON ml_data.platform_event (event_type);
-CREATE INDEX IF NOT EXISTS ix_platform_event_entity  ON ml_data.platform_event (entity_type, entity_id);
-CREATE INDEX IF NOT EXISTS ix_platform_event_created ON ml_data.platform_event (created_at);
+-- 1) Event log lives in the `public` schema (table public.platform_event, app-managed) so the
+--    deploy-time doctrine:schema:update does not crash on the view dependency. The app writes to
+--    it via App\Service\MlEventLogger. Columns: id, event_type, user_id, user_role, entity_id,
+--    entity_type, payload (json), occurred_at. Nothing to create here.
 
 -- 2) Live training view: turns every real submitted project into a row in the
 --    scoring feature schema, so models can auto-learn from platform data as it grows.
@@ -50,15 +40,15 @@ SELECT
     -- Recent activity resets the 90-day clock, so an active project is never marked stalled.
     CASE
         WHEN EXISTS (
-            SELECT 1 FROM ml_data.platform_event e
+            SELECT 1 FROM public.platform_event e
             WHERE e.event_type = 'offer_accepted'
               AND (e.payload->>'project_id') ~ '^[0-9]+$'
               AND (e.payload->>'project_id')::int = p.id
         ) THEN 'funded'
         WHEN p.date_creation < (CURRENT_DATE - INTERVAL '90 days')
              AND NOT EXISTS (
-                 SELECT 1 FROM ml_data.platform_event e
-                 WHERE e.created_at > (CURRENT_DATE - INTERVAL '90 days')
+                 SELECT 1 FROM public.platform_event e
+                 WHERE e.occurred_at > (CURRENT_DATE - INTERVAL '90 days')
                    AND ( (e.entity_type = 'projet' AND e.entity_id = p.id)
                          OR ((e.payload->>'project_id') ~ '^[0-9]+$'
                              AND (e.payload->>'project_id')::int = p.id) )

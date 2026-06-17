@@ -33,9 +33,12 @@ class MlEventLogger
         array $payload = [],
     ): void {
         try {
+            // platform_event lives in the `public` schema (moved there so Doctrine's deploy-time
+            // schema:update doesn't crash on the view dependency). Columns: occurred_at (NOT NULL,
+            // no default -> set NOW()), payload is JSON.
             $this->connection->executeStatement(
-                'INSERT INTO ml_data.platform_event (event_type, entity_type, entity_id, user_id, payload)
-                 VALUES (:type, :entityType, :entityId, :userId, CAST(:payload AS JSONB))',
+                'INSERT INTO public.platform_event (event_type, entity_type, entity_id, user_id, payload, occurred_at)
+                 VALUES (:type, :entityType, :entityId, :userId, CAST(:payload AS JSON), NOW())',
                 [
                     'type' => $eventType,
                     'entityType' => $entityType,
