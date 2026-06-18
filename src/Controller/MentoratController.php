@@ -34,6 +34,7 @@ class MentoratController extends AbstractController
         private EntityManagerInterface $em,
         private MentoratMatchingService $matchingService,
         private ProjetRepository $projetRepository,
+        private \App\Service\MlEventLogger $mlEventLogger,
     ) {}
 
     // ──────────────────────────────────────────────
@@ -240,6 +241,7 @@ class MentoratController extends AbstractController
         }
 
         $action = $request->request->get('action');
+        $session = null;
         if ($action === 'accept') {
             $req->setStatus(MentorshipRequest::STATUS_ACCEPTED);
             $session = new MentorshipSession();
@@ -253,6 +255,15 @@ class MentoratController extends AbstractController
         }
 
         $this->em->flush();
+
+        // ML auto-learn: mentor session booked / request declined (PDF: "Every mentor session booked")
+        $mentor = $this->getUser();
+        $this->mlEventLogger->log(
+            $action === 'accept' ? 'mentor_session_booked' : 'mentor_request_declined',
+            'mentorship_request', $req->getId(),
+            $mentor instanceof \App\Entity\User ? $mentor->getId() : null,
+            ['session_id' => $session?->getId()],
+        );
         $this->addFlash('success', 'Demande ' . ($action === 'accept' ? 'acceptée' : 'refusée') . '.');
         return $this->redirectToRoute('app_mentorat_requests');
     }
@@ -696,6 +707,8 @@ class MentoratController extends AbstractController
         $body .= "fr\r\n";
         $body .= "--{$boundary}--\r\n";
 
+        // TLS verification stays ON unless COMMUNITY_GROQ_INSECURE is explicitly set (dev-only).
+        $insecureTls = !\App\Service\Support\Tls::verify();
         $context = stream_context_create([
             'http' => [
                 'method'  => 'POST',
@@ -704,8 +717,8 @@ class MentoratController extends AbstractController
                 'timeout' => 30,
             ],
             'ssl' => [
-                'verify_peer'      => false,
-                'verify_peer_name' => false,
+                'verify_peer'      => !$insecureTls,
+                'verify_peer_name' => !$insecureTls,
             ],
         ]);
 

@@ -71,6 +71,20 @@ class DonneesBusiness
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $rawForceEquipe = null;
 
+    // ---- Model 1 (Scoring Engine) inputs, aligned with the training feature set ----
+    // These are pre-investment / funding-independent signals a founder can give at submission.
+    #[ORM\Column(nullable: true)]
+    private ?int $tailleEquipe = null;          // team size (headcount) — maps to training `team_size`
+
+    #[ORM\Column(nullable: true)]
+    private ?float $objectifFinancement = null; // funding TARGET sought (not raised) — Model 1 "funding target"
+
+    #[ORM\Column(nullable: true)]
+    private ?int $traction = null;               // early traction (users / pilots) — maps to `product_traction_users`
+
+    #[ORM\Column(nullable: true)]
+    private ?int $experienceEquipe = null;       // founding team experience in years — maps to `founder_experience_years`
+
     public function getId(): ?int { return $this->id; }
     public function getTailleMarche(): ?string { return $this->tailleMarche; }
     public function setTailleMarche(?string $v): static { $this->tailleMarche = $v; return $this; }
@@ -104,6 +118,14 @@ class DonneesBusiness
     public function setRawRevenus(?string $v): static { $this->rawRevenus = $v; return $this; }
     public function getRawForceEquipe(): ?string { return $this->rawForceEquipe; }
     public function setRawForceEquipe(?string $v): static { $this->rawForceEquipe = $v; return $this; }
+    public function getTailleEquipe(): ?int { return $this->tailleEquipe; }
+    public function setTailleEquipe(?int $v): static { $this->tailleEquipe = $v; return $this; }
+    public function getObjectifFinancement(): ?float { return $this->objectifFinancement; }
+    public function setObjectifFinancement(?float $v): static { $this->objectifFinancement = $v; return $this; }
+    public function getTraction(): ?int { return $this->traction; }
+    public function setTraction(?int $v): static { $this->traction = $v; return $this; }
+    public function getExperienceEquipe(): ?int { return $this->experienceEquipe; }
+    public function setExperienceEquipe(?int $v): static { $this->experienceEquipe = $v; return $this; }
 
     public function calculerIndicateurs(): void
     {

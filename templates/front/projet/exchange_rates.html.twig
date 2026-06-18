@@ -25,6 +25,28 @@
     </div>
 </div>
 
+{# Model 4 — macro risk for the project's country (real World Bank data) #}
+{% if macroRisk is defined and macroRisk.available %}
+{% set lvlColor = macroRisk.score <= 33 ? '#27ae60' : (macroRisk.score <= 66 ? '#f39c12' : '#e74c3c') %}
+<div class="card border-0 shadow-sm mb-4 p-4" style="border-radius:1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07) !important">
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+        <h5 class="fw-bold mb-0"><i class="bi bi-globe2 me-2"></i>Macro risk — {{ projet.pays }}</h5>
+        <span class="badge" style="background:{{ lvlColor }};font-size:.95rem">{{ macroRisk.score }}/100 · {{ macroRisk.level }}</span>
+    </div>
+    <div class="row g-2">
+        {% for factor, val in macroRisk.factors %}
+        <div class="col-6 col-md-4 col-lg-2">
+            <div class="p-2 rounded text-center" style="background:rgba(255,255,255,.04)">
+                <div class="small text-muted text-capitalize">{{ factor|replace({'_': ' '}) }}</div>
+                <div class="fw-bold" style="color:{{ val <= 33 ? '#27ae60' : (val <= 66 ? '#f39c12' : '#e74c3c') }}">{{ val }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <p class="text-muted small mb-0 mt-2"><i class="bi bi-info-circle me-1"></i>Based on latest World Bank indicators (inflation, GDP growth, political stability, FDI, unemployment). Higher = riskier.</p>
+</div>
+{% endif %}
+
 {# Rate Cards #}
 <div class="row g-3 mb-4">
     {% for currency, rate in {'EUR': rates.EUR, 'USD': rates.USD, 'GBP': rates.GBP} %}

@@ -66,6 +66,17 @@
                     {% if e.statut is defined %}<div class="invalid-feedback d-block">{{ e.statut }}</div>{% endif %}
                 </div>
             </div>
+            <div class="row g-3 mt-1">
+                <div class="col-md-6">
+                    <label class="form-label fw-semibold">Country <span class="text-muted small">(used for market risk scoring)</span></label>
+                    <select name="pays" class="form-select">
+                        <option value="">-- Select country --</option>
+                        {% for c in ['Tunisia','Algeria','Morocco','Egypt','Libya','Nigeria','Kenya','South Africa','Ghana','Senegal','Ivory Coast','Saudi Arabia','UAE','Jordan','Lebanon','Other'] %}
+                            <option value="{{ c }}" {{ projet and projet.pays == c ? 'selected' }}>{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -110,6 +121,27 @@
                     <label class="form-label fw-semibold">Team Strength (1–10)</label>
                     <input type="text" name="force_equipe" class="form-control {{ e.forceEquipe is defined ? 'is-invalid' }}" value="{{ db ? db.forceEquipe }}" required placeholder="e.g. 7 or 8/10">
                     {% if e.forceEquipe is defined %}<div class="invalid-feedback d-block">{{ e.forceEquipe }}</div>{% endif %}
+                </div>
+            </div>
+
+            <hr class="my-3">
+            <p class="text-muted small mb-2"><i class="bi bi-stars me-1"></i>AI scoring signals <span class="opacity-75">(optional but improve your score accuracy)</span></p>
+            <div class="row g-3">
+                <div class="col-6">
+                    <label class="form-label fw-semibold">Team Size <span class="text-muted small">(people)</span></label>
+                    <input type="number" min="1" name="taille_equipe" class="form-control" value="{{ db and db.tailleEquipe ? db.tailleEquipe }}" placeholder="e.g. 4">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold">Founder Experience <span class="text-muted small">(years)</span></label>
+                    <input type="number" min="0" name="experience_equipe" class="form-control" value="{{ db and db.experienceEquipe ? db.experienceEquipe }}" placeholder="e.g. 6">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold">Funding Target <span class="text-muted small">(TND, sought)</span></label>
+                    <input type="text" name="objectif_financement" class="form-control" value="{{ db and db.objectifFinancement ? db.objectifFinancement }}" placeholder="e.g. 250 000">
+                </div>
+                <div class="col-6">
+                    <label class="form-label fw-semibold">Traction <span class="text-muted small">(users / pilots)</span></label>
+                    <input type="number" min="0" name="traction" class="form-control" value="{{ db and db.traction ? db.traction }}" placeholder="e.g. 1200">
                 </div>
             </div>
         </div>

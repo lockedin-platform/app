@@ -237,8 +237,13 @@ class HomeController extends AbstractController
     }
 
     #[Route('/ai/chat', name: 'app_global_ai_chat', methods: ['POST'])]
-    public function globalAiChat(Request $request, GeminiService $ai): JsonResponse
+    public function globalAiChat(Request $request, GeminiService $ai, \App\Service\SimpleRateLimiter $rateLimiter): JsonResponse
     {
+        // Public AI endpoint -> rate-limit by IP to protect the external LLM quota/cost from abuse.
+        if ($rateLimiter->tooManyAttempts('ai_global_' . $request->getClientIp(), 15, 60)) {
+            return $this->json(['error' => 'Trop de requêtes. Réessayez dans une minute.'], 429);
+        }
+
         $data = json_decode($request->getContent(), true);
         $message = trim($data['message'] ?? '');
 
@@ -247,8 +252,8 @@ class HomeController extends AbstractController
         }
 
         $user = $this->getUser();
-        $userName = $user ? $user->getFirstname() : 'visiteur';
-        $userRole = $user ? $user->getRole() : 'non connecté';
+        $userName = $user instanceof User ? ($user->getFirstname() ?? 'visiteur') : 'visiteur';
+        $userRole = $user instanceof User ? $user->getRole() : 'non connecté';
 
         $prompt = <<<PROMPT
 Tu es "LockedIn AI", l'assistant de la plateforme LockedIn — plateforme tunisienne pour entrepreneurs, investisseurs et mentors.

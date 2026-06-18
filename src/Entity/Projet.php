@@ -39,6 +39,17 @@ class Projet
     #[Assert\NotBlank(message: 'Le secteur est obligatoire.')]
     private ?string $secteur = null;
 
+    // Geography — Model 1 input "geography" + key to the World Bank macro join (Model 4)
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $pays = null;
+
+    // ML outcome label — MANUAL override (funded / operating / failed / cancelled).
+    // Null by default; the auto-learn view (v_project_training) derives funded/stalled from the
+    // event log automatically and only uses this when it's explicitly set (e.g. admin marks a
+    // failed/cancelled project). statut_projet stays for workflow; this is the ML target.
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $outcome = null;
+
     #[ORM\Column(length: 20, nullable: true)]
     #[Assert\NotBlank(message: "L'étape est obligatoire.")]
     private ?string $etape = null;
@@ -89,6 +100,10 @@ class Projet
     public function setDescription(?string $description): static { $this->description = $description; return $this; }
     public function getSecteur(): ?string { return $this->secteur; }
     public function setSecteur(?string $secteur): static { $this->secteur = $secteur; return $this; }
+    public function getPays(): ?string { return $this->pays; }
+    public function setPays(?string $pays): static { $this->pays = $pays; return $this; }
+    public function getOutcome(): ?string { return $this->outcome; }
+    public function setOutcome(?string $outcome): static { $this->outcome = $outcome; return $this; }
     public function getEtape(): ?string { return $this->etape; }
     public function setEtape(?string $etape): static { $this->etape = $etape; return $this; }
     public function getStatut(): ?string { return $this->statut; }

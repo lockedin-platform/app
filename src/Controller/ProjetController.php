@@ -10,7 +10,10 @@ use App\Service\ProjetBusinessPlanService;
 use App\Service\ProjetExportService;
 use App\Service\ProjetRecommendationService;
 use App\Service\ProjetScoringService;
+use App\Service\MlEventLogger;
+use App\Service\SubmissionQualityService;
 use App\Service\ExchangeRateService;
+use App\Service\Investment\MacroRiskService;
 use App\Service\NewsApiService;
 use App\Service\GeminiService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -55,7 +58,7 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/new', name: 'app_projet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, MailerInterface $mailer, AnalyticsService $analytics): Response
+    public function new(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, MailerInterface $mailer, AnalyticsService $analytics, MlEventLogger $mlEventLogger, SubmissionQualityService $qualityService): Response
     {
         if ($request->isMethod('POST')) {
             $projet = new Projet();
@@ -92,6 +95,35 @@ class ProjetController extends AbstractController
             $em->persist($donnees);
             $em->flush();
             $analytics->logProjectSubmitted($this->getUser(), $projet);
+
+            // Model 5 v0: rule-based quality/fraud screen (works with zero data)
+            $quality = $qualityService->analyze($projet);
+
+            // ML auto-learn: record the submission so models can learn from real platform data
+            $logUser = $this->getUser();
+            $mlEventLogger->log('project_submitted', 'projet', $projet->getId(),
+                $logUser instanceof \App\Entity\User ? $logUser->getId() : null, [
+                    'sector' => $projet->getSecteur(),
+                    'country' => $projet->getPays(),
+                    'stage' => $projet->getEtape(),
+                    'team_size' => $donnees->getTailleEquipe(),
+                    'founder_experience_years' => $donnees->getExperienceEquipe(),
+                    'product_traction_users' => $donnees->getTraction(),
+                    'funding_target' => $donnees->getObjectifFinancement(),
+                    'expected_revenue' => $donnees->getRevenusAttendus(),
+                    'estimated_costs' => $donnees->getCoutsEstimes(),
+                    'quality_score' => $quality['score'],
+                    'quality_flags' => $quality['flags'],
+                ]);
+
+            // Flag suspicious submissions for the admin moderation queue
+            if ($quality['suspicious']) {
+                $mlEventLogger->log('submission_flagged', 'projet', $projet->getId(),
+                    $logUser instanceof \App\Entity\User ? $logUser->getId() : null, [
+                        'quality_score' => $quality['score'],
+                        'flags' => $quality['flags'],
+                    ]);
+            }
 
             // Send confirmation email
             try {
@@ -189,7 +221,7 @@ class ProjetController extends AbstractController
     // ==================== AI SCORING ====================
 
     #[Route('/{id}/evaluate-ai', name: 'app_projet_evaluate_ai', methods: ['POST'])]
-    public function evaluateAi(Projet $projet, ProjetScoringService $scoring, EntityManagerInterface $em): Response
+    public function evaluateAi(Projet $projet, ProjetScoringService $scoring, EntityManagerInterface $em, MlEventLogger $mlEventLogger): Response
     {
         if ($projet->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
@@ -197,6 +229,19 @@ class ProjetController extends AbstractController
 
         $result = $scoring->evaluateWithAi($projet);
         $em->flush();
+
+        // ML auto-learn: record the score + its drivers for model calibration
+        $db = $projet->getDonneesBusiness();
+        $mlEventLogger->log('project_evaluated', 'projet', $projet->getId(),
+            $projet->getUser()?->getId(), [
+                'score_global' => $result['scoreGlobal'],
+                'scores' => $result['scores'] ?? null,
+                'sector' => $projet->getSecteur(),
+                'country' => $projet->getPays(),
+                'team_size' => $db?->getTailleEquipe(),
+                'founder_experience_years' => $db?->getExperienceEquipe(),
+                'product_traction_users' => $db?->getTraction(),
+            ]);
 
         $this->addFlash('success', sprintf('Évaluation IA terminée ! Score global : %.1f/100', $result['scoreGlobal']));
         return $this->redirectToRoute('app_projet_show', ['id' => $projet->getId()]);
@@ -353,7 +398,7 @@ class ProjetController extends AbstractController
     // ==================== EXCHANGE RATE ====================
 
     #[Route('/{id}/exchange-rates', name: 'app_projet_exchange_rates')]
-    public function exchangeRates(Projet $projet, ExchangeRateService $exchangeService): Response
+    public function exchangeRates(Projet $projet, ExchangeRateService $exchangeService, MacroRiskService $macroRisk): Response
     {
         if ($projet->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
@@ -361,6 +406,9 @@ class ProjetController extends AbstractController
 
         $rates = $exchangeService->getRates();
         $db = $projet->getDonneesBusiness();
+
+        // Model 4 v0 — real macro risk for the project's country (World Bank data, no training)
+        $macro = $macroRisk->getRiskBreakdown($projet->getPays());
 
         $conversions = [];
         if ($db) {
@@ -378,6 +426,7 @@ class ProjetController extends AbstractController
             'projet' => $projet,
             'rates' => $rates,
             'conversions' => $conversions,
+            'macroRisk' => $macro,
         ]);
     }
 
@@ -411,8 +460,14 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/chatbot/ask', name: 'app_projet_chatbot_ask', priority: 10, methods: ['POST'])]
-    public function chatbotAsk(Request $request, GeminiService $ai, ProjetRepository $repo): Response
+    public function chatbotAsk(Request $request, GeminiService $ai, ProjetRepository $repo, \App\Service\SimpleRateLimiter $rateLimiter): Response
     {
+        // Rate-limit per user to protect the external LLM quota/cost.
+        $uid = $this->getUser()?->getUserIdentifier() ?? (string) $request->getClientIp();
+        if ($rateLimiter->tooManyAttempts('ai_chatbot_' . $uid, 20, 60)) {
+            return $this->json(['error' => 'Trop de requêtes. Réessayez dans une minute.'], 429);
+        }
+
         $data = json_decode($request->getContent(), true);
         $message = trim($data['message'] ?? '');
 
@@ -490,6 +545,7 @@ PROMPT;
         $p->setSecteur($r->request->get('secteur'));
         $p->setEtape($r->request->get('etape'));
         $p->setStatut($r->request->get('statut'));
+        $p->setPays($r->request->get('pays') ?: null);
     }
 
     private function extractNumeric(string $raw): float
@@ -520,5 +576,15 @@ PROMPT;
         $d->setNiveauRisque($r->request->get('niveau_risque'));
         $force = (int) $this->extractNumeric((string) $r->request->get('force_equipe', '5'));
         $d->setForceEquipe(max(1, min(10, $force ?: 5)));
+
+        // Model 1 scoring inputs (optional, funding-independent). Empty => null (not collected yet).
+        $taille = (int) $this->extractNumeric((string) $r->request->get('taille_equipe', ''));
+        $d->setTailleEquipe($taille > 0 ? $taille : null);
+        $objectif = $this->extractNumeric((string) $r->request->get('objectif_financement', ''));
+        $d->setObjectifFinancement($objectif > 0 ? $objectif : null);
+        $traction = (int) $this->extractNumeric((string) $r->request->get('traction', ''));
+        $d->setTraction($traction > 0 ? $traction : null);
+        $exp = (int) $this->extractNumeric((string) $r->request->get('experience_equipe', ''));
+        $d->setExperienceEquipe($exp > 0 ? $exp : null);
     }
 }

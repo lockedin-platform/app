@@ -122,6 +122,17 @@ class AdminApprentissageController extends AbstractController
             return;
         }
 
+        if (!$file->isValid()) {
+            $this->addFlash('error', 'Le televersement du document a echoue.');
+            return;
+        }
+
+        // Size cap (20 MB) — prevent disk-fill / DoS via huge uploads.
+        if ($file->getSize() > 20 * 1024 * 1024) {
+            $this->addFlash('error', 'Le document ne doit pas depasser 20 Mo.');
+            return;
+        }
+
         $allowedMimes = [
             'application/pdf',
             'application/msword',

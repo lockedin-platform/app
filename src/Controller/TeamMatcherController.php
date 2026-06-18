@@ -37,10 +37,16 @@ class TeamMatcherController extends AbstractController
     }
 
     #[Route('/chat', name: 'app_team_matcher_chat', methods: ['POST'])]
-    public function chat(Request $request, InvestmentChatbotService $chatbot, ProjetRepository $projetRepo): JsonResponse
+    public function chat(Request $request, InvestmentChatbotService $chatbot, ProjetRepository $projetRepo, \App\Service\SimpleRateLimiter $rateLimiter): JsonResponse
     {
         /** @var User $user */
         $user = $this->getUser();
+
+        // Rate-limit per user to protect the external LLM quota/cost.
+        if ($rateLimiter->tooManyAttempts('ai_teammatch_' . $user->getUserIdentifier(), 20, 60)) {
+            return $this->json(['error' => 'Too many requests. Try again in a minute.'], 429);
+        }
+
         $message = trim($request->request->get('message', ''));
         $history = json_decode($request->request->get('history', '[]'), true);
         if (!is_array($history)) {
@@ -62,7 +68,7 @@ class TeamMatcherController extends AbstractController
 
         $context = [
             'mode' => 'team_matcher',
-            'userName' => $user->getFullName() ?? $user->getFirstname() ?? 'User',
+            'userName' => trim($user->getFullName()) ?: ($user->getFirstname() ?? 'User'),
             'role' => $this->isGranted('ROLE_ENTREPRENEUR') ? 'entrepreneur' : 'investor',
             'projects' => $projectList ?: 'No projects yet',
             'projectCount' => (string) count($projects),

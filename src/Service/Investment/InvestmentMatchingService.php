@@ -56,7 +56,22 @@ class InvestmentMatchingService
             + $riskScore * 0.25
             + $horizonScore * 0.15;
 
+        // Geography adjustment (Model 2 v0): only applies when both the investor's
+        // preferred country and the project's country are known — otherwise 0 (no change).
+        $total += $this->computeGeographyAdjustment($profile, $opp);
+
         return (int) round(max(0, min(100, $total)));
+    }
+
+    /** +10 same country, -5 different, 0 when either side has no geography set. */
+    private function computeGeographyAdjustment(InvestorProfile $profile, InvestmentOpportunity $opp): float
+    {
+        $pref = mb_strtolower(trim((string) $profile->getPreferredCountry()));
+        $projectCountry = mb_strtolower(trim((string) $opp->getProject()?->getPays()));
+        if ($pref === '' || $projectCountry === '') {
+            return 0.0;
+        }
+        return $pref === $projectCountry ? 10.0 : -5.0;
     }
 
     private function computeSectorScore(InvestorProfile $profile, InvestmentOpportunity $opp): float

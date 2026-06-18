@@ -3,7 +3,12 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        # CSRF hardening at the cookie level (protects all forms): Lax blocks the session
+        # cookie from being sent on cross-site POST, which defeats classic CSRF attacks.
+        cookie_samesite: lax
+        cookie_secure: auto      # HTTPS-only cookie in production
+        cookie_httponly: true    # JS cannot read the session cookie (XSS mitigation)
 
     #esi: true
     #fragments: true

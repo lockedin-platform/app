@@ -48,8 +48,8 @@ class GeminiService
                     ],
                 ],
                 'timeout' => 30,
-                'verify_peer' => false,
-                'verify_host' => false,
+                'verify_peer' => \App\Service\Support\Tls::verify(),
+                'verify_host' => \App\Service\Support\Tls::verify(),
             ]);
 
             $statusCode = $response->getStatusCode();

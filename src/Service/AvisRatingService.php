@@ -50,8 +50,8 @@ class AvisRatingService
                     ],
                 ],
                 'timeout' => 12,
-                'verify_peer' => false,
-                'verify_host' => false,
+                'verify_peer' => !$this->insecureTlsEnabled(),
+                'verify_host' => !$this->insecureTlsEnabled(),
             ]);
 
             $payload = $response->toArray(false);
@@ -71,5 +71,12 @@ class AvisRatingService
         }
 
         return '3.0';
+    }
+
+    /** TLS verification stays ON unless COMMUNITY_GROQ_INSECURE is explicitly set (dev-only). */
+    private function insecureTlsEnabled(): bool
+    {
+        $v = $_SERVER['COMMUNITY_GROQ_INSECURE'] ?? $_ENV['COMMUNITY_GROQ_INSECURE'] ?? getenv('COMMUNITY_GROQ_INSECURE');
+        return in_array(mb_strtolower(trim((string) $v)), ['1', 'true', 'yes', 'on'], true);
     }
 }
