@@ -11,4 +11,4 @@ cmds = [
 ]
 
 [start]
-cmd = "APP_ENV=prod composer dump-env prod && APP_ENV=prod php bin/console cache:clear --no-debug && php bin/console doctrine:query:sql 'DROP VIEW IF EXISTS ml_data.v_project_training CASCADE' --env=prod --no-debug 2>/dev/null; php bin/console doctrine:query:sql 'DROP TABLE IF EXISTS ml_data.platform_event CASCADE' --env=prod --no-debug 2>/dev/null; php bin/console doctrine:schema:update --force --env=prod && php bin/console app:create-admin --env=prod && php -S 0.0.0.0:$PORT -t public/"
+cmd = "php bin/console doctrine:query:sql 'DROP VIEW IF EXISTS ml_data.v_project_training CASCADE' --env=prod --no-debug 2>/dev/null; php bin/console doctrine:query:sql 'DROP TABLE IF EXISTS ml_data.platform_event CASCADE' --env=prod --no-debug 2>/dev/null; php bin/console doctrine:schema:update --force --env=prod && php bin/console app:create-admin --env=prod && php -S 0.0.0.0:$PORT -t public/"
