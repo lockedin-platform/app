@@ -15,6 +15,7 @@ use App\Repository\InvestorApplicationRepository;
 use App\Repository\InvestorPostingRepository;
 use App\Repository\InvestorProfileRepository;
 use App\Repository\ProjetRepository;
+use App\Service\AnalyticsService;
 use App\Service\EmailService;
 use App\Service\NotificationService;
 use App\Service\Investment\StripePaymentService;
@@ -82,6 +83,7 @@ class InvestmentController extends AbstractController
         InvestorApplicationRepository $appRepo,
         ProjetRepository $projetRepo,
         NotificationService $notificationService,
+        AnalyticsService $analytics,
     ): Response {
         $user = $this->getUser();
 
@@ -128,6 +130,7 @@ class InvestmentController extends AbstractController
 
             $em->persist($application);
             $em->flush();
+            $analytics->logApplicationSubmitted($user, $posting->getId(), $posting->getSector());
 
             $inboxUrl = $this->generateUrl('app_invest_my_postings');
             $notificationService->notify(
@@ -249,6 +252,7 @@ class InvestmentController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notificationService,
+        AnalyticsService $analytics,
     ): Response {
         if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -290,6 +294,7 @@ class InvestmentController extends AbstractController
         $application->setStatus(InvestorApplication::STATUS_OFFER_MADE);
 
         $em->flush();
+        $analytics->logApplicationResult($this->getUser(), $application->getId(), true, $posting->getSector());
 
         // Notify entrepreneur
         $contractUrl = $this->generateUrl('app_invest_contract_show', ['id' => $offer->getId()]);
@@ -313,6 +318,7 @@ class InvestmentController extends AbstractController
         Request $request,
         EntityManagerInterface $em,
         NotificationService $notificationService,
+        AnalyticsService $analytics,
     ): Response {
         if ($application->getPosting()->getPostedBy() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
@@ -326,6 +332,7 @@ class InvestmentController extends AbstractController
 
         $application->setStatus(InvestorApplication::STATUS_REJECTED);
         $em->flush();
+        $analytics->logApplicationResult($this->getUser(), $application->getId(), false, $application->getPosting()->getSector());
 
         $notificationService->notify(
             $application->getEntrepreneur(),

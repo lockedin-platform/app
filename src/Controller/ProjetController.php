@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DonneesBusiness;
 use App\Entity\Projet;
 use App\Repository\ProjetRepository;
+use App\Service\AnalyticsService;
 use App\Service\ProjetBusinessPlanService;
 use App\Service\ProjetExportService;
 use App\Service\ProjetRecommendationService;
@@ -54,7 +55,7 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/new', name: 'app_projet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, MailerInterface $mailer): Response
+    public function new(Request $request, EntityManagerInterface $em, ValidatorInterface $validator, MailerInterface $mailer, AnalyticsService $analytics): Response
     {
         if ($request->isMethod('POST')) {
             $projet = new Projet();
@@ -90,6 +91,7 @@ class ProjetController extends AbstractController
             $em->persist($projet);
             $em->persist($donnees);
             $em->flush();
+            $analytics->logProjectSubmitted($this->getUser(), $projet);
 
             // Send confirmation email
             try {
@@ -114,8 +116,18 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_projet_show', requirements: ['id' => '\d+'])]
-    public function show(Projet $projet, GeminiService $ai): Response
+    public function show(Projet $projet, GeminiService $ai, AnalyticsService $analytics): Response
     {
+        $viewer = $this->getUser();
+        if ($viewer && $this->isGranted('ROLE_INVESTISSEUR')) {
+            $analytics->logInvestorViewedProject(
+                $viewer,
+                $projet->getId(),
+                $projet->getSecteur() ?? '',
+                (float) ($projet->getScoreGlobal() ?? 0),
+            );
+        }
+
         return $this->render('front/projet/show.html.twig', [
             'projet' => $projet,
         ]);

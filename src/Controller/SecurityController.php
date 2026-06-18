@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\AnalyticsService;
 use App\Service\EmailService;
 use App\Service\ReCaptchaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -39,6 +40,7 @@ class SecurityController extends AbstractController
         ValidatorInterface $validator,
         EmailService $emailService,
         ReCaptchaService $reCaptchaService,
+        AnalyticsService $analytics,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_home');
@@ -99,6 +101,7 @@ class SecurityController extends AbstractController
 
             $em->persist($user);
             $em->flush();
+            $analytics->logUserRegistered($user);
 
             // Send verification email
             try {
