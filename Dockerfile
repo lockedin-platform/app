@@ -52,5 +52,6 @@ EXPOSE 10000
 
 # Start: update schema (safe, never drops data) then serve
 CMD APP_ENV=prod php bin/console doctrine:schema:update --force --env=prod --no-debug && \
+    APP_ENV=prod php bin/console doctrine:query:sql "$(cat scripts/sql/ml_autolearn.sql)" --env=prod --no-debug 2>/dev/null; \
     APP_ENV=prod php bin/console app:create-admin --env=prod && \
     APP_ENV=prod php -S 0.0.0.0:${PORT:-10000} -t public/

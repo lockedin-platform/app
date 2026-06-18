@@ -1,18 +1,13 @@
--- ML auto-learn foundation for LockedIn (Phase 1: "log everything from day one").
--- Safe: only creates objects in the ml_data schema + a read-only VIEW over public tables.
--- Run:  psql "$DATABASE_URL" -f scripts/sql/ml_autolearn.sql
---   (or via scripts/load_to_db helper)
-
-CREATE SCHEMA IF NOT EXISTS ml_data;
-
--- 1) Event log lives in the `public` schema (table public.platform_event, app-managed) so the
---    deploy-time doctrine:schema:update does not crash on the view dependency. The app writes to
---    it via App\Service\MlEventLogger. Columns: id, event_type, user_id, user_role, entity_id,
---    entity_type, payload (json), occurred_at. Nothing to create here.
-
--- 2) Live training view: turns every real submitted project into a row in the
---    scoring feature schema, so models can auto-learn from platform data as it grows.
---    label stays NULL until an outcome (funded / failed) is known.
+-- ML auto-learn live training view for LockedIn.
+-- SINGLE statement on purpose: the Render deploy recreates it via
+--   doctrine:query:sql "$(cat scripts/sql/ml_autolearn.sql)"
+-- which runs ONE statement. The ml_data schema already exists (created by load_to_db.py /
+-- present in the migrated DB). The event log lives in public.platform_event (app-managed,
+-- columns: id, event_type, user_id, user_role, entity_id, entity_type, payload json, occurred_at) —
+-- it is NOT created here so doctrine:schema:update can't crash on the view dependency.
+--
+-- Turns every real submitted project into a scoring-feature row; outcome_label is the success/fail
+-- tag the models train on (NULL until known).
 CREATE OR REPLACE VIEW ml_data.v_project_training AS
 SELECT
     p.id                                                                       AS project_id,
