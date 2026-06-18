@@ -34,6 +34,9 @@ SELECT
     --   NULL      = unknown / too recent to judge.
     -- Recent activity resets the 90-day clock, so an active project is never marked stalled.
     CASE
+        -- 1) explicit manual override wins (admin marks funded/operating/failed/cancelled)
+        WHEN p.outcome IS NOT NULL AND p.outcome <> '' THEN p.outcome
+        -- 2) else derive from the event log
         WHEN EXISTS (
             SELECT 1 FROM public.platform_event e
             WHERE e.event_type = 'offer_accepted'
