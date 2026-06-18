@@ -30,6 +30,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Production OPcache config (CRITICAL for the php -S CLI server — opcache is off there by default)
 COPY docker/opcache.ini /usr/local/etc/php/conf.d/zz-opcache.ini
 
+# Ensure $_ENV is populated from system env vars (needed for Symfony DotEnv to respect Render env vars)
+RUN echo "variables_order=EGPCS" > /usr/local/etc/php/conf.d/zz-env.ini
+
 WORKDIR /app
 
 # Copy composer files first for layer caching
