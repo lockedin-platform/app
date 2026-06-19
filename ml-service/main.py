@@ -1,87 +1,128 @@
 """
-LockedIn ML service (FastAPI).
+LockedIn ML service (FastAPI) — now serving TRAINED models.
 
-This is the Python side of the stack from the Strategy Report:
   Symfony (PHP) = website/API     |     FastAPI (Python) = ML model serving
 
-It runs as a SEPARATE process next to Symfony. Symfony calls it over HTTP
-(e.g. POST http://127.0.0.1:8001/score) to get model predictions.
+Endpoints:
+  GET  /health  -> status + which models are loaded
+  POST /score   -> Model 6 (Deal Outcome): success probability 0-100 + drivers   [logreg, CV AUC 0.80]
+  POST /detect  -> Model 3 (Fraud/Quality): anomaly score + is_suspicious          [IsolationForest]
 
-STATUS: skeleton only — NO model is trained yet (by decision). /score returns a
-transparent, rule-based PLACEHOLDER with `"model": "stub"` so the Symfony side can
-integrate against a stable contract today; we swap the stub for the real XGBoost
-model (trained on ml_data.scoring_training_features) without changing the API.
+Models are loaded from ml-service/models/*.joblib (trained by scripts/ml/train_*.py).
+If a model file is missing the endpoint falls back to a transparent heuristic so the API
+never hard-fails.
 
 Run:
-    cd ml-service
-    python -m venv .venv && .venv\\Scripts\\activate     (Windows)
-    pip install -r requirements.txt
+    cd ml-service && pip install -r requirements.txt
     uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 """
 from __future__ import annotations
 
+import math
+import os
 from typing import Optional
+
+import joblib
+import numpy as np
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="LockedIn ML Service", version="0.1.0")
+app = FastAPI(title="LockedIn ML Service", version="1.0.0")
 
-# The exact feature set the model is/will be trained on
-# (data/processed/scoring_training_features.csv). Keep this in sync with the
-# platform submission form so training features == inference features.
-class ScoreRequest(BaseModel):
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "models")
+
+# --- sector -> canonical bucket -> success prior (mirror of scripts/sector_map.py) ---
+SECTOR_MAP = {
+    "saas": "TECH", "ai": "TECH", "technology": "TECH", "technologie": "TECH",
+    "crypto": "FINTECH", "fintech": "FINTECH", "finance": "FINTECH",
+    "health": "HEALTH", "sante": "HEALTH", "santé": "HEALTH",
+    "ecommerce": "COMMERCE", "commerce": "COMMERCE",
+    "climate": "ENERGY_CLIMATE", "energy": "ENERGY_CLIMATE", "energie": "ENERGY_CLIMATE",
+    "agriculture": "AGRI_FOOD", "food & beverage": "AGRI_FOOD", "alimentation": "AGRI_FOOD",
+    "education": "EDUCATION", "éducation": "EDUCATION",
+}
+PRIORS = {"TECH": 0.467, "FINTECH": 0.445, "HEALTH": 0.477, "COMMERCE": 0.446,
+          "AGRI_FOOD": 0.436, "ENERGY_CLIMATE": 0.447, "EDUCATION": 0.495, "OTHER": 0.396}
+GLOBAL_PRIOR = 0.454
+
+
+def sector_prior(sector: Optional[str]) -> float:
+    if not sector:
+        return GLOBAL_PRIOR
+    return PRIORS.get(SECTOR_MAP.get(sector.strip().lower(), "OTHER"), GLOBAL_PRIOR)
+
+
+def _load(name: str):
+    path = os.path.join(MODELS_DIR, name)
+    try:
+        return joblib.load(path)
+    except Exception:
+        return None
+
+
+DEAL = _load("deal_outcome.joblib")
+FRAUD = _load("fraud_detector.joblib")
+
+
+class Features(BaseModel):
     sector: Optional[str] = None
     team_size: Optional[int] = Field(default=None, ge=0)
     founder_experience_years: Optional[int] = Field(default=None, ge=0)
     product_traction_users: Optional[int] = Field(default=None, ge=0)
-    market_size_billion: Optional[float] = Field(default=None, ge=0)
     revenue_million: Optional[float] = Field(default=None, ge=0)
-    burn_rate_million: Optional[float] = Field(default=None, ge=0)
-    country: Optional[str] = None  # used by the future macro-risk join (Model 4)
+    country: Optional[str] = None  # reserved for the macro-risk join
 
 
-class ScoreResponse(BaseModel):
-    score: float                       # 0..100 investment-readiness score
-    confidence: float                  # 0..1 — low until a real model + data exist
-    drivers: dict                      # which inputs pushed the score up/down
-    model: str                         # "stub" now, "xgboost-v1" later
+def _clamp01(v: float) -> float:
+    return max(0.0, min(1.0, v))
+
+
+def to_vector(req: Features) -> np.ndarray:
+    """
+    Map a founder's REAL values to 0..1 against realistic pre-seed startup ranges, in the same
+    feature order as training. The model was trained on per-feature ranks (also 0..1), so it
+    applies the learned monotonic "higher -> better" relation to where this startup sits among
+    realistic peers — sidestepping the enterprise-scale mismatch in the raw training data.
+    """
+    return np.array([[
+        _clamp01((req.founder_experience_years or 0) / 20.0),                       # 0–20 yrs
+        _clamp01(math.log1p(req.team_size or 0) / math.log1p(30)),                  # ~1–30 people
+        _clamp01(math.log1p(req.product_traction_users or 0) / math.log1p(50000)),  # ~0–50k users
+        _clamp01(math.log1p(req.revenue_million or 0) / math.log1p(5)),             # ~0–5M
+        _clamp01((sector_prior(req.sector) - 0.39) / 0.11),                         # prior 0.39–0.50
+    ]])
 
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "service": "lockedin-ml", "model_loaded": False}
+    return {"status": "ok", "service": "lockedin-ml",
+            "models": {"deal_outcome": DEAL is not None, "fraud_detector": FRAUD is not None}}
 
 
-@app.post("/score", response_model=ScoreResponse)
-def score(req: ScoreRequest) -> ScoreResponse:
-    """
-    PLACEHOLDER scoring. Transparent, monotonic heuristic on the funding-independent
-    features so the endpoint is usable end-to-end before the model is trained.
-    Replace the body with: load XGBoost -> predict_proba -> map to 0..100.
-    """
-    s = 50.0
-    drivers: dict = {}
+@app.post("/score")
+def score(req: Features) -> dict:
+    """Model 6 — investment-readiness / deal-outcome probability (0-100)."""
+    x = to_vector(req)
+    if DEAL is not None:
+        prob = float(DEAL["clf"].predict_proba(x)[0][1])
+        filled = sum(v is not None for v in req.model_dump().values())
+        return {"score": round(prob * 100, 1),
+                "confidence": round(min(0.3 + filled * 0.07, 0.85), 2),
+                "model": DEAL.get("model", "deal_outcome"),
+                "cv_auc": DEAL.get("cv_auc")}
+    # fallback heuristic if the model file is missing
+    s = 50 + (req.founder_experience_years or 0) * 1.5
+    return {"score": round(max(0, min(100, s)), 1), "confidence": 0.2, "model": "stub"}
 
-    if req.founder_experience_years is not None:
-        bump = min(req.founder_experience_years, 12) * 1.5
-        s += bump; drivers["founder_experience_years"] = round(bump, 1)
-    if req.team_size is not None:
-        bump = min(req.team_size, 10) * 1.2
-        s += bump; drivers["team_size"] = round(bump, 1)
-    if req.product_traction_users is not None:
-        bump = min(req.product_traction_users / 1000.0, 15)
-        s += bump; drivers["product_traction_users"] = round(bump, 1)
-    if req.market_size_billion is not None:
-        bump = min(req.market_size_billion, 10)
-        s += bump; drivers["market_size_billion"] = round(bump, 1)
-    if req.revenue_million is not None and req.burn_rate_million:
-        ratio = req.revenue_million / req.burn_rate_million
-        bump = max(min((ratio - 1) * 5, 10), -10)
-        s += bump; drivers["revenue_vs_burn"] = round(bump, 1)
 
-    score_val = max(0.0, min(100.0, s))
-    # confidence stays deliberately low: this is a heuristic, not a trained model
-    filled = sum(v is not None for v in req.model_dump().values())
-    confidence = round(min(0.15 + filled * 0.05, 0.5), 2)
-    return ScoreResponse(score=round(score_val, 1), confidence=confidence,
-                         drivers=drivers, model="stub")
+@app.post("/detect")
+def detect(req: Features) -> dict:
+    """Model 3 — fraud/quality anomaly check."""
+    x = to_vector(req)
+    if FRAUD is not None:
+        clf = FRAUD["clf"]
+        is_anom = int(clf.predict(x)[0]) == -1
+        raw = float(clf.decision_function(x)[0])  # <0 = more anomalous
+        return {"is_suspicious": is_anom, "anomaly_score": round(-raw, 4),
+                "model": FRAUD.get("model", "fraud_detector")}
+    return {"is_suspicious": False, "anomaly_score": 0.0, "model": "stub"}

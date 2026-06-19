@@ -1,9 +1,8 @@
 fastapi==0.115.6
 uvicorn[standard]==0.34.0
 pydantic==2.10.4
-# added when the real model lands:
-# scikit-learn
-# xgboost
-# pandas
-# joblib
-# psycopg2-binary   # to read ml_data.scoring_training_features for training
+# trained-model serving (Model 6 deal outcome, Model 3 fraud detector)
+scikit-learn>=1.5
+joblib>=1.3
+numpy>=1.26
+# train the models with: py scripts/ml/train_deal_outcome.py && py scripts/ml/train_fraud_detector.py

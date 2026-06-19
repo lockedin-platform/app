@@ -7,8 +7,10 @@ use App\Entity\Projet;
 
 class ProjetScoringService
 {
-    public function __construct(private readonly GeminiService $gemini)
-    {
+    public function __construct(
+        private readonly GeminiService $gemini,
+        private readonly MlScoreClient $mlScoreClient,
+    ) {
     }
 
     public function calculateScores(Projet $projet): void
@@ -70,7 +72,30 @@ class ProjetScoringService
                 'equipe' => $projet->getDonneesBusiness()?->getScoreEquipeCalcule(),
                 'risque' => $projet->getDonneesBusiness()?->getScoreRisqueCalcule(),
             ],
+            // Trained models (Model 6 deal-outcome + Model 3 fraud) via the FastAPI service.
+            // null when the ML service is down -> the rule-based scores above still stand.
+            'ml' => $this->mlScores($projet),
         ];
+    }
+
+    /** @return array<string,mixed>|null */
+    private function mlScores(Projet $projet): ?array
+    {
+        $db = $projet->getDonneesBusiness();
+        $features = [
+            'sector' => $projet->getSecteur(),
+            'country' => $projet->getPays(),
+            'team_size' => $db?->getTailleEquipe(),
+            'founder_experience_years' => $db?->getExperienceEquipe(),
+            'product_traction_users' => $db?->getTraction(),
+            // expected revenue (TND) -> millions, the unit the model expects
+            'revenue_million' => $db ? (float) $db->getRevenusAttendus() / 1_000_000 : null,
+        ];
+        $score = $this->mlScoreClient->score($features);
+        if ($score === null) {
+            return null; // service unavailable
+        }
+        return ['deal_outcome' => $score, 'fraud' => $this->mlScoreClient->detect($features)];
     }
 
     private function computeFinancialScore(DonneesBusiness $db): float
