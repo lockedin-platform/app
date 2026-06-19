@@ -398,7 +398,7 @@ class ProjetController extends AbstractController
     // ==================== EXCHANGE RATE ====================
 
     #[Route('/{id}/exchange-rates', name: 'app_projet_exchange_rates')]
-    public function exchangeRates(Projet $projet, ExchangeRateService $exchangeService, MacroRiskService $macroRisk): Response
+    public function exchangeRates(Projet $projet, ExchangeRateService $exchangeService, MacroRiskService $macroRisk, \App\Service\SectorTimingService $sectorTiming): Response
     {
         if ($projet->getUser() !== $this->getUser() && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException();
@@ -409,6 +409,8 @@ class ProjetController extends AbstractController
 
         // Model 4 v0 — real macro risk for the project's country (World Bank data, no training)
         $macro = $macroRisk->getRiskBreakdown($projet->getPays());
+        // Model 8 v0 — sector timing from the Tunisian Stock Exchange data (graceful if not loaded yet)
+        $timing = $sectorTiming->getSectorTiming($projet->getSecteur());
 
         $conversions = [];
         if ($db) {
@@ -427,6 +429,7 @@ class ProjetController extends AbstractController
             'rates' => $rates,
             'conversions' => $conversions,
             'macroRisk' => $macro,
+            'sectorTiming' => $timing,
         ]);
     }
 
