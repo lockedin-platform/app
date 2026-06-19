@@ -159,6 +159,23 @@ Recommended fixes (pick per timeline, do NOT distort the product to fit the data
 - **Model 3 (NLP) data:** we have unlabelled text (Disrupt Africa reports, failure "why_they_failed",
   project descriptions) but no labelled business-plan sections yet — fine, Model 3 is a later phase.
 
+## 7b. TRAINED models (Dali's column: 3, 6 done; 4, 7, 8 still data-blocked)
+Hold on training lifted for Dali's models. Trainable now = those with real labeled data:
+- **Model 6 (Deal Outcome) — TRAINED.** `scripts/ml/train_deal_outcome.py` → logistic regression,
+  **CV AUC 0.80**. Key fix for the enterprise-scale mismatch: train on **percentile-rank** features
+  (uniform 0..1, monotonic signal only); at inference the FastAPI service maps real founder values
+  to 0..1 against **realistic pre-seed ranges**. Result: real startups discriminate properly
+  (strong 82 / medium 15 / weak 3) instead of all saturating to 0.
+- **Model 3 (Fraud/Quality) — TRAINED.** `train_fraud_detector.py` → IsolationForest (unsupervised,
+  same rank space). Flags statistical-outlier submissions on top of the SubmissionQualityService rules.
+- **Served:** `ml-service/main.py` loads both from `ml-service/models/*.joblib`; `/score` + `/detect`
+  return real predictions. `MlScoreClient` (PHP) calls it from `ProjetScoringService` — fail-soft to
+  the rule-based scores when the Python service is down.
+- **Still v0 (genuinely data-blocked):** Model 4 (matching — needs interaction data), Model 7 (macro
+  risk — needs deal outcomes), Model 8 (sector timing — needs `ml.tse_sectors`).
+- **Deploy note:** the FastAPI service must run alongside Symfony for the trained scores to be used
+  in prod (Symfony falls back gracefully until then).
+
 ## 8. Shipped (no training — "getting things ready")
 - **Model 4 (Risk) v0 — LIVE.** `src/Service/Investment/MacroRiskService.php` reads the real
   `ml_data.worldbank_wide` indicators for a project's country and returns a dynamic risk score
