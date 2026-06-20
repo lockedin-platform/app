@@ -8,6 +8,8 @@ doctrine:
 
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
+        # Prevent doctrine:schema:update from touching ml and ml_data schemas (ML data)
+        schema_filter: '~^(?!ml\.)~'
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
